@@ -1,23 +1,27 @@
 import { defineConfig } from "vitepress"
 import { shared } from "./shared"
-import { en } from "./en"
-import { zh } from "./zh"
+import { es } from "./es"
 
 export default defineConfig({
   ...shared,
   title: "NixOS & Flakes Book",
 
   rewrites: {
-    "en/:rest*": ":rest*",
+    "es/:rest*": ":rest*",
   },
+  srcExclude: ["en/**/*.md", "zh/**/*.md"],
   locales: {
     root: {
+      label: "Spanish",
+      ...es,
+    },
+    en: {
       label: "English",
-      ...en,
+      link: "https://nixos-and-flakes.thiscute.world/",
     },
     zh: {
       label: "简体中文",
-      ...zh,
+      link: "https://nixos-and-flakes.thiscute.world/zh/",
     },
     pt: {
       label: "Português",
