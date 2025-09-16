@@ -1,42 +1,45 @@
-# Advantages & Disadvantages of NixOS
+# Ventajas y desventajas de NixOS
 
-## Advantages of NixOS
+## Ventajas de NixOS
 
-- **Declarative Configuration, OS as Code**
-  - NixOS uses declarative configuration to manage the entire system environment. These
-    configurations can be managed directly with Git, allowing the system to be restored to
-    any historical state as long as the configuration files are preserved (provided the
-    desired states are declared in the Nix configuration).
-  - Nix Flakes further enhance reproducibility by utilizing a `flake.lock` version lock
-    file, which records the data source addresses, hash values, and other relevant
-    information for all dependencies. This design greatly improves Nix's reproducibility
-    and ensures consistent build results. It draws inspiration from package management
-    designs in programming languages like Cargo and npm.
-- **Highly Convenient System Customization Capability**
-  - With just a few configuration changes, various components of the system can be easily
-    replaced. Nix encapsulates all the underlying complex operations within Nix packages,
-    providing users with a concise set of declarative parameters.
-  - Modifications are safe and switching between different desktop environments (such as
-    GNOME, KDE, i3, and sway) is straightforward, with minimal pitfalls.
-- **Rollback Capability**
-  - It is possible to roll back to any previous system state, and NixOS even includes all
-    old versions in the boot options by default, ensuring the ability to easily revert
-    changes. Consequently, Nix is regarded as one of the most stable package management
-    approaches.
-- **No Dependency Conflict Issues**
-  - Each software package in Nix has a unique hash, which is incorporated into its
-    installation path, allowing multiple versions to coexist.
-- **The community is active, with a diverse range of third-party projects**
-  - The official package repository, nixpkgs, has numerous contributors, and many people
-    share their Nix configurations. Exploring the NixOS ecosystem is an exciting
-    experience, akin to discovering a new continent.
+- **Configuración declarativa, sistema operativo como código**
+  - NixOS utiliza configuración declarativa para gestionar todo el entorno del sistema.
+    Estas configuraciones pueden administrarse directamente con Git, lo que permite
+    restaurar el sistema a cualquier estado histórico siempre que se conserven los
+    archivos de configuración (y que los estados deseados estén declarados en la
+    configuración de Nix).
+  - Nix Flakes mejora aún más la reproducibilidad al utilizar un archivo de bloqueo de
+    versiones `flake.lock`, que registra las direcciones de origen de los datos, valores
+    hash y otra información relevante de todas las dependencias. Este diseño incrementa
+    enormemente la reproducibilidad de Nix y garantiza resultados de compilación
+    consistentes. Se inspira en los diseños de gestión de paquetes de lenguajes de
+    programación como Cargo y npm.
+- **Alta capacidad de personalización del sistema**
+  - Con solo unos pocos cambios de configuración, varios componentes del sistema pueden
+    reemplazarse fácilmente. Nix encapsula todas las operaciones subyacentes complejas
+    dentro de los paquetes de Nix, ofreciendo a los usuarios un conjunto conciso de
+    parámetros declarativos.
+  - Las modificaciones son seguras y cambiar entre distintos entornos de escritorio (como
+    GNOME, KDE, i3 y sway) es sencillo, con pocos inconvenientes.
+- **Capacidad de retroceso**
+  - Es posible volver a cualquier estado anterior del sistema, e incluso NixOS incluye por
+    defecto todas las versiones antiguas en las opciones de arranque, lo que garantiza la
+    capacidad de revertir cambios fácilmente. En consecuencia, Nix es considerado uno de
+    los enfoques de gestión de paquetes más estables.
+- **Sin problemas de conflicto de dependencias**
+  - Cada paquete de software en Nix tiene un hash único, el cual se incorpora en su ruta
+    de instalación, lo que permite que múltiples versiones coexistan.
+- **Comunidad activa, con una amplia gama de proyectos de terceros**
+  - El repositorio oficial de paquetes, nixpkgs, cuenta con numerosos colaboradores, y
+    muchas personas comparten sus configuraciones de Nix. Explorar el ecosistema de NixOS
+    es una experiencia emocionante, similar a descubrir un nuevo continente.
 
 <figure>
   <img src="/nixos-bootloader.avif">
   <figcaption>
     <h4 align="center">
-      All historical versions are listed in the boot options of NixOS. <br>
-      Image from
+      Todas las versiones históricas se listan en las opciones de arranque de NixOS. <br>
+      Imagen de
       <a href="https://discourse.nixos.org/t/how-to-make-uefis-grub2-menu-the-same-as-bioss-one/10074" target="_blank" rel="noopener noreferrer">
         NixOS Discourse - 10074
       </a>
@@ -44,54 +47,59 @@
   </figcaption>
 </figure>
 
-## Disadvantages of NixOS
+## Desventajas de NixOS
 
-- **High Learning Curve**:
-  - Achieving complete reproducibility and avoiding pitfalls associated with improper
-    usage requires learning about Nix's entire design and managing the system
-    declaratively, rather than blindly using commands like `nix-env -i` (similar to
+- **Curva de aprendizaje elevada**:
+  - Alcanzar una reproducibilidad completa y evitar los problemas asociados con un uso
+    inadecuado requiere aprender todo el diseño de Nix y gestionar el sistema de manera
+    declarativa, en lugar de usar ciegamente comandos como `nix-env -i` (similar a
     `apt-get install`).
-- **Disorganized Documentation**:
-  - Currently, Nix Flakes remains an experimental feature, and there is limited
-    documentation specifically focused on it. Most Nix community documentation primarily
-    covers the classic `/etc/nixos/configuration.nix`. If you want to start learning
-    directly from Nix Flakes(`flake.nix`), you need to refer to a significant amount of
-    outdated documentation and extract the relevant information. Additionally, some core
-    features of Nix, such as `imports` and the Nixpkgs Module System, lack detailed
-    official documentation, requiring resorting to source code analysis.
-- **Increased Disk Space Usage**:
-  - To ensure the ability to roll back the system at any time, Nix retains all historical
-    environments by default, resulting in increased disk space usage.
-  - While this additional space usage may not be a concern on desktop computers, it can
-    become problematic on resource-constrained cloud servers.
-- **Obscure Error Messages**:
-  - Due to the
-    [complex merging algorithm](https://discourse.nixos.org/t/best-resources-for-learning-about-the-nixos-module-system/1177/4)
-    of the [Nixpkgs module system](../other-usage-of-flakes/module-system.md), NixOS error
-    messages are quite poor. In many cases, regardless of whether you add `--show-trace`,
-    it will only tell you that there is an error in the code (the most common and
-    confusing error message is
+- **Documentación desorganizada**:
+  - Actualmente, Nix Flakes sigue siendo una característica experimental, y existe
+    documentación limitada enfocada específicamente en ella. La mayor parte de la
+    documentación de la comunidad Nix cubre principalmente el clásico
+    `/etc/nixos/configuration.nix`. Si deseas empezar a aprender directamente con Nix
+    Flakes (`flake.nix`), necesitas consultar una gran cantidad de documentación
+    desactualizada y extraer la información relevante. Además, algunas funciones clave de
+    Nix, como `imports` y el _Nixpkgs Module System_, carecen de documentación oficial
+    detallada, lo que obliga a recurrir al análisis del código fuente.
+- **Mayor uso de espacio en disco**:
+  - Para garantizar la capacidad de retroceder el sistema en cualquier momento, Nix
+    conserva por defecto todos los entornos históricos, lo que resulta en un mayor consumo
+    de espacio en disco.
+  - Aunque este uso adicional de espacio puede no ser un problema en computadoras de
+    escritorio, sí puede volverse problemático en servidores en la nube con recursos
+    limitados.
+- **Mensajes de error poco claros**:
+  - Debido al
+    [complejo algoritmo de fusión](https://discourse.nixos.org/t/best-resources-for-learning-about-the-nixos-module-system/1177/4)
+    del [sistema de módulos de Nixpkgs](../other-usage-of-flakes/module-system.md), los
+    mensajes de error en NixOS son bastante pobres. En muchos casos, incluso si agregas
+    `--show-trace`, solo te indicará que hay un error en el código (el mensaje más común y
+    confuso es
     [Infinite recursion encountered](https://discourse.nixos.org/t/infinite-recursion-encountered-by-making-module-configurable/23508/2)),
-    but where exactly is the error? The type system says it doesn't know, so you have to
-    find it yourself. In my experience, **the simplest and most effective way to deal with
-    these meaningless error messages is to use a "binary search" to gradually restore the
-    code**.
-  - This problem is probably the biggest pain point of NixOS at the moment.
-- **More Complex Underlying Implementation**:
-  - Nix's declarative abstraction introduces additional complexity in the underlying code
-    compared to similar code in traditional imperative tools.
-  - This complexity increases implementation difficulty and makes it more challenging to
-    make custom modifications at the lower level. However, this burden primarily falls on
-    Nix package maintainers, as regular users have limited exposure to the underlying
-    complexities, reducing their burden.
+    pero ¿dónde exactamente está el error? El sistema de tipos dice que no lo sabe, así
+    que tienes que encontrarlo tú mismo. En mi experiencia, **la forma más simple y
+    efectiva de lidiar con estos mensajes de error sin sentido es usar una “búsqueda
+    binaria” para ir restaurando gradualmente el código**.
+  - Este problema es probablemente el mayor dolor de cabeza de NixOS en la actualidad.
+- **Implementación subyacente más compleja**:
+  - La abstracción declarativa de Nix introduce una complejidad adicional en el código
+    subyacente en comparación con un código similar en herramientas imperativas
+    tradicionales.
+  - Esta complejidad incrementa la dificultad de implementación y hace más complicado
+    realizar modificaciones personalizadas a bajo nivel. Sin embargo, esta carga recae
+    principalmente en los mantenedores de paquetes de Nix, ya que los usuarios comunes
+    tienen un contacto limitado con dichas complejidades, lo que reduce su carga.
 
-## Summary
+## Resumen
 
-Overall, I believe that NixOS is suitable for developers with a certain level of Linux
-usage experience and programming knowledge who desire greater control over their systems.
+En general, considero que NixOS es adecuado para desarrolladores con cierto nivel de
+experiencia en el uso de Linux y conocimientos de programación que deseen tener un mayor
+control sobre sus sistemas.
 
-I do not recommend newcomers without any Linux usage experience to dive directly into
-NixOS, as it may lead to a frustrating journey.
+No recomiendo a los recién llegados sin experiencia previa en Linux que se sumerjan
+directamente en NixOS, ya que podría llevarlos a una experiencia frustrante.
 
-> If you have more questions about NixOS, you can refer to the last chapter of this book,
+> Si tienes más preguntas sobre NixOS, puedes consultar el último capítulo de este libro,
 > [FAQ](../faq/).

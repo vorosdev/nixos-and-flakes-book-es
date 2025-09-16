@@ -1,90 +1,95 @@
 ![](/nixos-and-flakes-book.webp)
 
-# Introduction to Nix & NixOS
+# Introducción a Nix y NixOS
 
-Nix is a declarative package manager that enables users to declare the desired system
-state in configuration files (declarative configuration), and it takes responsibility for
-achieving that state.
+Nix es un gestor de paquetes declarativo que permite a los usuarios declarar el estado
+deseado del sistema en archivos de configuración (configuración declarativa), y se encarga
+de alcanzar ese estado.
 
-> In simple terms, "declarative configuration" means that users only need to declare the
-> desired outcome. For instance, if you declare that you want to replace the i3 window
-> manager with sway, Nix will assist you in achieving that goal. You don't have to worry
-> about the underlying details, such as which packages sway requires for installation,
-> which i3-related packages need to be uninstalled, or the necessary adjustments to system
-> configuration and environment variables for sway. Nix automatically handles these
-> details for the user (provided that the Nix packages related to sway and i3 are properly
-> designed).
+> En términos simples, la “configuración declarativa” significa que los usuarios solo
+> necesitan declarar el resultado deseado. Por ejemplo, si declaras que quieres reemplazar
+> el gestor de ventanas i3 por sway, Nix te ayudará a lograr ese objetivo. No tienes que
+> preocuparte por los detalles subyacentes, como qué paquetes requiere sway para
+> instalarse, qué paquetes relacionados con i3 deben desinstalarse o los ajustes
+> necesarios en la configuración del sistema y las variables de entorno para sway. Nix
+> maneja automáticamente estos detalles por ti (siempre y cuando los paquetes de Nix
+> relacionados con sway e i3 estén correctamente diseñados).
 
-NixOS, a Linux distribution built on top of the Nix package manager, can be described as
-"OS as Code." It employs declarative Nix configuration files to describe the entire state
-of the operating system.
+NixOS, una distribución de Linux construida sobre el gestor de paquetes Nix, puede
+describirse como un “sistema operativo como código”. Emplea archivos de configuración
+declarativos de Nix para describir el estado completo del sistema operativo.
 
-An operating system consists of various software packages, configuration files, and
-text/binary data, all of which represent the current state of the system. Declarative
-configuration can manage only the static portion of this state. Dynamic data, such as
-PostgreSQL, MySQL, or MongoDB data, cannot be effectively managed through declarative
-configuration (it is not feasible to delete all new PostgreSQL data that is not declared
-in the configuration during each deployment). Therefore, **NixOS primarily focuses on
-managing the static portion of the system state in a declarative manner**. Dynamic data,
-along with the contents in the user's home directory, remain unaffected by NixOS when
-rolling back to a previous generation.
+Un sistema operativo está compuesto por diversos paquetes de software, archivos de
+configuración y datos en texto/binarios, todos los cuales representan el estado actual del
+sistema. La configuración declarativa solo puede gestionar la parte estática de este
+estado. Los datos dinámicos, como los de PostgreSQL, MySQL o MongoDB, no pueden
+administrarse de manera efectiva mediante configuración declarativa (no es factible
+eliminar todos los nuevos datos de PostgreSQL que no estén declarados en la configuración
+en cada despliegue). Por lo tanto, **NixOS se centra principalmente en gestionar de manera
+declarativa la parte estática del estado del sistema**. Los datos dinámicos, junto con los
+contenidos en el directorio personal del usuario, permanecen intactos cuando se realiza un
+rollback a una generación anterior.
 
-Although we cannot achieve complete system reproducibility, the `/home` directory, being
-an important user directory, contains many necessary configuration files -
-[Dotfiles](https://wiki.archlinux.org/title/Dotfiles). A significant community project
-called [home-manager](https://github.com/nix-community/home-manager) is designed to manage
-user-level packages and configuration files within the user's home directory.
+Aunque no podemos lograr una reproducibilidad completa del sistema, el directorio `/home`,
+al ser un directorio importante del usuario, contiene muchos archivos de configuración
+necesarios - [Dotfiles](https://wiki.archlinux.org/title/Dotfiles). Un proyecto
+comunitario destacado llamado
+[home-manager](https://github.com/nix-community/home-manager) está diseñado para gestionar
+los paquetes a nivel de usuario y los archivos de configuración dentro del directorio
+personal.
 
-Due to Nix's features, such as being declarative and reproducible, Nix is not limited to
-managing desktop environments but is also extensively used for managing development
-environments, compilation environments, cloud virtual machines, and container image
-construction. [NixOps](https://github.com/NixOS/nixops) (an official Nix project) and
-[colmena](https://github.com/zhaofengli/colmena) (a community project) are both
-operational tools based on Nix.
+Gracias a las características de Nix, como ser declarativo y reproducible, Nix no se
+limita a gestionar entornos de escritorio, sino que también se usa ampliamente para
+administrar entornos de desarrollo, entornos de compilación, máquinas virtuales en la nube
+y construcción de imágenes de contenedores. [NixOps](https://github.com/NixOS/nixops) (un
+proyecto oficial de Nix) y [colmena](https://github.com/zhaofengli/colmena) (un proyecto
+comunitario) son herramientas de operación basadas en Nix.
 
-## Why NixOS?
+## ¿Por qué NixOS?
 
-I first learned about the Nix package manager several years ago. It utilizes the Nix
-language to describe system configuration. NixOS, the Linux distribution built on top of
-it, allows for rolling back the system to any previous state (although only the state
-declared in Nix configuration files can be rolled back). While it sounded impressive, I
-found it troublesome to learn a new language and write code to install packages, so I
-didn't pursue it at the time.
+Conocí el gestor de paquetes Nix hace varios años. Utiliza el lenguaje Nix para describir
+la configuración del sistema. NixOS, la distribución de Linux construida sobre él, permite
+retroceder el sistema a cualquier estado previo (aunque solo se puede revertir el estado
+declarado en los archivos de configuración de Nix). Aunque sonaba impresionante, me
+resultaba problemático aprender un nuevo lenguaje y escribir código para instalar
+paquetes, así que en ese momento no lo intenté.
 
-However, I recently encountered numerous environmental issues while using EndeavourOS, and
-resolving them consumed a significant amount of my energy, leaving me exhausted. Upon
-careful consideration, I realized that the lack of version control and rollback mechanisms
-in EndeavourOS prevented me from restoring the system when problems arose.
+Sin embargo, recientemente me encontré con numerosos problemas de entorno mientras usaba
+EndeavourOS, y resolverlos me consumió una cantidad considerable de energía, dejándome
+exhausto. Tras pensarlo detenidamente, me di cuenta de que la falta de control de
+versiones y mecanismos de retroceso en EndeavourOS me impedía restaurar el sistema cuando
+surgían problemas.
 
-That's when I decided to switch to NixOS.
+Fue entonces cuando decidí cambiarme a NixOS.
 
-To my delight, NixOS has exceeded my expectations. The most astonishing aspect is that I
-can now restore my entire i3 environment and all my commonly used packages on a fresh
-NixOS host with just one command `sudo nixos-rebuild switch --flake .`. It's truly
-fantastic!
+Para mi sorpresa, NixOS ha superado mis expectativas. Lo más asombroso es que ahora puedo
+restaurar todo mi entorno i3 y todos mis paquetes de uso común en un nuevo host con NixOS
+con un solo comando: `sudo nixos-rebuild switch --flake .`. ¡Es realmente fantástico!
 
-The rollback capability and reproducibility of NixOS has instilled a great deal of
-confidence in me—I no longer fear breaking the system. I've even ventured into
-experimenting with new things on NixOS, such as the hyprland compositor. Previously, on
-EndeavourOS, I wouldn't have dared to tinker with such novel compositors, as any system
-mishaps would have entailed significant manual troubleshooting using various workarounds.
+La capacidad de retroceso y la reproducibilidad de NixOS me han dado mucha confianza: ya
+no temo romper el sistema. Incluso me he atrevido a experimentar con cosas nuevas en
+NixOS, como el compositor hyprland. Antes, en EndeavourOS, no me habría animado a probar
+con compositores tan novedosos, ya que cualquier fallo del sistema habría implicado una
+gran cantidad de resolución manual de problemas usando distintos trucos y soluciones
+temporales.
 
-As I get more and more involved with NixOS and Nix, I find it also very suitable for
-synchronously managing the configuration of multiple hosts. Currently my personal
-[nix-config](https://github.com/ryan4yin/nix-config) synchronously manages the
-configuration of many hosts:
+A medida que me involucro cada vez más con NixOS y Nix, descubro que también es muy
+adecuado para gestionar de forma sincronizada la configuración de múltiples hosts.
+Actualmente, mi [nix-config](https://github.com/ryan4yin/nix-config) gestiona de manera
+sincronizada la configuración de muchos hosts:
 
-- Desktop computers
-  - 1 Macbook Pro 2022 (M2 aarch64).
-  - 1 Macbook Pro 2024 (M4Pro aarch64).
-  - 1 NixOS desktop PC (amd64).
-- Servers
-  - 10+ NixOS virtual machines (amd64).
-  - Several development boards for aarch64 and riscv64.
+- Computadoras de escritorio
+  - 1 MacBook Pro 2022 (M2 aarch64).
+  - 1 MacBook Pro 2024 (M4Pro aarch64).
+  - 1 PC de escritorio con NixOS (amd64).
 
-The development environment of three desktop computers is managed by Home Manager, the
-main configuration is completely shared, and the configuration modified on any host can be
-seamlessly synchronized to other hosts through Git.
+- Servidores
+  - 10+ máquinas virtuales con NixOS (amd64).
+  - Varias placas de desarrollo para aarch64 y riscv64.
 
-Nix almost completely shielded me from the differences between OS and architecture at the
-bottom of the three machines, and the experience was very smooth!
+El entorno de desarrollo de las tres computadoras de escritorio está gestionado por Home
+Manager, la configuración principal se comparte completamente, y cualquier modificación
+realizada en un host puede sincronizarse sin problemas con los demás a través de Git.
+
+Nix prácticamente me protegió por completo de las diferencias entre sistema operativo y
+arquitectura en estas tres máquinas, ¡y la experiencia fue muy fluida!

@@ -6,43 +6,43 @@ export const es = defineConfig({
 
   themeConfig: {
     nav: [
-      { text: "Home", link: "/" },
-      { text: "Preface", link: "/preface.md" },
-      { text: "Get Started", link: "/introduction/index.md" },
-      { text: "Best Practices", link: "/best-practices/intro.md" },
+      { text: "Inicio", link: "/" },
+      { text: "Prefacio", link: "/preface.md" },
+      { text: "Comenzar", link: "/introduction/index.md" },
+      { text: "Mejores Practicas", link: "/best-practices/intro.md" },
     ],
     sidebar: [
       {
-        text: "Preface",
-        items: [{ text: "Preface", link: "/preface.md" }],
+        text: "Prefacio",
+        items: [{ text: "Prefacio", link: "/preface.md" }],
       },
       {
-        text: "Get Started",
+        text: "Comenzar",
         items: [
-          { text: "Introduction", link: "/introduction/index.md" },
+          { text: "Introducción", link: "/introduction/index.md" },
           {
-            text: "Advantages and Disadvantages",
+            text: "Ventajas y Desventajas",
             link: "/introduction/advantages-and-disadvantages.md",
           },
           {
-            text: "Installation",
+            text: "Instalación",
             link: "/introduction/installation.md",
           },
         ],
       },
       {
-        text: "The Nix Language",
-        items: [{ text: "Basics", link: "/the-nix-language/index.md" }],
+        text: "El lenguaje Nix",
+        items: [{ text: "Fundamentos", link: "/the-nix-language/index.md" }],
       },
       {
-        text: "NixOS with Flakes",
+        text: "NixOS con Flakes",
         items: [
           {
-            text: "Get Started with NixOS",
+            text: "Primeros pasos con NixOS",
             link: "/nixos-with-flakes/get-started-with-nixos.md",
           },
           {
-            text: "Introduction to Flakes",
+            text: "Introducción a Flakes",
             link: "/nixos-with-flakes/introduction-to-flakes.md",
           },
           {
