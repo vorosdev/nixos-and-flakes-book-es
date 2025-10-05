@@ -1,13 +1,14 @@
-# `flake.nix` Configuration Explained {#flake-nix-configuration-explained}
+# Explicación de la configuración de `flake.nix` {#flake-nix-configuration-explained}
 
-Above, we created a `flake.nix` file to manage system configurations, but you might still
-be unclear about its structure. Let's explain the content of this file in detail.
+Arriba creamos un archivo `flake.nix` para gestionar las configuraciones del sistema, pero
+puede que aún no tengas clara su estructura. A continuación, explicaremos en detalle el
+contenido de este archivo.
 
-## 1. Flake Inputs
+## 1. Entradas del Flake (_Flake Inputs_)
 
-First, let's look at the `inputs` attribute. It is an attribute set that defines all the
-dependencies of this flake. These dependencies will be passed as arguments to the
-`outputs` function after they are fetched:
+Primero, veamos el atributo `inputs`. Es un conjunto de atributos que define todas las
+dependencias de este flake. Estas dependencias se pasarán como argumentos a la función
+`outputs` después de ser obtenidas:
 
 ```nix{2-5,7}
 {
@@ -22,23 +23,23 @@ dependencies of this flake. These dependencies will be passed as arguments to th
 }
 ```
 
-Dependencies in `inputs` has many types and definitions. It can be another flake, a
-regular Git repository, or a local path. The section
-[Other Usage of Flakes - Flake Inputs](../other-usage-of-flakes/inputs.md) describes
-common types of dependencies and their definitions in detail.
+Las dependencias en `inputs` pueden tener muchos tipos y definiciones. Pueden ser otro
+flake, un repositorio Git normal o una ruta local. La sección
+[Otros usos de Flakes - Entradas de Flake](../other-usage-of-flakes/inputs.md) describe en
+detalle los tipos de dependencias más comunes y sus definiciones.
 
-Here we only define a dependency named `nixpkgs`, which is the most common way to
-reference in a flake, i.e., `github:owner/name/reference`. The `reference` here can be a
-branch name, commit-id, or tag.
+Aquí solo definimos una dependencia llamada `nixpkgs`, que es la forma más común de hacer
+referencia en un flake, es decir: `github:owner/name/reference`. El `reference` puede ser
+un nombre de rama, un _commit-id_ o una etiqueta (_tag_).
 
-After `nixpkgs` is defined in `inputs`, you can use it in the parameters of the subsequent
-`outputs` function, which is exactly what our example does.
+Después de definir `nixpkgs` en `inputs`, puedes usarlo como parámetro en la función
+`outputs` que viene a continuación, que es exactamente lo que hace nuestro ejemplo.
 
-## 2. Flake Outputs
+## 2. Salidas del Flake (_Flake Outputs_)
 
-Now let's look at `outputs`. It is a function that takes the dependencies from `inputs` as
-its parameters, and its return value is an attribute set, which represents the build
-results of the flake:
+Ahora veamos `outputs`. Es una función que recibe como parámetros las dependencias
+definidas en `inputs`, y su valor de retorno es un conjunto de atributos que representa
+los resultados de compilación del flake:
 
 ```nix{9-16}
 {
@@ -60,82 +61,86 @@ results of the flake:
 }
 ```
 
-Flakes can have various purposes and can have different types of outputs. The section
-[Flake Outputs](../other-usage-of-flakes/outputs.md) provides a more detailed
-introduction. Here, we are only using the `nixosConfigurations` type of outputs, which is
-used to configure NixOS systems.
+Los flakes pueden tener diversos propósitos y diferentes tipos de salidas (_outputs_). La
+sección [Salidas de Flake](../other-usage-of-flakes/outputs.md) ofrece una introducción
+más detallada. Aquí, solo estamos utilizando el tipo de salida `nixosConfigurations`, que
+se usa para configurar sistemas NixOS.
 
-When we run the `sudo nixos-rebuild switch` command, it looks for the
-`nixosConfigurations.my-nixos` attribute (where `my-nixos` will be the hostname of your
-current system) in the attribute set returned by the `outputs` function of
-`/etc/nixos/flake.nix` and uses the definition there to configure your NixOS system.
+Cuando ejecutamos el comando `sudo nixos-rebuild switch`, este busca el atributo
+`nixosConfigurations.my-nixos` (donde `my-nixos` será el nombre de host de tu sistema
+actual) dentro del conjunto de atributos devuelto por la función `outputs` de
+`/etc/nixos/flake.nix`, y usa esa definición para configurar tu sistema NixOS.
 
-Actually, we can also customize the location of the flake and the name of the NixOS
-configuration instead of using the defaults. This can be done by adding the `--flake`
-parameter to the `nixos-rebuild` command. Here's an example:
+En realidad, también podemos personalizar la ubicación del flake y el nombre de la
+configuración de NixOS en lugar de usar los valores predeterminados. Esto puede hacerse
+agregando el parámetro `--flake` al comando `nixos-rebuild`. Aquí tienes un ejemplo:
 
 ```nix
 sudo nixos-rebuild switch --flake /path/to/your/flake#your-hostname
 ```
 
-A brief explanation of the `--flake /path/to/your/flake#your-hostname` parameter:
+Una breve explicación del parámetro `--flake /path/to/your/flake#your-hostname`:
 
-1. `/path/to/your/flake` is the location of the target flake. The default path is
+1. `/path/to/your/flake` es la ubicación del flake de destino. La ruta predeterminada es
    `/etc/nixos/`.
-2. `#` is a separator, and `your-hostname` is the name of the NixOS configuration.
-   `nixos-rebuild` will default to using the hostname of your current system as the
-   configuration name to look for.
+2. `#` es un separador, y `your-hostname` es el nombre de la configuración de NixOS.
+   `nixos-rebuild` usará por defecto el nombre de host de tu sistema actual como el nombre
+   de la configuración que debe buscar.
 
-You can even directly reference a remote GitHub repository as your flake source, for
-example:
+Incluso puedes hacer referencia directamente a un repositorio remoto de GitHub como fuente
+de tu flake, por ejemplo:
 
 ```nix
 sudo nixos-rebuild switch --flake github:owner/repo#your-hostname
 ```
 
-## 3. The Special Parameter `self` of the `outputs` Function {#special-parameter-self-of-outputs-function}
+## 3. El parámetro especial `self` de la función `outputs` {#special-parameter-self-of-outputs-function}
 
-Although we have not mentioned it before, all the example code in the previous sections
-has one more special parameter in the `outputs` function, and we will briefly introduce
-its purpose here.
+Aunque no lo hemos mencionado antes, todo el código de ejemplo de las secciones anteriores
+incluye un parámetro especial adicional en la función `outputs`, y aquí presentaremos
+brevemente su propósito.
 
-The description of it in the [nix flake - Nix Manual] is:
+Su descripción en el [manual de Nix — *nix flake*] es la siguiente:
 
-> The special input named `self` refers to the outputs and source tree of this flake.
+> El _input_ especial llamado `self` hace referencia a las salidas (_outputs_) y al árbol
+> de código fuente (_source tree_) de este flake.
 
-This means that `self` is the return value of the current flake's `outputs` function and
-also the path to the current flake's source code folder (source tree).
+Esto significa que `self` es tanto el valor de retorno de la función `outputs` del flake
+actual como la ruta a la carpeta del código fuente (árbol de origen) de dicho flake.
 
-We are not using the `self` parameter here, but in some more complex examples (or
-configurations you may find online) later, you will see the usage of `self`.
+Aquí no estamos usando el parámetro `self`, pero en algunos ejemplos más complejos (o
+configuraciones que puedas encontrar en línea) más adelante, verás cómo se utiliza `self`.
 
-> Note: You might come across some code where people use `self.outputs` to reference the
-> outputs of the current flake, which is indeed possible. However, the Nix Manual does not
-> provide any explanation for this, and it is considered an internal implementation detail
-> of flakes. It is not recommended to use this in your own code!
+> Nota: Es posible que encuentres código donde las personas usan `self.outputs` para hacer
+> referencia a las salidas (_outputs_) del flake actual, lo cual efectivamente funciona.
+> Sin embargo, el Manual de Nix no ofrece ninguna explicación sobre esto y se considera un
+> detalle interno de la implementación de Flakes. ¡No se recomienda usarlo en tu propio
+> código!
 
-## 4. Simple Introduction to `nixpkgs.lib.nixosSystem` Function {#simple-introduction-to-nixpkgs-lib-nixos-system}
+## 4. Introducción sencilla a la función `nixpkgs.lib.nixosSystem` {#simple-introduction-to-nixpkgs-lib-nixos-system}
 
-**A Flake can depend on other Flakes to utilize the features they provide.**
+**Un flake puede depender de otros flakes para aprovechar las funciones que estos
+proporcionan.**
 
-By default, a flake searches for a `flake.nix` file in the root directory of each of its
-dependencies (i.e., each item in `inputs`) and lazily evaluates their `outputs` functions.
-It then passes the attribute set returned by these functions as arguments to its own
-`outputs` function, enabling us to use the features provided by the other flakes within
-our current flake.
+Por defecto, un flake busca un archivo `flake.nix` en el directorio raíz de cada una de
+sus dependencias (es decir, en cada elemento de `inputs`) y evalúa de forma diferida
+(_lazy evaluation_) sus funciones `outputs`. Luego, pasa el conjunto de atributos devuelto
+por esas funciones como argumentos a su propia función `outputs`, lo que nos permite usar
+las funcionalidades que otros flakes ofrecen dentro de nuestro flake actual.
 
-More precisely, the evaluation of the `outputs` function for each dependency is lazy. This
-means that a flake's `outputs` function is only evaluated when it is actually used,
-thereby avoiding unnecessary calculations and improving efficiency.
+Más precisamente, la evaluación de la función `outputs` de cada dependencia es
+**perezosa** (_lazy evaluation_). Esto significa que la función `outputs` de un flake solo
+se evalúa cuando realmente se utiliza, evitando así cálculos innecesarios y mejorando la
+eficiencia.
 
-The description above may be a bit confusing, so let's take a look at the process with the
-`flake.nix` example used in this section. Our `flake.nix` declares the `inputs.nixpkgs`
-dependency, so that [nixpkgs/flake.nix] will be evaluated when we run the
-`sudo nixos-rebuild switch` command.
+La descripción anterior puede parecer un poco confusa, así que veamos el proceso con el
+ejemplo de `flake.nix` utilizado en esta sección. Nuestro `flake.nix` declara la
+dependencia `inputs.nixpkgs`, por lo que el archivo [nixpkgs/flake.nix] se evaluará cuando
+ejecutemos el comando `sudo nixos-rebuild switch`.
 
-From the source code of the Nixpkgs repository, we can see that its flake outputs
-definition includes the `lib` attribute, and in our example, we use the `lib` attribute's
-`nixosSystem` function to configure our NixOS system:
+A partir del código fuente del repositorio de Nixpkgs, podemos ver que su definición de
+_flake outputs_ incluye el atributo `lib`, y en nuestro ejemplo usamos la función
+`nixosSystem` de ese atributo `lib` para configurar nuestro sistema NixOS:
 
 ```nix{8-13}
 {
@@ -155,23 +160,25 @@ definition includes the `lib` attribute, and in our example, we use the `lib` at
 }
 ```
 
-The attribute set following `nixpkgs.lib.nixosSystem` is the function’s single argument,
-holding all configuration parameters; here we provide only two:
+El conjunto de atributos que sigue a `nixpkgs.lib.nixosSystem` es el único argumento de la
+función y contiene todos los parámetros de configuración; aquí solo proporcionamos dos:
 
-- `system`: A legacy alias for `nixpkgs.hostPlatform` that specifies the platform the
-  machine runs on.  
-  Because the generated `hardware-configuration.nix` (imported by `configuration.nix`)
-  already defines this value, you can usually omit it here.
-- `modules`: This is a list of modules, where the actual NixOS system configuration is
-  defined. The `/etc/nixos/configuration.nix` configuration file itself is a Nixpkgs
-  Module, so it can be directly added to the `modules` list for use.
+- `system`: Un alias heredado de `nixpkgs.hostPlatform` que especifica la plataforma en la
+  que se ejecuta la máquina. Dado que el archivo `hardware-configuration.nix` generado (e
+  importado por `configuration.nix`) ya define este valor, normalmente puedes omitirlo
+  aquí.
 
-Understanding these basics is sufficient for beginners. Exploring the
-`nixpkgs.lib.nixosSystem` function in detail requires a grasp of the Nixpkgs module
-system. Readers who have completed the
-[Modularizing NixOS Configuration](./modularize-the-configuration.md) section can return
-to [nixpkgs/flake.nix] to find the definition of `nixpkgs.lib.nixosSystem`, trace its
-source code, and study its implementation.
+- `modules`: Es una lista de módulos donde se define la configuración real del sistema
+  NixOS. El archivo de configuración `/etc/nixos/configuration.nix` en sí mismo es un
+  módulo de Nixpkgs, por lo que puede añadirse directamente a la lista `modules` para su
+  uso.
+
+Comprender estos conceptos básicos es suficiente para los principiantes. Explorar en
+detalle la función `nixpkgs.lib.nixosSystem` requiere entender el sistema de módulos de
+Nixpkgs. Los lectores que hayan completado la sección
+[Modularizando la configuración de NixOS](./modularize-the-configuration.md) pueden volver
+a [nixpkgs/flake.nix] para encontrar la definición de `nixpkgs.lib.nixosSystem`, seguir su
+código fuente y estudiar su implementación.
 
 [nix flake - Nix Manual]:
   https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-flake#flake-inputs

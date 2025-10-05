@@ -46,11 +46,11 @@ export const es = defineConfig({
             link: "/nixos-with-flakes/introduction-to-flakes.md",
           },
           {
-            text: "NixOS with Flakes Enabled",
+            text: "NixOS con Flakes habilitado",
             link: "/nixos-with-flakes/nixos-with-flakes-enabled.md",
           },
           {
-            text: "NixOS's flake.nix Explained",
+            text: "Explicación del flake.nix de NixOS",
             link: "/nixos-with-flakes/nixos-flake-configuration-explained.md",
           },
           {

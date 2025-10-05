@@ -32,7 +32,7 @@ capítulos veremos que las características de Flakes proporcionan una forma nue
 conveniente de gestionar las dependencias entre expresiones de Nix, basándose en el diseño
 original de Nix.
 
-## Una advertencia sobre Flakes <Badge type="danger" text="caution" />
+## Una advertencia sobre Flakes <Badge type="danger" text="precaución" />
 
 Los beneficios de Flakes son evidentes, y toda la comunidad de NixOS lo ha adoptado con
 entusiasmo. Actualmente, más de la mitad de los usuarios utilizan Flakes[^3], lo que da la
