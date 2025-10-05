@@ -15,7 +15,7 @@ export const shared = defineConfig({
   // SEO Improvement - sitemap.xml & robots.txt
   buildEnd: async ({ outDir }) => {
     sitemap({
-      hostname: "https://nixos-and-flakes.thiscute.world/",
+      hostname: "https://nixos-and-flakes.voros.xyz/",
       outDir: outDir,
       generateRobotsTxt: true,
     })
@@ -134,7 +134,7 @@ export const shared = defineConfig({
     socialLinks: [
       {
         icon: "github",
-        link: "https://github.com/ryan4yin/nixos-and-flakes-book",
+        link: "https://github.com/vorosdev/nixos-and-flakes-book-es",
       },
     ],
   },
