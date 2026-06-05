@@ -1,4 +1,4 @@
-# Entradas del flake
+# Flake Inputs
 
 La sección `inputs` en `flake.nix` es un conjunto de atributos usado para especificar las
 dependencies del flake actual. Hay various tipos de entradas, como muestran los ejemplos

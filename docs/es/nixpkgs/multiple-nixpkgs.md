@@ -1,14 +1,14 @@
 # Los usos ingeniosos de múltiples instancias de nixpkgs
 
 En la sección
-[Bajar o actualizar paquetes](../nixos-with-flakes/downgrade-or-upgrade-packages.md) ya
+[Actualizar o revertir paquetes](../nixos-with-flakes/downgrade-or-upgrade-packages.md) ya
 vimos cómo instanciar múltiples instancias distintas de nixpkgs usando el método
 `import nixpkgs {...}`, y usarlas en cualquier submódulo mediante `specialArgs`. Hay
 muchas aplicaciones para esta técnica; algunas comunes son:
 
 1. Instanciar instancias de nixpkgs con distintos IDs de commit para instalar varias
    versions de paquetes de software. Este enfoque se usó en la sección anterior
-   [Bajar o actualizar paquetes](../nixos-with-flakes/downgrade-or-upgrade-packages.md).
+   [Actualizar o revertir paquetes](../nixos-with-flakes/downgrade-or-upgrade-packages.md).
 
 2. Si quieres usar overlays sin afectar la instancia predeterminada de nixpkgs, puedes
    instanciar una nueva instancia de nixpkgs y aplicar overlays sobre ella.

@@ -262,7 +262,7 @@ referenciados para mencionarlos en el futuro:
 - [Primeros pasos con Home Manager](./start-using-home-manager.md): introduce el Home
   Manager de la comunidad como dependencia, lo que permite utilizar directamente las
   funcionalidades proporcionadas por este Flake.
-- [Degradar o actualizar paquetes](./downgrade-or-upgrade-packages.md): aquí se introducen
+- [Actualizar o revertir paquetes](./downgrade-or-upgrade-packages.md): aquí se introducen
   diferentes versions de Nixpkgs como dependencies, lo que permite seleccionar con
   flexibilidad paquetes de varias versions de Nixpkgs.
 

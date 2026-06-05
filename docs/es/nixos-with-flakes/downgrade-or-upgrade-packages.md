@@ -1,4 +1,4 @@
-# Bajar o actualizar versions de paquetes
+# Actualizar o revertir paquetes
 
 Al trabajar con Flakes, puedes encontrar situaciones en las que necesites bajar o
 actualizar la versión de ciertos paquetes para solucionar errores o problems de

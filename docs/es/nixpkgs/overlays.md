@@ -1,4 +1,4 @@
-# Capas
+# Overlays
 
 En la sección anterior aprendimos a sobrescribir derivaciones con
 `pkgs.xxx.override { ... }` o

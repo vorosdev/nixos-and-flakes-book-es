@@ -1,4 +1,4 @@
-# Salidas del flake
+# Flake Outputs
 
 En `flake.nix`, la sección `outputs` define las distintas salidas que un flake puede
 producir durante su proceso de compilación. Un flake puede tener varias salidas al mismo

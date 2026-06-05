@@ -1,4 +1,4 @@
-# Sobrescritura
+# Overriding
 
 En Nix, puedes personalizar los paquetes de Nix en `pkgs` usando la función `override`,
 que permite definir parámetros de compilación personalizados y devuelve una nueva

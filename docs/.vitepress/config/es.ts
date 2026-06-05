@@ -2,14 +2,14 @@ import { defineConfig } from "vitepress"
 
 export const es = defineConfig({
   lang: "es-MX",
-  description: "An unofficial and opinionated book for beginners",
+  description: "Un libro no oficial y con criterio propio para principiantes",
 
   themeConfig: {
     nav: [
       { text: "Inicio", link: "/" },
       { text: "Prefacio", link: "/preface.md" },
-      { text: "Comenzar", link: "/introduction/index.md" },
-      { text: "Mejores Practicas", link: "/best-practices/intro.md" },
+      { text: "Primeros pasos", link: "/introduction/index.md" },
+      { text: "Mejores prácticas", link: "/best-practices/intro.md" },
     ],
     sidebar: [
       {
@@ -17,11 +17,11 @@ export const es = defineConfig({
         items: [{ text: "Prefacio", link: "/preface.md" }],
       },
       {
-        text: "Comenzar",
+        text: "Primeros pasos",
         items: [
           { text: "Introducción", link: "/introduction/index.md" },
           {
-            text: "Ventajas y Desventajas",
+            text: "Ventajas y desventajas",
             link: "/introduction/advantages-and-disadvantages.md",
           },
           {
@@ -50,97 +50,97 @@ export const es = defineConfig({
             link: "/nixos-with-flakes/nixos-with-flakes-enabled.md",
           },
           {
-            text: "Explicación del flake.nix de NixOS",
+            text: "Explicación de flake.nix de NixOS",
             link: "/nixos-with-flakes/nixos-flake-configuration-explained.md",
           },
           {
-            text: "The combination ability of Flakes and Nixpkgs module system",
+            text: "La capacidad de combinación de Flakes y el sistema de módulos de Nixpkgs",
             link: "/nixos-with-flakes/nixos-flake-and-module-system.md",
           },
           {
-            text: "Getting Started with Home Manager",
+            text: "Primeros pasos con Home Manager",
             link: "/nixos-with-flakes/start-using-home-manager.md",
           },
           {
-            text: "Modularize the Configuration",
+            text: "Modularizar la configuración",
             link: "/nixos-with-flakes/modularize-the-configuration.md",
           },
           {
-            text: "Updating the System",
+            text: "Actualizar el sistema",
             link: "/nixos-with-flakes/update-the-system.md",
           },
           {
-            text: "Downgrading or Upgrading Packages",
+            text: "Actualizar o revertir paquetes",
             link: "/nixos-with-flakes/downgrade-or-upgrade-packages.md",
           },
           {
-            text: "Other useful Tips",
+            text: "Otros consejos útiles",
             link: "/nixos-with-flakes/other-useful-tips.md",
           },
         ],
       },
       {
-        text: "Nixpkgs's Advanced Usage",
+        text: "Uso avanzado de Nixpkgs",
         items: [
-          { text: "Introduction", link: "/nixpkgs/intro.md" },
+          { text: "Introducción", link: "/nixpkgs/intro.md" },
           { text: "callPackage", link: "/nixpkgs/callpackage.md" },
           { text: "Overriding", link: "/nixpkgs/overriding.md" },
           { text: "Overlays", link: "/nixpkgs/overlays.md" },
           {
-            text: "Multiple Nixpkgs Instances",
+            text: "Múltiples instancias de Nixpkgs",
             link: "/nixpkgs/multiple-nixpkgs.md",
           },
         ],
       },
       {
-        text: "Nix Store & Binary Cache",
+        text: "Nix Store y caché binaria",
         items: [
-          { text: "Introduction", link: "/nix-store/intro.md" },
+          { text: "Introducción", link: "/nix-store/intro.md" },
           {
-            text: "Add Binary Cache Servers",
+            text: "Agregar servidores de caché binaria",
             link: "/nix-store/add-binary-cache-servers.md",
           },
           {
-            text: "Host Your Own Binary Cache Server",
+            text: "Aloja tu propio servidor de caché binaria",
             link: "/nix-store/host-your-own-binary-cache-server.md",
           },
         ],
       },
       {
-        text: "Best Practices",
+        text: "Mejores prácticas",
         items: [
-          { text: "Introduction", link: "/best-practices/intro.md" },
+          { text: "Introducción", link: "/best-practices/intro.md" },
           {
-            text: "Run downloaded binaries on NixOS",
+            text: "Ejecutar binarios descargados en NixOS",
             link: "/best-practices/run-downloaded-binaries-on-nixos.md",
           },
           {
-            text: "Simplify NixOS-related Commands",
+            text: "Simplificar comandos relacionados con NixOS",
             link: "/best-practices/simplify-nixos-related-commands.md",
           },
           {
-            text: "Accelerating Dotfiles Debugging",
+            text: "Acelerar la depuración de dotfiles",
             link: "/best-practices/accelerating-dotfiles-debugging.md",
           },
           {
-            text: "Custom NIX_PATH and Flake Registry",
+            text: "NIX_PATH personalizado y registro de flakes",
             link: "/best-practices/nix-path-and-flake-registry.md",
           },
           {
-            text: "Remote Deployment",
+            text: "Despliegue remoto",
             link: "/best-practices/remote-deployment.md",
           },
           {
-            text: "Debugging Derivations and Nix Expressions",
+            text: "Depuración de derivaciones y expresiones de Nix",
             link: "/best-practices/debugging.md",
           },
         ],
       },
 
       {
-        text: "Other Usage of Flakes",
+        text: "Otros usos de Flakes",
         items: [
-          { text: "Introduction", link: "/other-usage-of-flakes/intro.md" },
+          { text: "Introducción", link: "/other-usage-of-flakes/intro.md" },
           {
             text: "Flake Inputs",
             link: "/other-usage-of-flakes/inputs.md",
@@ -150,55 +150,55 @@ export const es = defineConfig({
             link: "/other-usage-of-flakes/outputs.md",
           },
           {
-            text: "The New CLI",
+            text: "La nueva CLI",
             link: "/other-usage-of-flakes/the-new-cli.md",
           },
           {
-            text: "Module System & Custom Options",
+            text: "Sistema de módulos y opciones personalizadas",
             link: "/other-usage-of-flakes/module-system.md",
           },
           {
-            text: "[WIP]Testing",
+            text: "[WIP] Pruebas",
             link: "/other-usage-of-flakes/testing.md",
           },
         ],
       },
       {
-        text: "Dev Environments on NixOS",
+        text: "Entornos de desarrollo en NixOS",
         items: [
           {
             text: "nix shell, nix develop & pkgs.runCommand",
             link: "/development/intro.md",
           },
           {
-            text: "Dev Environments",
+            text: "Entornos de desarrollo",
             link: "/development/dev-environments.md",
           },
           {
-            text: "[WIP]Packaging 101",
+            text: "[WIP] Empaquetado 101",
             link: "/development/packaging-101.md",
           },
           {
-            text: "Cross-platform Compilation",
+            text: "Compilación multiplataforma",
             link: "/development/cross-platform-compilation.md",
           },
           {
-            text: "Distributed Building",
+            text: "Construcción distribuida",
             link: "/development/distributed-building.md",
           },
           {
-            text: "[WIP]Kernel Development",
+            text: "[WIP] Desarrollo del kernel",
             link: "/development/kernel-development.md",
           },
         ],
       },
       {
-        text: "Advanced Topics",
-        items: [{ text: "Advanced Topics", link: "/advanced-topics/index.md" }],
+        text: "Temas avanzados",
+        items: [{ text: "Temas avanzados", link: "/advanced-topics/index.md" }],
       },
       {
-        text: "Frequently Asked Questions",
-        items: [{ text: "Frequently Asked Questions", link: "/faq/index.md" }],
+        text: "Preguntas frecuentes",
+        items: [{ text: "Preguntas frecuentes", link: "/faq/index.md" }],
       },
     ],
   },
