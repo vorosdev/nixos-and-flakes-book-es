@@ -1,29 +1,29 @@
-# Flake Outputs
+# Salidas del flake
 
-In `flake.nix`, the `outputs` section defines the different outputs that a flake can
-produce during its build process. A flake can have multiple outputs simultaneously, which
-can include but are not limited to the following:
+En `flake.nix`, la sección `outputs` define las distintas salidas que un flake puede
+producir durante su proceso de compilación. Un flake puede tener varias salidas al mismo
+tiempo, entre las cuales se incluyen, pero no se limitan a, las siguientes:
 
-- Nix packages: These are named `apps.<system>.<name>`, `packages.<system>.<name>`, or
-  `legacyPackages.<system>.<name>`. You can build a specific package using the command
-  `nix build .#<name>`.
-- Nix helper functions: These are named `lib.<name>` and serve as libraries for other
-  flakes to use.
-- Nix development environments: These are named `devShells` and provide isolated
-  development environments. They can be accessed using the command `nix develop`.
-- NixOS configurations: These are named `nixosConfiguration` and represent specific NixOS
-  system configurations. You can activate a configuration using the command
+- Paquetes de Nix: se llaman `apps.<system>.<name>`, `packages.<system>.<name>` o
+  `legacyPackages.<system>.<name>`. Puedes construir un paquete específico usando el
+  commando `nix build .#<name>`.
+- Funciones auxiliares de Nix: se llaman `lib.<name>` y sirven como bibliotecas para que
+  otros flakes las usen.
+- Entornos de desarrollo de Nix: se llaman `devShells` y proporcionan entornos de
+  desarrollo aislados. Se accede a ellos con el commando `nix develop`.
+- Configuraciones de NixOS: se llaman `nixosConfiguration` y representan configuraciones
+  específicas de sistemas NixOS. Puedes activar una configuración con el commando
   `nixos-rebuild switch --flake .#<name>`.
-- Nix templates: These are named `templates` and can be used as a starting point for
-  creating new projects. You can generate a project using the command
+- Plantillas de Nix: se llaman `templates` y pueden usarse como punto de partida para
+  crear proyectos nuevos. Puedes generar un proyecto con el commando
   `nix flake init --template <reference>`.
-- Other user-defined outputs: These outputs can be defined by the user and may be used by
-  other Nix-related tools.
+- Otras salidas definidas por el usuario: estas salidas pueden set definidas por el
+  usuario y usadas por otras herramientas relacionadas con Nix.
 
-See official doc for details - [Flakes Check - Nix Manual].
+Consulta la documentación official para más detalles - [Flakes Check - Nix Manual].
 
-Here's an example excerpt from the NixOS Wiki that demonstrates the structure of the
-`outputs` section:
+Aquí hay un fragmento de ejemplo de la Wiki de NixOS que demuestra la estructura de la
+sección `outputs`:
 
 ```nix
 {
@@ -32,53 +32,53 @@ Here's an example excerpt from the NixOS Wiki that demonstrates the structure of
   };
 
   outputs = { self, ... }@inputs: {
-    # Executed by `nix flake check`
+    # Ejecutado por `nix flake check`
     checks."<system>"."<name>" = derivation;
-    # Executed by `nix build .#<name>`
+    # Ejecutado por `nix build .#<name>`
     packages."<system>"."<name>" = derivation;
-    # Executed by `nix build .`
+    # Ejecutado por `nix build .`
     packages."<system>".default = derivation;
-    # Executed by `nix run .#<name>`
+    # Ejecutado por `nix run .#<name>`
     apps."<system>"."<name>" = {
       type = "app";
       program = "<store-path>";
     };
-    # Executed by `nix run . -- <args?>`
+    # Ejecutado por `nix run . -- <args?>`
     apps."<system>".default = { type = "app"; program = "..."; };
 
-    # Formatter (alejandra, nixfmt or nixpkgs-fmt)
+    # Formateador (alejandra, nixfmt o nixpkgs-fmt)
     formatter."<system>" = derivation;
-    # Used for nixpkgs packages, also accessible via `nix build .#<name>`
+    # Usado para paquetes de nixpkgs, también accessible vía `nix build .#<name>`
     legacyPackages."<system>"."<name>" = derivation;
-    # Overlay, consumed by other flakes
+    # Overlay, consumido por otros flakes
     overlays."<name>" = final: prev: { };
-    # Default overlay
+    # Overlay predeterminado
     overlays.default = {};
-    # Nixos module, consumed by other flakes
+    # Módulo de NixOS, consumido por otros flakes
     nixosModules."<name>" = { config }: { options = {}; config = {}; };
-    # Default module
+    # Módulo predeterminado
     nixosModules.default = {};
-    # Used with `nixos-rebuild --flake .#<hostname>`
+    # Usado con `nixos-rebuild --flake .#<hostname>`
     # nixosConfigurations."<hostname>".config.system.build.toplevel must be a derivation
     nixosConfigurations."<hostname>" = {};
-    # Used by `nix develop .#<name>`
+    # Usado por `nix develop .#<name>`
     devShells."<system>"."<name>" = derivation;
-    # Used by `nix develop`
+    # Usado por `nix develop`
     devShells."<system>".default = derivation;
-    # Hydra build jobs
+    # Trabajos de compilación de Hydra
     hydraJobs."<attr>"."<system>" = derivation;
-    # Used by `nix flake init -t <flake>#<name>`
+    # Usado por `nix flake init -t <flake>#<name>`
     templates."<name>" = {
       path = "<store-path>";
-      description = "template description goes here?";
+      description = "¿Aquí va la descripción de la plantilla?";
     };
-    # Used by `nix flake init -t <flake>`
+    # Usado por `nix flake init -t <flake>`
     templates.default = { path = "<store-path>"; description = ""; };
   };
 }
 ```
 
-## References
+## Referencias
 
 - [Flakes Check - Nix Manual]
 

@@ -1,19 +1,19 @@
 # `pkgs.callPackage`
 
-`pkgs.callPackage` is used to parameterize the construction of Nix Derivation. To
-understand its purpose, let's first consider how we would define a Nix package (also known
-as a Derivation) without using `pkgs.callPackage`.
+`pkgs.callPackage` se usa para parametrizar la construcción de una derivación de Nix. Para
+entender su propósito, primero veamos cómo definiríamos un paquete de Nix, también llamado
+derivación, sin usar `pkgs.callPackage`.
 
-## 1. Without `pkgs.callPackage`
+## 1. Sin `pkgs.callPackage`
 
-We can define a Nix package using code like this:
+Podemos definir un paquete de Nix con código como este:
 
 ```nix
 pkgs.writeShellScriptBin "hello" ''echo "hello, ryan!"''
 ```
 
-To verify this, you can use `nix repl`, and you'll see that the result is indeed a
-Derivation:
+Para comprobarlo, puedes usar `nix repl`, y verás que el resultado es efectivamente una
+derivación:
 
 ```shell
 › nix repl -f '<nixpkgs>'
@@ -26,21 +26,22 @@ nix-repl> pkgs.writeShellScriptBin "hello" '' echo "hello, xxx!" ''
 «derivation /nix/store/zhgar12vfhbajbchj36vbbl3mg6762s8-hello.drv»
 ```
 
-While the definition of this Derivation is quite concise, most Derivations in nixpkgs are
-much more complex. In previous sections, we introduced and extensively used the
-`import xxx.nix` method to import Nix expressions from other Nix files, which can enhance
-code maintainability.
+Aunque la definición de esta derivación es bastante concisa, la mayoría de las
+derivaciones en nixpkgs son mucho más complejas. En secciones anteriores introdujimos y
+usamos ampliamente el método `import xxx.nix` para importar expresiones de Nix desde otros
+archivos, lo que mejora la mantenibilidad del código.
 
-1. To enhance maintainability, you can store the definition of the Derivation in a
-   separate file, e.g., `hello.nix`.
-   1. However, the context within `hello.nix` itself doesn't include the `pkgs` variable,
-      so you'll need to modify its content to pass `pkgs` as a parameter to `hello.nix`.
-2. In places where you need to use this Derivation, you can use `import ./hello.nix pkgs`
-   to import `hello.nix` and use `pkgs` as a parameter to execute the function defined
-   within.
+1. Para mejorar la mantenibilidad, puedes guardar la definición de la derivación en un
+   archivo aparte, por ejemplo `hello.nix`.
+   1. Sin embargo, el contexto dentro de `hello.nix` no incluye la variable `pkgs`, así
+      que tendrás que modificar su contenido para pasar `pkgs` como parámetro a
+      `hello.nix`.
+2. En los lugares donde necesites usar esta derivación, puedes usar
+   `import ./hello.nix pkgs` para importar `hello.nix` y usar `pkgs` como parámetro para
+   ejecutar la función definida dentro.
 
-Let's continue to verify this using `nix repl`, and you'll see that the result is still a
-Derivation:
+Sigamos comprobándolo con `nix repl`, y verás que el resultado sigue siendo una
+derivación:
 
 ```shell
 › cat hello.nix
@@ -58,28 +59,28 @@ nix-repl> import ./hello.nix pkgs
 «derivation /nix/store/zhgar12vfhbajbchj36vbbl3mg6762s8-hello.drv»
 ```
 
-## 2. Using `pkgs.callPackage`
+## 2. Usando `pkgs.callPackage`
 
-In the previous example without `pkgs.callPackage`, we directly passed `pkgs` as a
-parameter to `hello.nix`. However, this approach has some drawbacks:
+En el ejemplo anterior sin `pkgs.callPackage`, pasamos `pkgs` directamente como parámetro
+a `hello.nix`. Sin embargo, este enfoque tiene algunas desventajas:
 
-1. All other dependencies of the `hello` Derivation are tightly coupled with `pkgs`.
-   1. If we need custom dependencies, we have to modify either `pkgs` or the content of
-      `hello.nix`, which can be cumbersome.
-2. In cases where `hello.nix` becomes complex, it's challenging to determine which
-   Derivations from `pkgs` it relies on, making it difficult to analyze the dependencies
-   between Derivations.
+1. Todas las demás dependencies de la derivación `hello` quedan fuertemente acopladas con
+   `pkgs`.
+   1. Si necesitamos dependencies personalizadas, tenemos que modificar `pkgs` o el
+      contenido de `hello.nix`, lo cual puede set engorroso.
+2. Cuando `hello.nix` se vuelve complejo, es difícil determinar de qué derivaciones de
+   `pkgs` depende, lo que complica analizar las dependencies entre derivaciones.
 
-`pkgs.callPackage`, as a tool for parameterizing the construction of Derivations,
-addresses these issues. Let's take a look at its source code and comments
+`pkgs.callPackage`, como herramienta para parametrizar la construcción de derivaciones,
+resuelve estos problems. Veamos su código fuente y sus comentarios en
 [nixpkgs/lib/customisation.nix#L101-L121](https://github.com/NixOS/nixpkgs/blob/fe138d3/lib/customisation.nix#L101-L121):
 
 ```nix
-  /* Call the package function in the file `fn` with the required
-    arguments automatically.  The function is called with the
-    arguments `args`, but any missing arguments are obtained from
-    `autoArgs`.  This function is intended to be partially
-    parameterised, e.g.,
+  /* Llama a la función del paquete en el archivo `fn` con los
+    arguments requeridos de forma automática. La función se invoca con
+    los arguments `args`, pero cualquier argumento faltante se obtiene
+    de `autoArgs`. Esta función está pensada para parametrizarse
+    parcialmente, por ejemplo:
 
       callPackage = callPackageWith pkgs;
       pkgs = {
@@ -87,9 +88,9 @@ addresses these issues. Let's take a look at its source code and comments
         libbar = callPackage ./bar.nix { };
       };
 
-    If the `libbar` function expects an argument named `libfoo`, it is
-    automatically passed as an argument.  Overrides or missing
-    arguments can be supplied in `args`, e.g.
+    Si la función `libbar` espera un argumento llamado `libfoo`, se le
+    pasa automáticamente. Las sobrescrituras o los arguments faltantes
+    pueden proporcionarse en `args`, por ejemplo:
 
       libbar = callPackage ./bar.nix {
         libfoo = null;
@@ -101,35 +102,36 @@ addresses these issues. Let's take a look at its source code and comments
       f = if lib.isFunction fn then fn else import fn;
       fargs = lib.functionArgs f;
 
-      # All arguments that will be passed to the function
-      # This includes automatic ones and ones passed explicitly
+      # Todos los arguments que se pasarán a la función
+      # Esto incluye los automáticos y los pasados explícitamente
       allArgs = builtins.intersectAttrs fargs autoArgs // args;
 
     # ......
 ```
 
-In essence, `pkgs.callPackage` is used as `pkgs.callPackage fn args`, where the place
-holder `fn` is a Nix file or function, and `args` is an attribute set. Here's how it
-works:
+En esencia, `pkgs.callPackage` se usa como `pkgs.callPackage fn args`, donde el marcador
+`fn` es un archivo o función de Nix, y `args` es un conjunto de atributos. Así funciona:
 
-1. `pkgs.callPackage fn args` first checks if `fn` is a function or a file. If it's a
-   file, it imports the function defined within.
-   1. After this step, you have a function, typically with parameters like `lib`,
-      `stdenv`, `fetchurl`, and possibly some custom parameters.
-2. Next, `pkgs.callPackage fn args` merges `args` with the `pkgs` attribute set. If there
-   are conflicts, the parameters in `args` will override those in `pkgs`.
-3. Then, `pkgs.callPackage fn args` extracts the parameters of the `fn` function from the
-   merged attribute set and uses them to execute the function.
-4. The result of the function execution is a Derivation, which is a Nix package.
+1. `pkgs.callPackage fn args` primero comprueba si `fn` es una función o un archivo. Si es
+   un archivo, importa la función definida dentro.
+   1. Después de este paso, tienes una función, normalmente con parámetros como `lib`,
+      `stdenv`, `fetchurl` y posiblemente algunos parámetros personalizados.
+2. Luego, `pkgs.callPackage fn args` fusiona `args` con el conjunto de atributos `pkgs`.
+   Si hay conflicts, los parámetros de `args` sobrescriben los de `pkgs`.
+3. Después, `pkgs.callPackage fn args` extrae los parámetros de la función `fn` del
+   conjunto de atributos fusionado y los usa para ejecutar la función.
+4. El resultado de la ejecución de la función es una derivación, es decir, un paquete de
+   Nix.
 
-What can a Nix file or function, used as an argument to `pkgs.callPackage`, look like? You
-can examine examples we've used before in
-[Nixpkgs's Advanced Usage - Introduction](./intro.md): `hello.nix`, `fcitx5-rime.nix`,
-`vscode/with-extensions.nix`, and `firefox/common.nix`. All of them can be imported using
+¿Cómo puede verse un archivo o función de Nix usado como argumento de `pkgs.callPackage`?
+Puedes revisar ejemplos que ya usamos en
+[Uso avanzado de Nixpkgs - Introducción](./intro.md): `hello.nix`, `fcitx5-rime.nix`,
+`vscode/with-extensions.nix` y `firefox/common.nix`. Todos pueden importarse con
 `pkgs.callPackage`.
 
-For instance, if you've defined a custom NixOS kernel configuration in `kernel.nix` and
-made the development branch name and kernel source code configurable:
+Por ejemplo, si definiste una configuración personalizada del kernel de NixOS en
+`kernel.nix` y hiciste configurable el nombre de la rama de desarrollo y el código fuente
+del kernel:
 
 ```nix
 {
@@ -147,17 +149,17 @@ made the development branch name and kernel source code configurable:
 
   inherit src lib stdenv;
 
-  # file path to the generated kernel config file(the `.config` generated by make menuconfig)
+  # ruta del archivo de configuración del kernel generado (el `.config` creado por `make menuconfig`)
   #
-  # here is a special usage to generate a file path from a string
+  # aquí hay un uso especial para generar una ruta de archivo a partir de una cadena
   configfile = ./. + "${boardName}_config";
 
   allowImportFromDerivation = true;
 })
 ```
 
-You can use `pkgs.callPackage ./hello.nix {}` in any Nix module to import and use it,
-replacing any of its parameters as needed:
+Puedes usar `pkgs.callPackage ./hello.nix {}` en cualquier módulo de Nix para importarlo y
+usarlo, sustituyendo cualquiera de sus parámetros según sea necesario:
 
 ```nix
 { lib, pkgs, pkgsKernel, kernel-src, ... }:
@@ -168,34 +170,34 @@ replacing any of its parameters as needed:
   boot = {
     # ......
     kernelPackages = pkgs.linuxPackagesFor (pkgs.callPackage ./pkgs/kernel {
-        src = kernel-src;  # kernel source is passed as a `specialArgs` and injected into this module.
-        boardName = "licheepi4a";  # the board name, used to generate the kernel config file path.
+        src = kernel-src;  # el código fuente del kernel se pasa como `specialArgs` e inyecta en este módulo.
+        boardName = "licheepi4a";  # nombre de la placa, usado para generar la ruta del archivo de configuración del kernel.
     });
 
   # ......
 }
 ```
 
-As shown above, by using `pkgs.callPackage`, you can pass different `src` and `boardName`
-to the function defined in `kernel.nix`, to generate different kernel packages. This
-allows you to adapt the same `kernel.nix` to different kernel source code and development
-boards.
+Como se muestra arriba, al usar `pkgs.callPackage` puedes pasar distintos valores de `src`
+y `boardName` a la función definida en `kernel.nix` para generar distintos paquetes del
+kernel. Esto permite adaptar el mismo `kernel.nix` a diferentes fuentes del kernel y
+placas de desarrollo.
 
-The advantages of `pkgs.callPackage` are:
+Las ventajas de `pkgs.callPackage` son:
 
-1. Derivation definitions are parameterized, and all dependencies of the Derivation are
-   the function parameters in its definition. This makes it easy to analyze dependencies
-   between Derivations.
-2. All dependencies and other custom parameters of the Derivation can be easily replaced
-   by using the second parameter of `pkgs.callPackage`, greatly enhancing Derivation
-   reusability.
-3. While achieving the above two functionalities, it does not increase code complexity, as
-   all dependencies in `pkgs` can be automatically injected.
+1. Las definiciones de derivaciones quedan parametrizadas, y todas sus dependencies son
+   los parámetros de la función en su definición. Esto facilita analizar dependencies
+   entre derivaciones.
+2. Todas las dependencies y otros parámetros personalizados de la derivación pueden
+   reemplazarse fácilmente usando el segundo parámetro de `pkgs.callPackage`, lo que
+   mejora mucho la reutilización.
+3. Aunque consigue las dos funcionalidades anteriores, no aumenta la complejidad del
+   código, porque todas las dependencies en `pkgs` pueden inyectarse automáticamente.
 
-So it's always recommended to use `pkgs.callPackage` to define Derivations.
+Por eso siempre se recomienda usar `pkgs.callPackage` para definir derivaciones.
 
 ## References
 
-- [Chapter 13. Callpackage Design Pattern - Nix Pills](https://nixos.org/guides/nix-pills/callpackage-design-pattern.html)
-- [callPackage, a tool for the lazy - The Summer of Nix](https://summer.nixos.org/blog/callpackage-a-tool-for-the-lazy/)
-- [Document what callPackage does and its preconditions - Nixpkgs Issues](https://github.com/NixOS/nixpkgs/issues/36354)
+- [Capítulo 13. Patrón de diseño Callpackage - Nix Pills](https://nixos.org/guides/nix-pills/callpackage-design-pattern.html)
+- [callPackage, una herramienta para los perezosos - The Summer of Nix](https://summer.nixos.org/blog/callpackage-a-tool-for-the-lazy/)
+- [Documentar qué have callPackage y sus precondiciones - Nixpkgs Issues](https://github.com/NixOS/nixpkgs/issues/36354)

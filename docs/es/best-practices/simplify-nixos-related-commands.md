@@ -1,23 +1,23 @@
-# Simplifying NixOS-Related Commands
+# Simplificar commandos relacionados con NixOS
 
-To simplify NixOS-related commands, I utilize [just](https://github.com/casey/just), which
-proves to be very convenient.
+Para simplificar los commandos relacionados con NixOS, uso
+[just](https://github.com/casey/just), que resulta muy cómodo.
 
-Alternatively, you can also use similar tools like Makefile or
-[cargo-make](https://github.com/sagiegurari/cargo-make) for this purpose. Here, I will
-provide my approach as a reference.
+También puedes usar herramientas similares como Makefile o
+[cargo-make](https://github.com/sagiegurari/cargo-make) para este propósito. Aquí presento
+mi enfoque como referencia.
 
-Below is an example of how my Justfile looks:
+A continuación, un ejemplo de cómo se ve mi `Justfile`:
 
-> The latest Justfile I'm using:
+> El último `Justfile` que estoy usando:
 > [ryan4yin/nix-config/Justfile](https://github.com/ryan4yin/nix-config/blob/main/Justfile)
 
 ```Makefile
-# just is a command runner, Justfile is very similar to Makefile, but simpler.
+# just es un ejecutor de commandos; Justfile es muy parecido a Makefile, pero más simple.
 
 ############################################################################
 #
-#  Nix commands related to the local machine
+#  Commandos de Nix relacionados con la máquina local
 #
 ############################################################################
 
@@ -30,8 +30,8 @@ debug:
 up:
   nix flake update
 
-# Update specific input
-# usage: make upp i=home-manager
+# Actualizar un input específico
+# uso: make upp i=home-manager
 upp:
   nix flake update $(i)
 
@@ -42,16 +42,16 @@ repl:
   nix repl -f flake:nixpkgs
 
 clean:
-  # remove all generations older than 7 days
+  # elimina todas las generaciones con más de 7 días
   sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
 
 gc:
-  # garbage collect all unused nix store entries
+  # recolecta como basura todas las entradas sin usar del store de nix
   sudo nix-collect-garbage --delete-old
 
 ############################################################################
 #
-#  Idols, Commands related to my remote distributed building cluster
+#  Idols, commandos relacionados con mi clúster de compilación distribuida remota
 #
 ############################################################################
 
@@ -81,9 +81,9 @@ idols: aqua ruby kana
 idols-debug: aqua-debug ruby-debug kana-debug
 ```
 
-By Save this `Justfile` to the root directory of your Nix flake. Then, I can use
-`just deploy` to deploy the configuration to my local machine, and `just idols` to deploy
-the configuration to all my remote servers.
+Guarda este `Justfile` en el directorio raíz de tu flake de Nix. Entonces puedo usar
+`just deploy` para desplegar la configuración en mi máquina local, y `just idols` para
+desplegar la configuración en todos mis servidores remotos.
 
-This approach simplifies the execution of NixOS commands by abstracting them behind target
-names in the Justfile, providing a more user-friendly and convenient experience.
+Este enfoque simplifica la ejecución de commandos de NixOS al ocultarlos detrás de nombres
+de objetivo en el `Justfile`, ofreciendo una experiencia más amigable y cómoda.

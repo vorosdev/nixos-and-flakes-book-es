@@ -1,43 +1,43 @@
-# The Ingenious Uses of Multiple nixpkgs Instances
+# Los usos ingeniosos de múltiples instancias de nixpkgs
 
-In the section
-[Downgrade or Upgrade Packages](../nixos-with-flakes/downgrade-or-upgrade-packages.md), we
-have seen how to instantiate multiple distinct nixpkgs instances using the method
-`import nixpkgs {...}`, and use them at any submodules via `specialArgs`. There are
-numerous applications for this technique, some common ones include:
+En la sección
+[Bajar o actualizar paquetes](../nixos-with-flakes/downgrade-or-upgrade-packages.md) ya
+vimos cómo instanciar múltiples instancias distintas de nixpkgs usando el método
+`import nixpkgs {...}`, y usarlas en cualquier submódulo mediante `specialArgs`. Hay
+muchas aplicaciones para esta técnica; algunas comunes son:
 
-1. Instantiate nixpkgs instances with different commit IDs to install various versions of
-   software packages. This approach was used in the previous section
-   [Downgrade or Upgrade Packages](/nixos-with-flakes/downgrade-or-upgrade-packages.md).
+1. Instanciar instancias de nixpkgs con distintos IDs de commit para instalar varias
+   versions de paquetes de software. Este enfoque se usó en la sección anterior
+   [Bajar o actualizar paquetes](../nixos-with-flakes/downgrade-or-upgrade-packages.md).
 
-2. If you wish to utilize overlays without affecting the default nixpkgs instance, you can
-   instantiate a new nixpkgs instance and apply overlays to it.
-   - The `nixpkgs.overlays = [...];` mentioned in the previous section on Overlays
-     directly modifies the global nixpkgs instance. If your overlays make changes to some
-     low-level packages, it might impact other modules. One downside is an increase in
-     local compilation (due to cache invalidation), and there might also be functionality
-     issues with the affected packages.
+2. Si quieres usar overlays sin afectar la instancia predeterminada de nixpkgs, puedes
+   instanciar una nueva instancia de nixpkgs y aplicar overlays sobre ella.
+   - La opción `nixpkgs.overlays = [...];` mencionada en la sección anterior sobre
+     overlays modifica directamente la instancia global de nixpkgs. Si tus overlays
+     cambian algunos paquetes de bajo nivel, podrían afectar a otros módulos. Una
+     desventaja es que aumenta la compilación local (por la invalidez de la caché), y
+     también podrían surgir problems de funcionamiento en los paquetes afectados.
 
-3. In cross-system architecture compilation, you can instantiate multiple nixpkgs
-   instances to selectively use QEMU simulation for compilation and cross-compilation in
-   different locations, or to add various GCC compilation parameters.
+3. En compilación multiplataforma, puedes instanciar múltiples instancias de nixpkgs para
+   usar de forma selectiva la simulación QEMU para compilación y compilación cruzada en
+   distintos lugares, o para añadir various parámetros de compilación de GCC.
 
-In conclusion, instantiating multiple nixpkgs instances is highly advantageous.
+En conclusión, instanciar múltiples instancias de nixpkgs es muy ventajoso.
 
-## Instantiating `nixpkgs`
+## Instanciar `nixpkgs`
 
-Let's first understand how to instantiate a non-global nixpkgs instance. The most common
-syntax is as follows:
+Primero entendamos cómo instanciar una instancia no global de nixpkgs. La sintaxis más
+común es la siguiente:
 
 ```nix
 {
-  # a simple example
+  # un ejemplo simple
   pkgs-xxx = import nixpkgs {
-    # as we said before, `system` or `localSystem` is required here.
+    # como dijimos antes, aquí se require `system` o `localSystem`.
     system = "x86_64-linux";
   };
 
-  # nixpkgs with custom overlays
+  # nixpkgs con overlays personalizados
   pkgs-yyy = import nixpkgs {
     system = "x86_64-linux";
 
@@ -47,22 +47,22 @@ syntax is as follows:
           commandLineArgs =
             "--proxy-server='https=127.0.0.1:3128;http=127.0.0.1:3128'";
         };
-        # ... other overlays
+        # ... otros overlays
       })
     ];
   };
 
-  # a more complex example (cross-compiling)
+  # un ejemplo más complejo (compilación cruzada)
   pkgs-zzz = import nixpkgs {
     localSystem = "x86_64-linux";
     crossSystem = {
       config = "riscv64-unknown-linux-gnu";
 
       # https://wiki.nixos.org/wiki/Build_flags
-      # this option equals to adding `-march=rv64gc` to CFLAGS.
-      # CFLAGS will be used as the command line arguments for gcc/clang.
+      # esta opción equivale a añadir `-march=rv64gc` a CFLAGS.
+      # CFLAGS se usarán como arguments de línea de commandos para gcc/clang.
       gcc.arch = "rv64gc";
-      # equivalent to `-mabi=lp64d` in CFLAGS.
+      # equivalente a `-mabi=lp64d` en CFLAGS.
       gcc.abi = "lp64d";
     };
 
@@ -72,57 +72,56 @@ syntax is as follows:
           commandLineArgs =
             "--proxy-server='https=127.0.0.1:3128;http=127.0.0.1:3128'";
         };
-        # ... other overlays
+        # ... otros overlays
       })
     ];
   };
 }
 ```
 
-We have learned in our study of Nix syntax:
+Ya aprendimos en nuestro estudio de la sintaxis de Nix:
 
-> The `import` expression takes a path to another Nix file as an argument and returns the
-> execution result of that Nix file. If the argument to `import` is a folder path, it
-> returns the execution result of the `default.nix` file within that folder.
+> La expresión `import` toma como argumento la ruta a otro archivo de Nix y devuelve el
+> resultado de ejecución de ese archivo. Si el argumento de `import` es la ruta a una
+> carpeta, devuelve el resultado de ejecución del archivo `default.nix` dentro de esa
+> carpeta.
 
-`nixpkgs` is a flake with a `default.nix` file in its root directory. So, `import nixpkgs`
-essentially returns the execution result of
-[nixpkgs/default.nix](https://github.com/NixOS/nixpkgs/blob/nixos-23.05/default.nix).
-Starting from this file, you can find that the implementation of `import nixpkgs` is in
-[pkgs/top-level/impure.nix](https://github.com/NixOS/nixpkgs/blob/nixos-23.05/pkgs/top-level/impure.nix),
-as excerpted below:
+`nixpkgs` es un flake con un archivo `default.nix` en su directorio raíz. Así que
+`import nixpkgs` devuelve esencialmente el resultado de ejecución de
+[nixpkgs/default.nix]. Partiendo de este archivo, puedes ver que la implementación de
+`import nixpkgs` está en [pkgs/top-level/impure.nix], como se muestra a continuación:
 
 ```nix
-# ... skipping some lines
+# ... se omiten algunas líneas
 
-{ # We put legacy `system` into `localSystem` if `localSystem` was not passed.
-  # If neither is passed, assume we are building packages on the current
-  # (build, in GNU Autotools parlance) platform.
+{ # Ponemos el `system` heredado en `localSystem` si no se pasó `localSystem`.
+  # Si no se pasa ninguno, asumimos que estamos construyendo paquetes en la plataforma
+  # actual (build, en la terminología de GNU Autotools).
   localSystem ? { system = args.system or builtins.currentSystem; }
 
-# These are needed only because nix's `--arg` command-line logic doesn't work
-# with unnamed parameters allowed by ...
+# Esto solo have falta porque la lógica de línea de commandos `--arg` de nix no funciona
+# con parámetros sin nombre permitidos por ...
 , system ? localSystem.system
 , crossSystem ? localSystem
 
-, # Fallback: The contents of the configuration file found at $NIXPKGS_CONFIG or
-  # $HOME/.config/nixpkgs/config.nix.
+, # Valor de reserva: el contenido del archivo de configuración encontrado en
+  # $NIXPKGS_CONFIG o $HOME/.config/nixpkgs/config.nix.
   config ? let
-  # ... skipping some lines
+  # ... se omiten algunas líneas
 
-, # Overlays are used to extend Nixpkgs collection with additional
-  # collections of packages.  These collection of packages are part of the
-  # fix-point made by Nixpkgs.
+, # Los overlays se usan para extender la colección de Nixpkgs con colecciones
+  # adicionales de paquetes. Estas colecciones de paquetes forman parte del punto fijo
+  # construido por Nixpkgs.
   overlays ? let
-  # ... skipping some lines
+  # ... se omiten algunas líneas
 
 , crossOverlays ? []
 
 , ...
 } @ args:
 
-# If `localSystem` was explicitly passed, legacy `system` should
-# not be passed, and vice versa.
+# Si `localSystem` se pasó explícitamente, no debe pasarse el `system` heredado, y vice
+# versa.
 assert args ? localSystem -> !(args ? system);
 assert args ? system -> !(args ? localSystem);
 
@@ -131,21 +130,26 @@ import ./. (builtins.removeAttrs args [ "system" ] // {
 })
 ```
 
-Therefore, `import nixpkgs {...}` effectively calls this function, and the subsequent
-attribute set becomes the arguments for this function.
+Por lo tanto, `import nixpkgs {...}` llama efectivamente a esta función, y el conjunto de
+atributos posterior se convierte en los arguments de esta función.
 
-## Considerations
+## Consideraciones
 
-When creating multiple nixpkgs instances, there are some details to keep in mind. Here are
-some common issues to consider:
+Al crear múltiples instancias de nixpkgs, hay algunos detalles que conviene tener en
+cuenta. Estos son algunos problems comunes:
 
-1. According to the article
+1. Según el artículo
    [1000 instances of nixpkgs](https://discourse.nixos.org/t/1000-instances-of-nixpkgs/17347)
-   shared by @fbewivpjsbsby, it's not a good practice to use `import` to customize
-   `nixpkgs` in submodules or sub-flakes. This is because each `import` evaluates
-   separately, creating a new nixpkgs instance each time. As the number of configurations
-   increases, this can lead to longer build times and higher memory usage. Therefore, it's
-   recommended to create all nixpkgs instances in the `flake.nix` file.
+   compartido por @fbewivpjsbsby, no es una buena práctica usar `import` para personalizar
+   `nixpkgs` en submódulos o subflakes. Esto se debe a que cada `import` se evalúa por
+   separado, creando una nueva instancia de nixpkgs cada vez. A medida que aumenta el
+   número de configuraciones, esto puede provocar tiempos de compilación más largos y más
+   uso de memoria. Por eso se recomienda crear todas las instancias de nixpkgs en el
+   archivo `flake.nix`.
 
-2. When mixing QEMU simulation and cross-compilation, care should be taken to avoid
-   unnecessary duplication of package compilations.
+2. Al mezclar simulación QEMU y compilación cruzada, hay que tener cuidado de evitar
+   duplicación innecesaria de compilaciones de paquetes.
+
+[nixpkgs/default.nix]: https://github.com/NixOS/nixpkgs/blob/nixos-26.05/default.nix
+[pkgs/top-level/impure.nix]:
+  https://github.com/NixOS/nixpkgs/blob/nixos-26.05/pkgs/top-level/impure.nix

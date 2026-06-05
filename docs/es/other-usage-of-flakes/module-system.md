@@ -1,98 +1,103 @@
-# Module System and Custom Options
+# Sistema de módulos y opciones personalizadas
 
-In our previous NixOS configurations, we set various values for `options` to configure
-NixOS or Home Manager. These `options` are actually defined in two locations:
+En nuestras configuraciones anteriores de NixOS, establecimos various valores para
+`options` con el fin de configurar NixOS o Home Manager. Estas `options` en realidad se
+definen en dos lugares:
 
 - NixOS:
-  [nixpkgs/nixos/modules](https://github.com/NixOS/nixpkgs/tree/25.05/nixos/modules),
-  where all NixOS options visible on <https://search.nixos.org/options> are defined.
+  [nixpkgs/nixos/modules](https://github.com/NixOS/nixpkgs/tree/nixos-26.05/nixos/modules),
+  donde se definen todas las opciones de NixOS visible en
+  <https://search.nixos.org/options>.
 - Home Manager:
-  [home-manager/modules](https://github.com/nix-community/home-manager/blob/release-25.05/modules),
-  where you can find all its options at
+  [home-manager/modules](https://github.com/nix-community/home-manager/blob/release-26.05/modules),
+  donde puedes encontrar todas sus opciones en
   <https://nix-community.github.io/home-manager/options.xhtml>.
 
-> If you are using nix-darwin too, its configuration is similar, and its module system is
-> implemented in
+> Si también usas nix-darwin, su configuración es similar, y su sistema de módulos está
+> implementado en
 > [nix-darwin/modules](https://github.com/LnL7/nix-darwin/tree/master/modules).
 
-The foundation of the aforementioned NixOS Modules and Home Manager Modules is a universal
-module system implemented in Nixpkgs, found in [lib/modules.nix][lib/modules.nix]. The
-official documentation for this module system is provided below (even for experienced
-NixOS users, understanding this can be a challenging task):
+La base de los mencionados módulos de NixOS y Home Manager es un sistema de módulos
+universal implementado en Nixpkgs, que se encuentra en [lib/modules.nix][lib/modules.nix].
+La documentación official de este sistema de módulos se ofrece a continuación (incluso
+para usuarios experimentados de NixOS, entenderlo puede set una tarea complicada):
 
-- [Module System - Nixpkgs]
+- [Sistema de módulos - Nixpkgs]
 
-Because the documentation for Nixpkgs' module system is lacking, it directly recommends
-reading another writing guide specifically for NixOS module system, which is clearer but
-might still be challenging for newcomers:
+Como la documentación del sistema de módulos de Nixpkgs es escasa, se recomienda
+directamente leer otra guía de escritura específica para el sistema de módulos de NixOS,
+que es más clara pero aún puede resultar difícil para quienes empiezan:
 
-- [Writing NixOS Modules - Nixpkgs]
+- [Escribir módulos de NixOS - Nixpkgs]
 
-In summary, the module system is implemented by Nixpkgs and is not part of the Nix package
-manager. Therefore, its documentation is not included in the Nix package manager's
-documentation. Additionally, both NixOS and Home Manager are based on Nixpkgs' module
-system implementation.
+En resumen, el sistema de módulos está implementado por Nixpkgs y no forma parte del
+gestor de paquetes Nix. Por lo tanto, su documentación no está incluida en la
+documentación del gestor de paquetes Nix. Además, tanto NixOS como Home Manager se basan
+en la implementación del sistema de módulos de Nixpkgs.
 
-## What is the Purpose of the Module System?
+## ¿Cuál es el propósito del sistema de módulos?
 
-As ordinary users, using various options implemented by NixOS and Home Manager based on
-the module system is sufficient to meet most of our needs. So, what are the benefits of
-delving into the module system for us?
+Como usuarios normals, usar las distintas opciones implementadas por NixOS y Home Manager
+basadas en el sistema de módulos basta para cubrir la mayoría de nuestras necesidades.
+Entonces, ¿qué beneficios nos aporta profundizar en el sistema de módulos?
 
-In the earlier discussion on modular configuration, the core idea was to split the
-configuration into multiple modules and then import these modules using
-`imports = [ ... ];`. This is the most basic usage of the module system. However, using
-only `imports = [ ... ];` allows us to import configurations defined in the module as they
-are without any customization, which limits flexibility. In simple configurations, this
-method is sufficient, but if the configuration is more complex, it becomes inadequate.
+En la discusión anterior sobre configuración modular, la idea central era dividir la
+configuración en various módulos y luego importar estos módulos usando
+`imports = [ ... ];`. Este es el uso más básico del sistema de módulos. Sin embargo, usar
+solo `imports = [ ... ];` nos permite importar configuraciones definidas en el módulo tal
+como están, sin ninguna personalización, lo que limita la flexibilidad. En configuraciones
+sencillas, este método basta, pero si la configuración es más compleja, se vuelve
+insuficiente.
 
-To illustrate the drawback, let's consider an example. Suppose I manage four NixOS hosts,
-A, B, C, and D. I want to achieve the following goals while minimizing configuration
-repetition:
+Para ilustrar esta desventaja, consideremos un ejemplo. Supongamos que administer cuatro
+hosts de NixOS, A, B, C y D. Quiero lograr los siguientes objetivos minimizando la
+repetición de configuración:
 
-- All hosts (A, B, C, and D) need to enable the Docker service and set it to start at
-  boot.
-- Host A should change the Docker storage driver to `btrfs` while keeping other settings
-  the same.
-- Hosts B, located in China, need to set a domestic mirror in Docker configuration.
-- Host C, located in the United States, has no special requirements.
-- Host D, a desktop machine, needs to set an HTTP proxy to accelerate Docker downloads.
+- Todos los hosts (A, B, C y D) deben habilitar el servicio Docker y configurarlo para que
+  inicie al arrancar.
+- El host A debe cambiar el controlador de almacenamiento de Docker a `btrfs` mientras
+  mantiene el resto de la configuración igual.
+- Los hosts B, ubicados en China, necesitan configurar un espejo local en la configuración
+  de Docker.
+- El host C, ubicado en Estados Unidos, no tiene requisitos especiales.
+- El host D, una máquina de escritorio, necesita configurar un proxy HTTP para acelerar
+  las descargas de Docker.
 
-If we purely use `imports`, we might have to split the configuration into several modules
-like this and then import different modules for each host:
+Si usáramos únicamente `imports`, podríamos tener que dividir la configuración en various
+módulos como este y luego importar módulos distintos para cada host:
 
 ```bash
 › tree
 .
-├── docker-default.nix  # Basic Docker configuration, including starting at boot
-├── docker-btrfs.nix    # Imports docker-default.nix and changes the storage driver to btrfs
-├── docker-china.nix    # Imports docker-default.nix and sets a domestic mirror
-└── docker-proxy.nix    # Imports docker-default.nix and sets an HTTP proxy
+├── docker-default.nix  # Configuración básica de Docker, incluida la de inicio al arrancar
+├── docker-btrfs.nix    # Importa docker-default.nix y cambia el controlador de almacenamiento a btrfs
+├── docker-china.nix    # Importa docker-default.nix y establece un espejo local
+└── docker-proxy.nix    # Importa docker-default.nix y establece un proxy HTTP
 ```
 
-Doesn't this configuration seem redundant? This is still a simple example; if we have more
-machines with greater configuration differences, the redundancy becomes even more
-apparent.
+¿No parece redundante esta configuración? Y eso que este sigue siendo un ejemplo sencillo;
+si tuviéramos más máquinas con diferencias de configuración mayores, la redundancia sería
+aún más evidente.
 
-Clearly, we need other means to address this redundant configuration issue, and
-customizing some of our own `options` is an excellent choice.
+Está claro que necesitamos otros medios para abordar este problema de configuración
+redundante, y personalizar algunas de nuestras propias `options` es una excelente opción.
 
-Before delving into the study of the module system, I emphasize once again that the
-following content is not necessary to learn and use. Many NixOS users have not customized
-any `options` and are satisfied with simply using `imports` to meet their needs. If you
-are a newcomer, consider learning this part when you encounter problems that `imports`
-cannot solve. That's completely okay.
+Antes de adentrarnos en el estudio del sistema de módulos, insisto una vez más en que el
+siguiente contenido no es necesario aprenderlo ni usarlo. Muchos usuarios de NixOS no han
+personalizado ninguna `options` y se conforman con usar simplemente `imports` para cubrir
+sus necesidades. Si eres principiante, considera aprender esta parte cuando encuentres
+problems que `imports` no pueda resolver. Eso está completamente bien.
 
-## Basic Structure and Usage
+## Estructura básica y uso
 
-The basic structure of modules defined in Nixpkgs is as follows:
+La estructura básica de los módulos definidos en Nixpkgs es la siguiente:
 
 ```nix
 { config, pkgs, ... }:
 
 {
   imports =
-    [ # import other modules here
+    [ # importa otros módulos aquí
     ];
 
   options = {
@@ -105,19 +110,19 @@ The basic structure of modules defined in Nixpkgs is as follows:
 }
 ```
 
-Among these, we are already familiar with `imports = [ ... ];`, but the other two parts
-are yet to be explored. Let's have a brief introduction here:
+Entre estas, ya estamos familiarizados con `imports = [ ... ];`, pero las otras dos partes
+aún no se han explorado. Hagamos una breve introducción aquí:
 
-- `options = { ... };`: Similar to variable declarations in programming languages, it is
-  used to declare configurable options.
-- `config = { ... };`: Similar to variable assignments in programming languages, it is
-  used to assign values to the options declared in `options`.
+- `options = { ... };`: Similar a las declaraciones de variables en los lenguajes de
+  programación, se usa para declarar opciones configurable.
+- `config = { ... };`: Similar a las asignaciones de variables en los lenguajes de
+  programación, se usa para asignar valores a las opciones declaradas en `options`.
 
-The most typical usage is to, within the same Nixpkgs module, set values for other
-`options` in `config = { .. };` based on the current values declared in
-`options = { ... };`. This achieves the functionality of parameterized configuration.
+El uso más típico es, dentro del mismo módulo de Nixpkgs, establecer valores para otras
+`options` en `config = { .. };` según los valores actuales declarados en
+`options = { ... };`. Esto consigue la funcionalidad de una configuración parametrizada.
 
-It's easier to understand with a direct example:
+Se entiende mejor con un ejemplo directo:
 
 ```nix
 # ./foo.nix
@@ -163,24 +168,27 @@ in {
 }
 ```
 
-The module defined above introduces three `options`:
+El módulo definido arriba introduce tres `options`:
 
-- `programs.foo.enable`: Used to control whether to enable this module.
-- `programs.foo.package`: Allows customization of the `foo` package, such as using
-  different versions, setting different compilation parameters, and so on.
-- `programs.foo.extraConfig`: Used for customizing the configuration file of `foo`.
+- `programs.foo.enable`: Se usa para controlar si este módulo se habilita.
+- `programs.foo.package`: Permite personalizar el paquete `foo`, por ejemplo usando
+  distintas versions, configurando diferentes parámetros de compilación, etc.
+- `programs.foo.extraConfig`: Se usa para personalizar el archivo de configuración de
+  `foo`.
 
-Then, in the `config` section, based on the values declared in these three variables in
-`options`, different settings are applied:
+Después, en la sección `config`, según los valores declarados en estas tres variables en
+`options`, se aplican distintas configuraciones:
 
-- If `programs.foo.enable` is `false` or undefined, no settings are applied.
-  - This is achieved using `lib.mkIf`.
-- Otherwise,
-  - Add `programs.foo.package` to `home.packages` to install it in the user environment.
-  - Write the value of `programs.foo.extraConfig` to `~/.config/foo/foorc`.
+- Si `programs.foo.enable` es `false` o no está definido, no se aplica ninguna
+  configuración.
+  - Esto se consigue usando `lib.mkIf`.
+- En caso contrario,
+  - Se añade `programs.foo.package` a `home.packages` para instalarlo en el entorno del
+    usuario.
+  - Se escribe el valor de `programs.foo.extraConfig` en `~/.config/foo/foorc`.
 
-This way, we can import this module in another Nix file and achieve custom configuration
-for `foo` by setting the `options` defined here. For example:
+De este modo, podemos importar este módulo en otro archivo Nix y lograr una configuración
+personalizada para `foo` estableciendo las `options` definidas aquí. Por ejemplo:
 
 ```nix
 # ./bar.nix
@@ -201,24 +209,24 @@ for `foo` by setting the `options` defined here. For example:
 }
 ```
 
-In the example above, the way we assign values to `options` is actually a kind of
-**abbreviation**. When a module only contains `config` without any other declaration (like
-`option` and other special parameters of the module system), we can omit the `config`
-wrapping , just directly write the content of `config` to assign value to `option` section
-declared in other modules!
+En el ejemplo anterior, la forma en que asignamos valores a `options` es en realidad una
+especie de **abreviación**. Cuando un módulo solo contiene `config` sin ninguna otra
+declaración (como `option` y otros parámetros especiales del sistema de módulos), podemos
+omitir el envoltorio `config` y escribir directamente el contenido de `config` para
+asignar valores a la sección `options` declarada en otros módulos.
 
-## Assignment and Lazy Evaluation in the Module System
+## Asignación y evaluación perezosa en el sistema de módulos
 
-The module system takes full advantage of Nix's lazy evaluation feature, which is crucial
-for achieving parameterized configuration.
+El sistema de módulos aprovecha al máximo la evaluación perezosa de Nix, que es crucial
+para lograr configuraciones parametrizadas.
 
-Let's start with a simple example:
+Comencemos con un ejemplo sencillo:
 
 ```nix
 # ./flake.nix
 {
   description = "NixOS Flake for Test";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
   outputs = {nixpkgs, ...}: {
     nixosConfigurations = {
@@ -232,13 +240,13 @@ Let's start with a simple example:
               };
             };
 
-            # Scenario 1 (works fine)
+            # Escenario 1 (funciona bien)
             config.warnings = if config.foo then ["foo"] else [];
 
-            # Scenario 2 (error: infinite recursion encountered)
+            # Escenario 2 (error: se encontró una recursión infinita)
             # config = if config.foo then { warnings = ["foo"];} else {};
 
-            # Scenario 3 (works fine)
+            # Escenario 3 (funciona bien)
             # config = lib.mkIf config.foo {warnings = ["foo"];};
           })
         ];
@@ -248,88 +256,88 @@ Let's start with a simple example:
 }
 ```
 
-In the examples 1, 2, and 3 of the above configuration, the value of `config.warnings`
-depends on the value of `config.foo`, but their implementation methods are different. Save
-the above configuration as `flake.nix`, and then use the command
-`nix eval .#nixosConfigurations.test.config.warnings` to test examples 1, 2, and 3
-separately. You will find that examples 1 and 3 work correctly, while example 2 results in
-an error: `error: infinite recursion encountered`.
+En los ejemplos 1, 2 y 3 de la configuración anterior, el valor de `config.warnings`
+depende del valor de `config.foo`, pero sus métodos de implementación son diferentes.
+Guarda la configuración anterior como `flake.nix` y luego usa el commando
+`nix eval .#nixosConfigurations.test.config.warnings` para probar por separado los
+ejemplos 1, 2 y 3. Verás que los ejemplos 1 y 3 funcionan correctamente, mientras que el
+ejemplo 2 produce un error: `error: infinite recursion encountered`.
 
-Let's explain each case:
+Expliquemos cada caso:
 
-1. Example 1 evaluation flow: `config.warnings` => `config.foo` => `config`
-   1. First, Nix attempts to compute the value of `config.warnings` but finds that it
-      depends on `config.foo`.
-   2. Next, Nix tries to compute the value of `config.foo`, which depends on its outer
-      `config`.
-   3. Nix attempts to compute the value of `config`, and since the contents not genuinely
-      used by `config.foo` are lazily evaluated by Nix, there is no recursive dependency
-      on `config.warnings` at this point.
-   4. The evaluation of `config.foo` is completed, followed by the assignment of
-      `config.warnings`, and the computation ends.
+1. Flujo de evaluación del ejemplo 1: `config.warnings` => `config.foo` => `config`
+   1. Primero, Nix intenta calculator el valor de `config.warnings`, pero descubre que
+      depende de `config.foo`.
+   2. Después, Nix intenta calculator el valor de `config.foo`, que depende de su `config`
+      externo.
+   3. Nix intenta calculator el valor de `config`, y como el contenido que realmente no
+      usa `config.foo` se evalúa perezosamente por Nix, en este punto no hay una
+      dependencia recursiva sobre `config.warnings`.
+   4. La evaluación de `config.foo` se completa, luego se asigna `config.warnings`, y el
+      cálculo termina.
 
-2. Example 2: `config` => `config.foo` => `config`
-   1. Initially, Nix tries to compute the value of `config` but finds that it depends on
-      `config.foo`.
-   2. Next, Nix attempts to compute the value of `config.foo`, which depends on its outer
-      `config`.
-   3. Nix tries to compute the value of `config`, and this loops back to step 1, leading
-      to an infinite recursion and eventually an error.
+2. Ejemplo 2: `config` => `config.foo` => `config`
+   1. Al principio, Nix intenta calculator el valor de `config`, pero descubre que depende
+      de `config.foo`.
+   2. Después, Nix intenta calculator el valor de `config.foo`, que depende de su `config`
+      externo.
+   3. Nix intenta calculator el valor de `config`, y esto vuelve al paso 1, lo que conduce
+      a una recursión infinita y, finalmente, a un error.
 
-3. Example 3: The only difference from example 2 is the use of `lib.mkIf` to address the
-   infinite recursion issue.
+3. Ejemplo 3: La única diferencia respecto al ejemplo 2 es el uso de `lib.mkIf` para
+   resolver el problema de la recursión infinita.
 
-The key lies in the function `lib.mkIf`. When using `lib.mkIf` to define `config`, it will
-be lazily evaluated by Nix. This means that the calculation of `config = lib.mkIf ...`
-will only occur after the evaluation of `config.foo` is completed.
+La clave está en la función `lib.mkIf`. Cuando se usa `lib.mkIf` para definir `config`,
+Nix lo evalúa perezosamente. Esto significa que el cálculo de `config = lib.mkIf ...` solo
+ocurrirá después de que se haya completado la evaluación de `config.foo`.
 
-The Nixpkgs module system provides a series of functions similar to `lib.mkIf` for
-parameterized configuration and intelligent module merging:
+El sistema de módulos de Nixpkgs proporciona una series de funciones similares a
+`lib.mkIf` para la configuración parametrizada y la fusión inteligente de módulos:
 
-1. `lib.mkIf`: Already introduced.
-2. `lib.mkOverride` / `lib.mkDefault` / `lib.mkForce`: Previously discussed in
-   [Modularizing NixOS Configuration](../nixos-with-flakes/modularize-the-configuration.md).
-3. `lib.mkOrder`, `lib.mkBefore`, and `lib.mkAfter`: As mentioned above.
-4. Check [Option Definitions - NixOS] for more functions related to option assignment
-   (definition).
+1. `lib.mkIf`: Ya introducida.
+2. `lib.mkOverride` / `lib.mkDefault` / `lib.mkForce`: Ya comentadas en
+   [Modularización de la configuración de NixOS](../nixos-with-flakes/modularize-the-configuration.md).
+3. `lib.mkOrder`, `lib.mkBefore` y `lib.mkAfter`: Como se mencionó arriba.
+4. Consulta [Definiciones de opciones - NixOS] para más funciones relacionadas con la
+   asignación (definición) de opciones.
 
-## Option Declaration and Type Checking
+## Declaración de opciones y verificación de tipos
 
-While assignment is the most commonly used feature of the module system, if you need to
-customize some `options`, you also need to delve into option declaration and type
-checking. I find this part relatively straightforward; it's much simpler than assignment,
-and you can understand the basics by directly referring to the official documentation. I
-won't go into detail here.
+Aunque la asignación es la característica más usada del sistema de módulos, si necesitas
+personalizar algunas `options`, también debes profundizar en la declaración de opciones y
+la verificación de tipos. Esta parte me parece relativamente directa; es mucho más simple
+que la asignación, y puedes entender lo básico consultando directamente la documentación
+official. No entraré en detalles aquí.
 
-- [Option Declarations - NixOS]
-- [Options Types - NixOS]
+- [Declaraciones de opciones - NixOS]
+- [Tipos de opciones - NixOS]
 
-## Passing Non-default Parameters to the Module System
+## Cómo pasar parámetros no predeterminados al sistema de módulos
 
-We have already introduced how to use `specialArgs` and `_module.args` to pass additional
-parameters to other Modules functions in
-[Managing Your NixOS with Flakes](../nixos-with-flakes/nixos-with-flakes-enabled.md#pass-non-default-parameters-to-submodules).
-No further elaboration is needed here.
+Ya hemos introducido cómo usar `specialArgs` y `_module.args` para pasar parámetros
+adicionales a otras funciones de módulos en
+[Gestionar tu NixOS con Flakes](../nixos-with-flakes/nixos-with-flakes-enabled.md#pass-non-default-parameters-to-submodules).
+No have falta extenderse más aquí.
 
-## How to Selectively Import Modules {#selectively-import-modules}
+## Cómo importar módulos de forma selectiva {#selectively-import-modules}
 
-In the examples above, we have introduced how to enable or disable certain features
-through custom options. However, our code implementations are all within the same Nix
-file. If our modules are scattered across different files, how can we achieve selective
-import?
+En los ejemplos anteriores hemos mostrado cómo habilitar o deshabilitar ciertas funciones
+mediante opciones personalizadas. Sin embargo, nuestras implementations de código están
+todas dentro del mismo archivo Nix. Si nuestros módulos están repartidos en distintos
+archivos, ¿cómo podemos lograr una importación selectiva?
 
-Let's first look at some common incorrect usage patterns, and then introduce the correct
-way to do it.
+Primero veamos algunos patrons comunes de uso incorrecto y luego introduzcamos la forma
+correcta de hacerlo.
 
-### Incorrect Usage #1 - Using `imports` in `config = { ... };` {#wrong-usage-1}
+### Uso incorrecto #1 - Usar `imports` en `config = { ... };` {#wrong-usage-1}
 
-The first thought might be to directly use `imports` in `config = { ... };`, like this:
+La primera idea podría set usar directamente `imports` dentro de `config = { ... };`, así:
 
 ```nix
 # ./flake.nix
 {
   description = "NixOS Flake for Test";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
   outputs = {nixpkgs, ...}: {
     nixosConfigurations = {
@@ -343,7 +351,7 @@ The first thought might be to directly use `imports` in `config = { ... };`, lik
               };
             };
             config = lib.mkIf config.foo {
-              # Using imports in config will cause an error
+              # Usar imports en config provocará un error
               imports = [
                 {warnings = ["foo"];}
                 # ...omit other module or file paths
@@ -357,43 +365,44 @@ The first thought might be to directly use `imports` in `config = { ... };`, lik
 }
 ```
 
-But this won't work. You can try save the above `flake.nix` in a new directory, and then
-run `nix eval .#nixosConfigurations.test.config.warnings` in it, some error like
-`error: The option 'imports' does not exist.` will be encountered.
+Pero esto no funcionará. Puedes intentar guardar el `flake.nix` anterior en un directorio
+nuevo y luego ejecutar `nix eval .#nixosConfigurations.test.config.warnings` allí; se
+encontrará un error como `error: The option 'imports' does not exist.`
 
-This is because `config` is a regular attribute set, while `imports` is a special
-parameter of the module system. There is no such definition as `config.imports`.
+Esto se debe a que `config` es un conjunto de atributos normal, mientras que `imports` es
+un parámetro especial del sistema de módulos. No existe una definición como
+`config.imports`.
 
-### Correct Usage #1 - Define Individual `options` for All Modules That Require Conditional Import {#correct-usage-1}
+### Uso correcto #1 - Definir `options` individuals para todos los módulos que requieren importación conditional {#correct-usage-1}
 
-This is the most recommended method. Modules in NixOS systems are implemented in this way,
-and searching for `enable` in <https://search.nixos.org/options> will show a large number
-of system modules that can be enabled or disabled through the `enable` option.
+Este es el método más recomendado. Los módulos en los sistemas NixOS se implementan de
+esta manera, y buscar `enable` en <https://search.nixos.org/options> mostrará una gran
+cantidad de módulos del sistema que pueden habilitarse o deshabilitarse mediante la opción
+`enable`.
 
-The specific writing method has been introduced in the previous
-[Basic Structure and Usage](#basic-structure-and-usage) section and will not be repeated
-here.
+La forma de escribirlo se introdujo en la sección anterior
+[Estructura básica y uso](#basic-structure-and-usage) y no se repetirá aquí.
 
-The disadvantage of this method is that all Nix modules that require conditional import
-need to be modified, moving all configuration declarations in the module to the
-`config = { ... };` code block, increasing code complexity and being less friendly to
-beginners.
+La desventaja de este método es que todos los módulos Nix que requieren importación
+conditional deben modificarse, trasladando todas las declaraciones de configuración del
+módulo al bloque de código `config = { ... };`, lo que aumenta la complejidad del código y
+es menos amigable para quienes empiezan.
 
-### Correct Usage #2 - Use `lib.optionals` in `imports = [];` {#correct-usage-2}
+### Uso correcto #2 - Usar `lib.optionals` en `imports = [];` {#correct-usage-2}
 
-The main advantage of this method is that it is much simpler than the methods previously
-introduced, requiring no modification to the module content, just using `lib.optionals` in
-`imports` to decide whether to import a module or not.
+La principal ventaja de este método es que es mucho más simple que los métodos
+introducidos anteriormente, ya que no require modificar el contenido del módulo; basta con
+usar `lib.optionals` en `imports` para decidir si se importa un módulo o no.
 
-> Details about how `lib.optionals` works: <https://noogle.dev/f/lib/optionals>
+> Detalles sobre cómo funciona `lib.optionals`: <https://noogle.dev/f/lib/optionals>
 
-Let's look at an example directly:
+Veamos directamente un ejemplo:
 
 ```nix
 # ./flake.nix
 {
   description = "NixOS Flake for Test";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
   outputs = {nixpkgs, ...}: {
     nixosConfigurations = {
@@ -403,7 +412,7 @@ Let's look at an example directly:
           ({config, lib, enableFoo ? false, ...}: {
             imports =
               [
-                 # Other Modules
+                  # Otros módulos
               ]
               # Use lib.optionals to decide whether to import foo.nix
               ++ (lib.optionals (enableFoo) [./foo.nix]);
@@ -420,8 +429,8 @@ Let's look at an example directly:
 { warnings = ["foo"];}
 ```
 
-Save the two Nix files above in a folder, and then run
-`nix eval .#nixosConfigurations.test.config.warnings` in the folder, and the operation is
+Guarda los dos archivos Nix anteriores en una carpeta y luego ejecuta
+`nix eval .#nixosConfigurations.test.config.warnings` en esa carpeta; la operación es
 normal:
 
 ```bash
@@ -429,27 +438,27 @@ normal:
 [ "foo" ]
 ```
 
-One thing to note here is that **you cannot use parameters passed by `_module.args` in
-`imports =[ ... ];`**. We have already provided a detailed explanation in the previous
-section
-[Passing Non-default Parameters to Submodules](../nixos-with-flakes/nixos-flake-and-module-system#pass-non-default-parameters-to-submodules).
+Hay una cosa important a tener en cuenta aquí: **no puedes usar parámetros pasados por
+`_module.args` en `imports =[ ... ];`**. Ya lo explicamos en detalle en la sección
+anterior
+[Pasar parámetros no predeterminados a submódulos](../nixos-with-flakes/nixos-flake-and-module-system#pass-non-default-parameters-to-submodules).
 
-## References
+## Referencias
 
-- [Best resources for learning about the NixOS module system? - Discourse](https://discourse.nixos.org/t/best-resources-for-learning-about-the-nixos-module-system/1177/4)
-- [NixOS modules - NixOS Wiki](https://wiki.nixos.org/wiki/NixOS_modules)
-- [NixOS: config argument - NixOS Wiki](https://wiki.nixos.org/wiki/NixOS:config_argument)
-- [Module System - Nixpkgs]
-- [Writing NixOS Modules - Nixpkgs]
+- [Mejores recursos para aprender sobre el sistema de módulos de NixOS - Discourse](https://discourse.nixos.org/t/best-resources-for-learning-about-the-nixos-module-system/1177/4)
+- [Módulos de NixOS - NixOS Wiki](https://wiki.nixos.org/wiki/NixOS_modules)
+- [NixOS: argumento `config` - NixOS Wiki](https://wiki.nixos.org/wiki/NixOS:config_argument)
+- [Sistema de módulos - Nixpkgs]
+- [Escribir módulos de NixOS - Nixpkgs]
 
-[lib/modules.nix]: https://github.com/NixOS/nixpkgs/blob/nixos-25.05/lib/modules.nix#L995
+[lib/modules.nix]: https://github.com/NixOS/nixpkgs/blob/nixos-26.05/lib/modules.nix
 [Module System - Nixpkgs]:
-  https://github.com/NixOS/nixpkgs/blob/nixos-25.05/doc/module-system/module-system.chapter.md
+  https://github.com/NixOS/nixpkgs/blob/nixos-26.05/doc/module-system/module-system.chapter.md
 [Writing NixOS Modules - Nixpkgs]:
-  https://github.com/NixOS/nixpkgs/blob/nixos-25.05/nixos/doc/manual/development/writing-modules.chapter.md
+  https://github.com/NixOS/nixpkgs/blob/nixos-26.05/nixos/doc/manual/development/writing-modules.chapter.md
 [Option Definitions - NixOS]:
-  https://github.com/NixOS/nixpkgs/blob/nixos-25.05/nixos/doc/manual/development/option-def.section.md
+  https://github.com/NixOS/nixpkgs/blob/nixos-26.05/nixos/doc/manual/development/option-def.section.md
 [Option Declarations - NixOS]:
-  https://github.com/NixOS/nixpkgs/blob/nixos-25.05/nixos/doc/manual/development/option-declarations.section.md
+  https://github.com/NixOS/nixpkgs/blob/nixos-26.05/nixos/doc/manual/development/option-declarations.section.md
 [Options Types - NixOS]:
-  https://github.com/NixOS/nixpkgs/blob/nixos-25.05/nixos/doc/manual/development/option-types.section.md
+  https://github.com/NixOS/nixpkgs/blob/nixos-26.05/nixos/doc/manual/development/option-types.section.md

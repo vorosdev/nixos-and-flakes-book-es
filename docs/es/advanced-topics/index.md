@@ -1,92 +1,95 @@
-# Advanced Topics
+# Temas avanzados
 
-Once you have become familiar with NixOS, you can explore advanced topics and dive deeper
-into the Nix ecosystem. Here are some resources and community projects that can help you
-expand your knowledge:
+Una vez que te familiarices con NixOS, puedes explorar temas avanzados y profundizar en el
+ecosistema de Nix. Estos son algunos recursos y proyectos de la comunidad que pueden
+ayudarte a ampliar tus conocimientos:
 
-## Community
+## Comunidad
 
-- [Nix Official - Community](https://nixos.org/community/): Contains information about the
-  Nix community, forums, realtime chat, meetups, RFCs, the official team architecture,
-  etc.
-- [Nix Channel Status](https://status.nixos.org/): The build status of each Nix channel.
-- [nix-community/NUR](https://github.com/nix-community/NUR): Although Nixpkgs contains a
-  large number of packages, some packages are not included in Nixpkgs due to reasons such
-  as review speed and licensing agreements. NUR is a decentralized Nix package repository
-  where anyone can create their own Nix repository and add it to NUR for others to use. If
-  you want to use a package that is not in Nixpkgs, you can try to find it here. If you
-  want to share your own Nix package with others, you can create and share your own Nix
-  repository according to the README of NUR.
+- [Nix Official - Community](https://nixos.org/community/): contiene información sobre la
+  comunidad de Nix, foros, chat en tiempo real, encuentros, RFCs, la arquitectura official
+  de equipos, etc.
+- [Nix Channel Status](https://status.nixos.org/): estado de compilación de cada canal de
+  Nix.
+- [nix-community/NUR](https://github.com/nix-community/NUR): aunque Nixpkgs contiene una
+  gran cantidad de paquetes, algunos no se incluyen por razones como la velocidad de
+  revisión o acuerdos de licencia. NUR es un repositorio descentralizado de paquetes de
+  Nix donde cualquiera puede crear su propio repositorio de Nix y añadirlo a NUR para que
+  otros lo usen. Si quieres usar un paquete que no está en Nixpkgs, puedes intentar
+  encontrarlo allí. Si quieres compartir tu propio paquete de Nix, puedes crear y publicar
+  tu repositorio siguiendo el README de NUR.
 
-## Documentation and Videos
+## Documentación y videos
 
 - [Eelco Dolstra - The Purely Functional Software Deployment Model - 2006](https://edolstra.github.io/pubs/phd-thesis.pdf):
-  Eelco Dolstra's seminal PhD thesis about the Nix package manager,
+  tesis doctoral seminal de Eelco Dolstra sobre el gestor de paquetes Nix.
 - [Nix Reference Manual](https://nixos.org/manual/nix/stable/package-management/profiles.html):
-  A comprehensive guide to the Nix package manager, covering its design and usage from the
-  command line.
-- [nixpkgs Manual](https://nixos.org/manual/nixpkgs/unstable/): The manual for nixpkgs,
-  which introduces its parameters, explains how to use, modify, and package Nix packages.
-- [NixOS Manual](https://nixos.org/manual/nixos/unstable/): A user manual for NixOS,
-  providing configuration instructions for system-level components such as Wayland/X11 and
+  una guía completa del gestor de paquetes Nix, que cubre su diseño y uso desde la línea
+  de commandos.
+- [nixpkgs Manual](https://nixos.org/manual/nixpkgs/unstable/): manual de nixpkgs, que
+  introduce sus parámetros y explica cómo usar, modificar y empaquetar paquetes de Nix.
+- [NixOS Manual](https://nixos.org/manual/nixos/unstable/): manual de usuario de NixOS,
+  con instrucciones de configuración para components a nivel de sistema como Wayland/X11 y
   GPU.
-- [nix-pills](https://nixos.org/guides/nix-pills): "Nix Pills" is a series of guides that
-  provide an in-depth explanation of building software packages with Nix. It offers clear
-  and understandable explanations.
-- [nixos-in-production](https://github.com/Gabriella439/nixos-in-production): This is a
-  work-in-progress book hosted on LeanPub about introducing and maintaining NixOS in a
-  production environment.
+- [nix-pills](https://nixos.org/guides/nix-pills): "Nix Pills" es una series de guías que
+  explican en profundidad cómo construir paquetes de software con Nix. Ofrece
+  explicaciones claras y comprensibles.
+- [nixos-in-production](https://github.com/Gabriella439/nixos-in-production): libro en
+  progreso alojado en LeanPub sobre cómo introducir y mantener NixOS en un entorno de
+  producción.
 
-And there are many official videos on the
-[NixOS Foundation](https://www.youtube.com/@NixOS-Foundation) and
-[NixCon](https://www.youtube.com/@NixCon) channels on YouTube. Here are a few videos that
-are highly recommended:
+También hay muchos videos oficiales en los canales de YouTube de
+[NixOS Foundation](https://www.youtube.com/@NixOS-Foundation) y
+[NixCon](https://www.youtube.com/@NixCon). Estos son algunos videos muy recomendados:
 
-- [Summer of Nix 2022 — Public Lecture Series](https://www.youtube.com/playlist?list=PLt4-_lkyRrOMWyp5G-m_d1wtTcbBaOxZk):
-  A series of public lectures hosted by the NixOS Foundation, presented by core members of
-  the Nix community such as Eelco Dolstra and Armijn Hemel. The content covers the
-  development history of Nix, the history of NixOS, and the future of Nix, among other
-  topics.
-- [Summer of Nix 2023 — Nix Developer Dialogues](https://www.youtube.com/playlist?list=PLt4-_lkyRrOPcBuz_tjm6ZQb-6rJjU3cf):
-  A series of dialogues between core members of the Nix community in 2023. The content
-  includes the evolution and architectural challenges of Nixpkgs, exploration of Nix's
-  module system, discussion of the Nix ecosystem, AI applications in Nixpkgs, and the
-  application of Nix in the commercial field and open source economics.
+- [Summer of Nix 2022 - Public Lecture Series](https://www.youtube.com/playlist?list=PLt4-_lkyRrOMWyp5G-m_d1wtTcbBaOxZk):
+  series de charlas públicas organizada por la NixOS Foundation, presentada por miembros
+  centrales de la comunidad Nix como Eelco Dolstra y Armijn Hemel. El contenido cubre la
+  historia del desarrollo de Nix, la historia de NixOS y el futuro de Nix, entre otros
+  temas.
+- [Summer of Nix 2023 - Nix Developer Dialogues](https://www.youtube.com/playlist?list=PLt4-_lkyRrOPcBuz_tjm6ZQb-6rJjU3cf):
+  series de diálogos entre miembros centrales de la comunidad Nix en 2023. El contenido
+  incluye la evolución y los desafíos arquitectónicos de Nixpkgs, la exploración del
+  sistema de módulos de Nix, discusiones sobre el ecosistema Nix, aplicaciones de IA en
+  Nixpkgs y el uso de Nix en el ámbito commercial y la economía del código abierto.
 
-## Advanced Techniques and Community Projects
+## Técnicas avanzadas y proyectos de la comunidad
 
-Once you are comfortable with Flakes, you can explore more advanced techniques and
-community projects. Here are some popular ones to try out:
+Cuando ya te sientas cómodo con Flakes, puedes explorar técnicas más avanzadas y proyectos
+de la comunidad. Estos son algunos proyectos populares para probar:
 
-- [flake-parts](https://github.com/hercules-ci/flake-parts): Simplifies the writing and
-  maintenance of configurations using the Module module system.
-- [flake-utils-plus](https://github.com/gytis-ivaskevicius/flake-utils-plus): A
-  third-party package that enhances Flake configuration and provides additional powerful
-  features.
+- [flake-parts](https://github.com/hercules-ci/flake-parts): simplifica la escritura y el
+  mantenimiento de configuraciones usando el sistema de módulos.
+- [flake-utils-plus](https://github.com/gytis-ivaskevicius/flake-utils-plus): paquete de
+  terceros que mejora la configuración de Flakes y ofrece características adicionales
+  potentes.
 
-There are many other valuable community projects worth exploring. Here are a few examples:
+Hay muchos otros proyectos valiosos de la comunidad que vale la pena explorar. Algunos
+ejemplos:
 
-- [nix-output-monitor](https://github.com/maralorn/nix-output-monitor): Beautifully
-  displays the build progress of Nix packages, with additional information such as build
-  time and build log.
-- [agenix](https://github.com/ryantm/agenix): A tool for secrets management.
-- [colmena](https://github.com/zhaofengli/colmena): Tools for NixOS deployment.
-- [nixos-generators](https://github.com/nix-community/nixos-generators): A tool to
-  generate ISO/qcow2/... from NixOS configurations.
-- [lanzaboote](https://github.com/nix-community/lanzaboote): Enables secure boot for
+- [nix-output-monitor](https://github.com/maralorn/nix-output-monitor): muestra de forma
+  visual el progreso de compilación de paquetes de Nix, con información adicional como
+  tiempo de compilación y logs.
+- [agenix](https://github.com/ryantm/agenix): herramienta para gestionar secrets.
+- [colmena](https://github.com/zhaofengli/colmena): herramienta para desplegar NixOS.
+- [nixos-generators](https://github.com/nix-community/nixos-generators): herramienta para
+  generar ISO/qcow2/... a partir de configuraciones de NixOS.
+- [lanzaboote](https://github.com/nix-community/lanzaboote): habilita secure boot para
   NixOS.
-- [impermanence](https://github.com/nix-community/impermanence): Helps make NixOS
-  stateless and improves system reproducibility.
-- [devbox](https://github.com/jetpack-io/devbox): Lightweight, repeatable dev environments
-  without container woes, internally powered by nix, similar to earthly.
-- [nixpak](https://github.com/nixpak/nixpak): A tool to sandbox all sorts of Nix-packaged
-  applications, including graphical ones.
-- [nixpacks](https://github.com/railwayapp/nixpacks): Nixpacks takes a source directory
-  and produces an OCI compliant image that can be deployed anywhere, similar to
-  buildpacks.
+- [impermanence](https://github.com/nix-community/impermanence): ayuda a hacer NixOS
+  stateless y mejora la reproducibilidad del sistema.
+- [devbox](https://github.com/jetpack-io/devbox): entornos de desarrollo ligeros y
+  repetibles sin las molestias de contenedores, internamente impulsados por Nix, similar a
+  earthly.
+- [nixpak](https://github.com/nixpak/nixpak): herramienta para aislar en sandbox todo tipo
+  de aplicaciones empaquetadas con Nix, incluidas aplicaciones gráficas.
+- [nixpacks](https://github.com/railwayapp/nixpacks): Nixpacks toma un directorio fuente y
+  produce una imagen compatible con OCI que puede desplegarse en cualquier lugar, similar
+  a buildpacks.
 - ...
 
-These projects offer additional functionality and tools that can enhance your NixOS
-experience.
+Estos proyectos ofrecen funcionalidades y herramientas adicionales que pueden mejorar tu
+experiencia con NixOS.
 
-For more information, see the [awesome-nix](https://github.com/nix-community/awesome-nix).
+Para más información, consulta
+[awesome-nix](https://github.com/nix-community/awesome-nix).

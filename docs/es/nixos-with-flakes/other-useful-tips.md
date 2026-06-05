@@ -1,113 +1,119 @@
-# Other Useful Tips
+# Otros consejos útiles
 
-## Show detailed error messages
+## Mostrar mensajes de error detallados
 
-You can always try to add `--show-trace --print-build-logs --verbose` to the
-`nixos-rebuild` command to get the detailed error message if you encounter any errors
-during the deployment. e.g.
+Siempre puedes intentar agregar `--show-trace --print-build-logs --verbose` al commando
+`nixos-rebuild` para obtener el mensaje de error detallado si encuentras algún error
+durante el despliegue. Por ejemplo:
 
 ```bash
 cd /etc/nixos
 sudo nixos-rebuild switch --flake .#myhost --show-trace --print-build-logs --verbose
 
-# A more concise version
+# Una versión más concisa
 sudo nixos-rebuild switch --flake .#myhost --show-trace -L -v
 ```
 
-## Managing the Configuration with Git
+## Gestionar la configuración con Git
 
-NixOS configuration, being a set of text files, is well-suited for version control with
-Git. This allows easy rollback to a previous version in case of issues.
+La configuración de NixOS, al set un conjunto de archivos de texto, es adecuada para el
+control de versions con Git. Esto permite revertir fácilmente a una versión anterior en
+caso de problems.
 
-> NOTE: When using Git, Nix ignores all files that are not tracked by Git. If you
-> encounter an error in Nix stating that a particular file is not found, it may be because
-> you haven't `git add`ed it.
+> NOTA: Al usar Git, Nix ignore todos los archivos que no tienen seguimiento en Git. Si
+> encuentras un error en Nix que indica que no se encuentra un archivo en particular,
+> puede deberse a que todavía no le has hecho `git add`.
 
-By default, NixOS places the configuration in `/etc/nixos`, which requires root
-permissions for modification, making it inconvenient for daily use. Thankfully, Flakes can
-help solve this problem by allowing you to place your flake anywhere you prefer.
+De forma predeterminada, NixOS coloca la configuración en `/etc/nixos`, lo que require
+permisos de root para modificarla y resulta inconvenience para el uso diario. Por suerte,
+Flakes puede ayudar a resolver este problema al permitirte colocar tu flake donde
+prefieras.
 
-For example, you can place your flake in `~/nixos-config` and create a symbolic link in
-`/etc/nixos` as follows:
+Por ejemplo, puedes colocar tu flake en `~/nixos-config` y crear un enlace simbólico en
+`/etc/nixos` de la siguiente manera:
 
 ```shell
-sudo mv /etc/nixos /etc/nixos.bak  # Backup the original configuration
+sudo mv /etc/nixos /etc/nixos.bak  # Respaldar la configuración original
 sudo ln -s ~/nixos-config /etc/nixos
 
-# Deploy the flake.nix located at the default location (/etc/nixos)
+# Desplegar el flake.nix ubicado en la ubicación predeterminada (/etc/nixos)
 sudo nixos-rebuild switch
 ```
 
-This way, you can use Git to manage the configuration in `~/nixos-config`. The
-configuration can be modified with regular user-level permissions and does not require
-root ownership.
+De esta manera, puedes usar Git para gestionar la configuración en `~/nixos-config`. La
+configuración se puede modificar con permisos normals de usuario y no require propiedad de
+root.
 
-Another approach is to delete `/etc/nixos` directly and specify the configuration file
-path each time you deploy it:
+Otro enfoque es eliminar `/etc/nixos` directamente y especificar la ruta del archivo de
+configuración cada vez que la despliegues:
 
 ```shell
 sudo mv /etc/nixos /etc/nixos.bak
 cd ~/nixos-config
 
-# `--flake .#my-nixos` deploys the flake.nix located in
-# the current directory, and the nixosConfiguration's name is `my-nixos`
+# `--flake .#my-nixos` despliega el flake.nix ubicado en
+# el directorio actual, y el nombre de nixosConfiguration es `my-nixos`
 sudo nixos-rebuild switch --flake .#my-nixos
 ```
 
-Choose the method that suits you best. Afterward, system rollback becomes simple. Just
-switch to the previous commit and deploy it:
+Elige el método que más te convenga. Después, revertir el sistema se vuelve simple. Solo
+cambia al commit anterior y despliégalo:
 
 ```shell
 cd ~/nixos-config
-# Switch to the previous commit
+# Cambiar al commit anterior
 git checkout HEAD^1
-# Deploy the flake.nix located in the current directory,
-# with the nixosConfiguration's name `my-nixos`
+# Desplegar el flake.nix ubicado en el directorio actual,
+# con el nombre de nixosConfiguration `my-nixos`
 sudo nixos-rebuild switch --flake .#my-nixos
 ```
 
-More advanced Git operations are not covered here, but in general, rollback can be
-performed directly using Git. Only in cases of complete system crashes would you need to
-restart into the bootloader and boot the system from a previous historical version.
+Aquí no se cubren operaciones de Git más avanzadas, pero en general la reversión se puede
+realizar directamente usando Git. Solo en casos de fallas completas del sistema
+necesitarías reiniciar en el gestor de arranque y arrancar el sistema desde una versión
+histórica anterior.
 
-## Viewing and Deleting Historical Data
+## Ver y eliminar datos históricos
 
-As mentioned earlier, each NixOS deployment creates a new version, and all versions are
-added to the system's boot options. In addition to restarting the computer, you can query
-all available historical versions using the following command:
+Como se mencionó antes, cada despliegue de NixOS crea una nueva versión, y todas las
+versions se agregan a las opciones de arranque del sistema. Además de reiniciar la
+computadora, puedes consultar todas las versions históricas disponibles con el siguiente
+commando:
 
 ```shell
 nix profile history --profile /nix/var/nix/profiles/system
 ```
 
-To clean up historical versions and free up storage space, use the following command:
+Para limpiar versions históricas y liberar espacio de almacenamiento, usa el siguiente
+commando:
 
 ```shell
-# Delete all historical versions older than 7 days
+# Eliminar todas las versions históricas de más de 7 días
 sudo nix profile wipe-history --older-than 7d --profile /nix/var/nix/profiles/system
 
-# Wiping history won't garbage collect the unused packages, you need to run the gc command manually as root:
+# Limpiar el historical no recolectará como basura los paquetes sin usar; debes ejecutar el commando gc manualmente como root:
 sudo nix-collect-garbage --delete-old
 
-# Due to the following issue, you need to run the gc command as per user to delete home-manager's historical data:
+# Debido al siguiente problema, debes ejecutar el commando gc por usuario para eliminar los datos históricos de Home Manager:
 # https://github.com/NixOS/nix/issues/8508
 nix-collect-garbage --delete-old
 ```
 
-## Why some packages are installed?
+## ¿Por qué están instalados algunos paquetes?
 
-To find out why a package is installed, you can use the following command:
+Para averiguar por qué está instalado un paquete, puedes usar el siguiente commando:
 
-1. Enter a shell with `nix-tree` & `rg` available:
+1. Ingresa a una shell con `nix-tree` y `rg` disponibles:
    `nix shell nixpkgs#nix-tree nixpkgs#ripgrep`
 1. ` nix-store --gc --print-roots | rg -v '/proc/' | rg -Po '(?<= -> ).*' | xargs -o nix-tree`
-1. `/<package-name>` to find the package you want to check.
-1. `w` to show the package is depended by which packages, and the full dependency chain.
+1. `/<package-name>` para encontrar el paquete que deseas revisar.
+1. `w` para mostrar qué paquetes dependen de ese paquete y la cadena de dependencies
+   completa.
 
-## Reducing Disk Usage
+## Reducir el uso de disco
 
-The following configuration can be added to your NixOS configuration to help reduce disk
-usage:
+La siguiente configuración se puede agregar a tu configuración de NixOS para ayudar a
+reducir el uso de disco:
 
 ```nix
 { lib, pkgs, ... }:
@@ -115,25 +121,25 @@ usage:
 {
   # ...
 
-  # Limit the number of generations to keep
+  # Limitar la cantidad de generaciones que se conservarán
   boot.loader.systemd-boot.configurationLimit = 10;
   # boot.loader.grub.configurationLimit = 10;
 
-  # Perform garbage collection weekly to maintain low disk usage
+  # Realizar recolección de basura semanalmente para mantener bajo el uso de disco
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 1w";
+    options = "--delete-older-than 7d";
   };
 
-  # Optimize storage
-  # You can also manually optimize the store via:
+  # Optimizar el almacenamiento
+  # También puedes optimizar manualmente el store con:
   #    nix-store --optimise
-  # Refer to the following link for more details:
+  # Consulta el siguiente enlace para más detalles:
   # https://nixos.org/manual/nix/stable/command-ref/conf-file.html#conf-auto-optimise-store
   nix.settings.auto-optimise-store = true;
 }
 ```
 
-By incorporating this configuration, you can better manage and optimize the disk usage of
-your NixOS system.
+Al incorporar esta configuración, puedes gestionar y optimizar mejor el uso de disco de tu
+sistema NixOS.

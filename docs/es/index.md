@@ -2,27 +2,27 @@
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
-titleTemplate: "Home Page"
+titleTemplate: "Página de inicio"
 
 hero:
   name: "NixOS & Flakes Book"
-  text: "Un libro no oficial para principiantes"
+  text: "Un libro no official para principiantes"
   tagline:
     ¿Quieres conocer NixOS y Flakes en detalle? ¿Buscas un tutorial amigable para
-    principiantes? Entonces llegaste al lugar correcto!
+    principiantes? Entonces llegaste al lugar correcto.
   image:
     src: /logo.png
     alt: NixOS Flakes
   actions:
     - theme: brand
-      text: Prefacio
+      text: Preface
       link: /preface.md
     - theme: brand
       text: Comenzar
       link: /introduction/index.md
     - theme: alt
       text: Ver en GitHub
-      link: https://github.com/vorosdev/nixos-and-flakes-book-es
+      link: https://github.com/ryan4yin/nixos-and-flakes-book
 # features:
 #   - title: Feature A
 #     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit

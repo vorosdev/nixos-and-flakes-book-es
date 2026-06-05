@@ -1,72 +1,73 @@
-# Dev Environments
+# Entornos de desarrollo
 
-On NixOS, we have a variety of methods to set up development environments, with the most
-ideal approach being a complete definition of each project's development environment
-through its own `flake.nix`. However, this can be somewhat cumbersome in practice, as it
-requires crafting a `flake.nix` and then running `nix develop` for each instance. For
-temporary projects or when one simply wants to glance at the code, this approach is
-somewhat overkill.
+En NixOS tenemos various métodos para configurar entornos de desarrollo, y el enfoque más
+ideal es definir por completo el entorno de desarrollo de cada proyecto mediante su propio
+`flake.nix`. Sin embargo, en la práctica esto puede set algo tedioso, porque require crear
+un `flake.nix` y luego ejecutar `nix develop` para cada caso. Para proyectos temporales o
+cuando solo se quiere echar un vistazo al código, este enfoque es un tanto excesivo.
 
-A compromise is to divide the development environment into three tiers:
+Como compromiso, se puede dividir el entorno de desarrollo en tres niveles:
 
-1. **Global Environment**: This typically refers to the user environment managed by
+1. **Entorno global**: normalmente se refiere al entorno de usuario administrado por
    home-manager.
-   - Universal development tools: `git`, `vim`, `emacs`, `tmux`, and the like.
-   - Common language SDKs and package managers: `rust`, `openjdk`, `python`, `go`, among
-     others.
-2. **IDE Environment**:
-   - Taking neovim as an example, home-manager creates a wrapper for neovim that
-     encapsulates its dependencies within its own environment, preventing contamination of
-     the global environment.
-   - Dependencies for neovim plugins can be added to the neovim environment via the
-     `programs.neovim.extraPackages` parameter, ensuring the IDE operates smoothly.
-   - However, if you use multiple IDEs (such as emacs and neovim), they often rely on many
-     of the same programs (like lsp, tree-sitter, debugger, formatter, etc.). For ease of
-     management, these shared dependencies can be placed in the global environment. Be
-     cautious of potential dependency conflicts with other programs in the global
-     environment, particularly with python packages, which are prone to conflicts.
-3. **Project Environment**: Each project can define its own development environment
-   (`devShells`) via `flake.nix`.
-   - To simplify, you can create generic `flake.nix` templates for commonly used languages
-     in advance, which can be copied and modified as needed.
-   - The project environment takes the highest precedence (added to the front of the
-     PATH), and its dependencies will override those with the same name in the global
-     environment. Thus, you can control the version of project dependencies via the
-     project's `flake.nix`, unaffected by the global environment.
+   - Herramientas universales de desarrollo: `git`, `vim`, `emacs`, `tmux` y similares.
+   - SDK y gestores de paquetes comunes de lenguajes: `rust`, `openjdk`, `python`, `go`,
+     entre otros.
+2. **Entorno del IDE**:
+   - Tomando neovim como ejemplo, home-manager crea un wrapper para neovim que encapsula
+     sus dependencies dentro de su propio entorno, evitando contaminar el entorno global.
+   - Las dependencies de los plugins de neovim pueden añadirse al entorno de neovim con el
+     parámetro `programs.neovim.extraPackages`, asegurando que el IDE funcione sin
+     problems.
+   - Sin embargo, si usas various IDEs (como emacs y neovim), a menudo dependen de muchos
+     de los mismos programs (como lsp, tree-sitter, debugger, formatter, etc.). Para
+     facilitar la administración, esas dependencies compartidas pueden colocarse en el
+     entorno global. Ten cuidado con posibles conflicts de dependencies con otros programs
+     del entorno global, especialmente con paquetes de python, que son propensos a
+     conflicts.
+3. **Entorno del proyecto**: cada proyecto puede definir su propio entorno de desarrollo
+   (`devShells`) mediante `flake.nix`.
+   - Para simplificar, puedes crear de antemano plantillas genéricas de `flake.nix` para
+     lenguajes de uso frecuente, que luego se copian y modifican según sea necesario.
+   - El entorno del proyecto tiene la mayor prioridad (se agrega al inicio de PATH), y sus
+     dependencies reemplazarán a las que tengan el mismo nombre en el entorno global. Así,
+     puedes controlar la versión de las dependencies del proyecto mediante el `flake.nix`
+     del propio proyecto, sin verse afectado por el entorno global.
 
-## Templates for Development Environments
+## Plantillas para entornos de desarrollo
 
-We have learned how to build development environments, but it's a bit tedious to write
-`flake.nix` for each project.
+Ya aprendimos cómo construir entornos de desarrollo, pero escribir `flake.nix` para cada
+proyecto es un poco tedioso.
 
-Luckily, some people in the community have done this for us. The following repository
-contains development environment templates for most programming languages. Just copy and
-paste them:
+Por suerte, algunas personas de la comunidad ya hicieron esto por nosotros. El siguiente
+repositorio contiene plantillas de entornos de desarrollo para la mayoría de los lenguajes
+de programación. Solo cópialas y pégalas:
 
 - [MordragT/nix-templates](https://github.com/MordragT/nix-templates)
 - [the-nix-way/dev-templates](https://github.com/the-nix-way/dev-templates)
 
-If you think the structure of `flake.nix` is still too complicated and want a simpler way,
-you can consider using the following project, which encapsulates Nix more thoroughly and
-provides users with a simpler definition:
+Si crees que la estructura de `flake.nix` sigue siendo demasiado complicada y quieres una
+forma más simple, puedes considerar el siguiente proyecto, que encapsula Nix con mayor
+profundidad y ofrece a los usuarios una definición más sencilla:
 
 - [cachix/devenv](https://github.com/cachix/devenv)
 
-If you don't want to write a single line of nix code and just want to get a reproducible
-development environment with minimal cost, here's a tool that might meet your needs:
+Si no quieres escribir ni una sola línea de código de nix y solo quieres obtener un
+entorno de desarrollo reproducible con el menor costo possible, aquí hay una herramienta
+que podría cubrir tus necesidades:
 
 - [jetpack-io/devbox](https://github.com/jetpack-io/devbox)
 
-## Dev Environment for Python
+## Entorno de desarrollo para Python
 
-The development environment for Python is much more cumbersome compared to languages like
-Java or Go because it defaults to installing software in the global environment. To
-install software for the current project, you must create a virtual environment first
-(unlike in languages such as JavaScript or Go, where virtual environments are not
-necessary). This behavior is very unfriendly for Nix.
+El entorno de desarrollo para Python es mucho más engorroso en comparación con lenguajes
+como Java o Go porque, por defecto, instala software en el entorno global. Para instalar
+software para el proyecto actual, primero debes crear un entorno virtual (a diferencia de
+lenguajes como JavaScript o Go, donde los entornos virtuales no son necesarios). Este
+comportamiento es muy poco amigable para Nix.
 
-By default, when using pip in Python, it installs software globally. On NixOS, running
-`pip install` directly will result in an error:
+Por defecto, cuando usas pip en Python, instala software globalmente. En NixOS, ejecutar
+`pip install` directamente produce un error:
 
 ```bash
 › pip install -r requirements.txt
@@ -83,47 +84,46 @@ note: If you believe this is a mistake, please contact your Python installation 
 hint: See PEP 668 for the detailed specification.
 ```
 
-Based on the error message, `pip install` is directly disabled by NixOS. Even when
-attempting `pip install --user`, it is similarly disabled. To improve the reproducibility
-of the environment, Nix eliminates these commands altogether. Even if we create a new
-environment using methods like `mkShell`, these commands still result in errors
-(presumably because the pip command in Nixpkgs itself has been modified to prevent any
-modification instructions like `install` from running).
+Según el mensaje de error, `pip install` está deshabilitado directamente por NixOS.
+Incluso al intentar `pip install --user`, también se deshabilita. Para mejorar la
+reproducibilidad del entorno, Nix elimina estos commandos por completo. Incluso si creamos
+un entorno nuevo usando métodos como `mkShell`, estos commandos siguen fallando
+(presumiblemente porque el commando pip en Nixpkgs se modificó para impedir que se
+ejecuten instrucciones de modificación como `install`).
 
-However, many project installation scripts are based on pip, which means these scripts
-cannot be used directly. Additionally, the content in nixpkgs is limited, and many
-packages from PyPI are missing. This requires users to package them themselves, adding a
-lot of complexity and mental burden.
+Sin embargo, muchos scripts de instalación de proyectos están basados en pip, lo que
+significa que no pueden usarse directamente. Además, el contenido de nixpkgs es limitado y
+faltan muchos paquetes de PyPI. Esto obliga a los usuarios a empaquetarlos por su cuenta,
+lo que agrega mucha complejidad y carga mental.
 
-One solution is to use the `venv` virtual environment. Within a virtual environment, you
-can use commands like pip normally:
+Una solución es usar el entorno virtual `venv`. Dentro de un entorno virtual, puedes usar
+commandos como pip con normalidad:
 
 ```shell
 python -m venv ./env
 source ./env/bin/activate
 ```
 
-Alternatively, you can use a third-party tool called `virtualenv`, but this requires
-additional installation.
+Otra opción es usar una herramienta de terceros llamada `virtualenv`, pero eso require
+instalación adicional.
 
-For those who still lack confidence in the venv created directly with Python, they may
-prefer to include the virtual environment in `/nix/store` to make it immutable. This can
-be achieved by directly installing the dependencies from `requirements.txt` or
-`poetry.toml` using Nix. There are existing Nix packaging tools available to assist with
-this:
+Para quienes todavía desconfían del venv creado directamente con Python, quizá prefieran
+incluir el entorno virtual en `/nix/store` para hacerlo immutable. Esto puede lograrse
+instalando directamente las dependencies de `requirements.txt` o `poetry.toml` con Nix. Ya
+existen herramientas de empaquetado en Nix que ayudan con esto:
 
-> Note that even in these environments, running commands like `pip install` directly will
-> still fail. Python dependencies must be installed through `flake.nix` because the data
-> is located in the `/nix/store` directory, and these modification commands can only be
-> executed during the Nix build phase.
+> Ten en cuenta que incluso en estos entornos, ejecutar directamente commandos como
+> `pip install` seguirá fallando. Las dependencies de Python deben instalarse a través de
+> `flake.nix` porque los datos residen en el directorio `/nix/store`, y estos commandos de
+> modificación solo pueden ejecutarse durante la fase de construcción de Nix.
 
 - [python venv demo](https://github.com/MordragT/nix-templates/blob/master/python-venv/flake.nix)
 - [poetry2nix](https://github.com/nix-community/poetry2nix)
 
-The advantage of these tools is that they utilize the lock mechanism of Nix Flakes to
-improve reproducibility. However, the downside is that they add an extra layer of
-abstraction, making the underlying system more complex.
+La ventaja de estas herramientas es que utilizan el mecanismo de bloqueo de Nix Flakes
+para mejorar la reproducibilidad. Sin embargo, la desventaja es que añaden una capa extra
+de abstracción, haciendo más complejo el sistema subyacente.
 
-Finally, in some more complex projects, neither of the above solutions may be feasible. In
-such cases, the best solution is to use containers such as Docker or Podman. Containers
-have fewer restrictions compared to Nix and can provide the best compatibility.
+Finalmente, en algunos proyectos más complejos, ninguna de las soluciones anteriores puede
+set viable. En esos casos, la mejor opción es usar contenedores como Docker o Podman. Los
+contenedores tienen menos restricciones que Nix y pueden ofrecer la mejor compatibilidad.

@@ -1,5 +1,5 @@
-# Other Usage of Flakes
+# Otros usos de Flakes
 
-So far, we have extensively used Flakes to manage NixOS configurations. In this section, I
-will provide a brief introduction to additional features and command-line options commonly
-used with Flakes.
+Hasta ahora hemos usado Flakes de forma intensiva para gestionar configuraciones de NixOS.
+En esta sección te daré una breve introducción a características adicionales y opciones de
+línea de commandos que suelen usarse con Flakes.

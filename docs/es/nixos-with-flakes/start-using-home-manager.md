@@ -1,74 +1,78 @@
-# Getting Started with Home Manager
+# Primeros pasos con Home Manager
 
-As I mentioned earlier, NixOS can only manage system-level configuration. To manage
-user-level configuration in the Home directory, we need to install Home Manager.
+Como mencioné antes, NixOS solo puede gestionar la configuración a nivel del sistema. Para
+gestionar la configuración a nivel de usuario en el directorio Home, necesitamos instalar
+Home Manager.
 
-According to the official
-[Home Manager Manual](https://nix-community.github.io/home-manager/index.xhtml), to
-install Home Manager as a module of NixOS, we first need to create `/etc/nixos/home.nix`.
-Here's an example of its contents:
+Según el
+[manual official de Home Manager](https://nix-community.github.io/home-manager/index.xhtml),
+para instalar Home Manager como un módulo de NixOS, primero necesitamos crear
+`/etc/nixos/home.nix`. Este es un ejemplo de su contenido:
 
 ```nix
 { config, pkgs, ... }:
 
 {
-  # TODO please change the username & home directory to your own
+  # TODO cambia el nombre de usuario y el directorio Home por los tuyos
   home.username = "ryan";
   home.homeDirectory = "/home/ryan";
 
-  # link the configuration file in current directory to the specified location in home directory
+  # Importa archivos desde el directorio de configuración actual al Nix store,
+  # y crea enlaces simbólicos en el directorio Home que apuntan a esos archivos del store.
+
   # home.file.".config/i3/wallpaper.jpg".source = ./wallpaper.jpg;
 
-  # link all files in `./scripts` to `~/.config/i3/scripts`
+  # Importa el directorio scripts al Nix store,
+  # y genera recursivamente enlaces simbólicos en el directorio Home que apuntan a los archivos del store.
   # home.file.".config/i3/scripts" = {
   #   source = ./scripts;
-  #   recursive = true;   # link recursively
-  #   executable = true;  # make all files executable
+  #   recursive = true;   # enlazar recursivamente
+  #   executable = true;  # hacer ejecutables todos los archivos
   # };
 
-  # encode the file content in nix configuration file directly
+  # codifica el contenido del archivo directamente en el archivo de configuración de Nix
   # home.file.".xxx".text = ''
   #     xxx
   # '';
 
-  # set cursor size and dpi for 4k monitor
+  # define el tamaño del cursor y los dpi para un monitor 4k
   xresources.properties = {
     "Xcursor.size" = 16;
     "Xft.dpi" = 172;
   };
 
-  # Packages that should be installed to the user profile.
+  # Paquetes que deberían instalarse en el perfil de usuario.
   home.packages = with pkgs; [
-    # here is some command line tools I use frequently
-    # feel free to add your own or remove some of them
+    # aquí hay algunas herramientas de línea de commandos que uso con frecuencia
+    # puedes agregar las tuyas o eliminar algunas de estas
 
     neofetch
     nnn # terminal file manager
 
-    # archives
+    # archivos comprimidos
     zip
     xz
     unzip
     p7zip
 
-    # utils
-    ripgrep # recursively searches directories for a regex pattern
-    jq # A lightweight and flexible command-line JSON processor
-    yq-go # yaml processor https://github.com/mikefarah/yq
-    eza # A modern replacement for ‘ls’
-    fzf # A command-line fuzzy finder
+    # utilidades
+    ripgrep # busca recursivamente en directors un patrón regex
+    jq # un procesador JSON de línea de commandos ligero y flexible
+    yq-go # procesador yaml https://github.com/mikefarah/yq
+    eza # un reemplazo moderno para ‘ls’
+    fzf # un buscador difuso de línea de commandos
 
-    # networking tools
-    mtr # A network diagnostic tool
+    # herramientas de red
+    mtr # una herramienta de diagnóstico de red
     iperf3
     dnsutils  # `dig` + `nslookup`
-    ldns # replacement of `dig`, it provide the command `drill`
-    aria2 # A lightweight multi-protocol & multi-source command-line download utility
-    socat # replacement of openbsd-netcat
-    nmap # A utility for network discovery and security auditing
-    ipcalc  # it is a calculator for the IPv4/v6 addresses
+    ldns # reemplazo de `dig`; proporciona el commando `drill`
+    aria2 # una utilidad de descarga de línea de commandos ligera, multiprotocolo y multifuente
+    socat # reemplazo de openbsd-netcat
+    nmap # una utilidad para descubrimiento de red y auditoría de seguridad
+    ipcalc  # es una calculadora para direcciones IPv4/v6
 
-    # misc
+    # various
     cowsay
     file
     which
@@ -79,44 +83,44 @@ Here's an example of its contents:
     zstd
     gnupg
 
-    # nix related
+    # relacionado con nix
     #
-    # it provides the command `nom` works just like `nix`
-    # with more details log output
+    # proporciona el commando `nom`, que funciona igual que `nix`
+    # con una salida de logs más detallada
     nix-output-monitor
 
-    # productivity
-    hugo # static site generator
-    glow # markdown previewer in terminal
+    # productividad
+    hugo # generador de sitios estáticos
+    glow # previsualizador de markdown en la terminal
 
-    btop  # replacement of htop/nmon
-    iotop # io monitoring
-    iftop # network monitoring
+    btop  # reemplazo de htop/nmon
+    iotop # monitoreo de io
+    iftop # monitoreo de red
 
-    # system call monitoring
-    strace # system call monitoring
-    ltrace # library call monitoring
-    lsof # list open files
+    # monitoreo de llamadas del sistema
+    strace # monitoreo de llamadas del sistema
+    ltrace # monitoreo de llamadas a bibliotecas
+    lsof # listar archivos abiertos
 
-    # system tools
+    # herramientas del sistema
     sysstat
-    lm_sensors # for `sensors` command
+    lm_sensors # para el commando `sensors`
     ethtool
     pciutils # lspci
     usbutils # lsusb
   ];
 
-  # basic configuration of git, please change to your own
+  # configuración básica de git; cámbiala por la tuya
   programs.git = {
     enable = true;
     userName = "Ryan Yin";
     userEmail = "xiaoyin_c@qq.com";
   };
 
-  # starship - an customizable prompt for any shell
+  # starship: un prompt personalizable para cualquier shell
   programs.starship = {
     enable = true;
-    # custom settings
+    # ajustes personalizados
     settings = {
       add_newline = false;
       aws.disabled = true;
@@ -125,10 +129,10 @@ Here's an example of its contents:
     };
   };
 
-  # alacritty - a cross-platform, GPU-accelerated terminal emulator
+  # alacritty: un emulador de terminal multiplataforma acelerado por GPU
   programs.alacritty = {
     enable = true;
-    # custom settings
+    # ajustes personalizados
     settings = {
       env.TERM = "xterm-256color";
       font = {
@@ -143,12 +147,12 @@ Here's an example of its contents:
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    # TODO add your custom bashrc here
+    # TODO agrega aquí tu bashrc personalizado
     bashrcExtra = ''
       export PATH="$PATH:$HOME/bin:$HOME/.local/bin:$HOME/go/bin"
     '';
 
-    # set some aliases, feel free to add more or remove some
+    # define algunos alias; puedes agregar más o eliminar algunos
     shellAliases = {
       k = "kubectl";
       urldecode = "python3 -c 'import sys, urllib.parse as ul; print(ul.unquote_plus(sys.stdin.read()))'";
@@ -156,63 +160,63 @@ Here's an example of its contents:
     };
   };
 
-  # This value determines the home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new home Manager release introduces backwards
-  # incompatible changes.
+  # Este valor determina la versión de Home Manager con la que tu
+  # configuración es compatible. Esto ayuda a evitar roturas
+  # cuando una nueva versión de Home Manager introduce cambios
+  # incompatibles hacia atrás.
   #
-  # You can update home Manager without changing this value. See
-  # the home Manager release notes for a list of state version
-  # changes in each release.
-  home.stateVersion = "25.05";
+  # Puedes actualizar Home Manager sin cambiar este valor. Consulta
+  # las notas de lanzamiento de Home Manager para ver una lista de
+  # cambios de state version en cada versión.
+  home.stateVersion = "26.05";
 }
 ```
 
-After adding `/etc/nixos/home.nix`, you need to import this new configuration file in
-`/etc/nixos/flake.nix` to make use of it, use the following command to generate an example
-in the current folder for reference:
+Después de agregar `/etc/nixos/home.nix`, necesitas importar este nuevo archivo de
+configuración en `/etc/nixos/flake.nix` para usarlo. Usa el siguiente commando para
+generar un ejemplo en la carpeta actual como referencia:
 
 ```shell
 nix flake new example -t github:nix-community/home-manager#nixos
 ```
 
-After adjusting the parameters, the content of `/etc/nixos/flake.nix` is as follows:
+Después de ajustar los parámetros, el contenido de `/etc/nixos/flake.nix` queda así:
 
 ```nix
 {
   description = "NixOS configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    # home-manager, used for managing user configuration
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
+    # home-manager, usado para gestionar la configuración de usuario
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
-      # The `follows` keyword in inputs is used for inheritance.
-      # Here, `inputs.nixpkgs` of home-manager is kept consistent with
-      # the `inputs.nixpkgs` of the current flake,
-      # to avoid problems caused by different versions of nixpkgs.
+      url = "github:nix-community/home-manager/release-26.05";
+      # La palabra clave `follows` en inputs se usa para herencia.
+      # Aquí, `inputs.nixpkgs` de home-manager se mantiene consistente con
+      # el `inputs.nixpkgs` del flake actual,
+      # para evitar problems causados por diferentes versions de nixpkgs.
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs = inputs@{ nixpkgs, home-manager, ... }: {
     nixosConfigurations = {
-      # TODO please change the hostname to your own
+      # TODO cambia el hostname por el tuyo
       my-nixos = nixpkgs.lib.nixosSystem {
         modules = [
           ./configuration.nix
 
-          # make home-manager as a module of nixos
-          # so that home-manager configuration will be deployed automatically when executing `nixos-rebuild switch`
+          # convierte home-manager en un módulo de nixos
+          # para que la configuración de home-manager se despliegue automáticamente al ejecutar `nixos-rebuild switch`
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
-            # TODO replace ryan with your own username
+            # TODO reemplaza ryan por tu propio nombre de usuario
             home-manager.users.ryan = import ./home.nix;
 
-            # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
+            # Opcionalmente, usa home-manager.extraSpecialArgs para pasar arguments a home.nix
           }
         ];
       };
@@ -221,83 +225,87 @@ After adjusting the parameters, the content of `/etc/nixos/flake.nix` is as foll
 }
 ```
 
-Then run `sudo nixos-rebuild switch` to apply the configuration, and home-manager will be
-installed automatically.
+Luego ejecuta `sudo nixos-rebuild switch` para aplicar la configuración, y home-manager se
+instalará automáticamente.
 
-> If your system's hostname is not `my-nixos`, you need to modify the name of
-> `nixosConfigurations` in `flake.nix`, or use `--flake /etc/nixos#my-nixos` to specify
-> the configuration name.
+> Si el hostname de tu sistema no es `my-nixos`, necesitas modificar el nombre de
+> `nixosConfigurations` en `flake.nix`, o usar `--flake /etc/nixos#my-nixos` para
+> especificar el nombre de la configuración.
 
-After the installation, all user-level packages and configuration can be managed through
-`/etc/nixos/home.nix`. When running `sudo nixos-rebuild switch`, the configuration of
-home-manager will be applied automatically. (**It's not necessary to run
-`home-manager switch` manually**!)
+Después de la instalación, todos los paquetes y la configuración a nivel de usuario pueden
+gestionarse mediante `/etc/nixos/home.nix`. Al ejecutar `sudo nixos-rebuild switch`, la
+configuración de home-manager se aplicará automáticamente. (**¡No es necesario ejecutar
+`home-manager switch` manualmente**!)
 
-To find the options we can use in `home.nix`, referring to the following documents:
+Para encontrar las opciones que puedes usar en `home.nix`, consulta los siguientes
+documentos:
 
 - [Home Manager - Appendix A. Configuration Options](https://nix-community.github.io/home-manager/options.xhtml):
-  A list of all options, it is recommended to search for keywords in it.
-  - [Home Manager Option Search](https://mipmip.github.io/home-manager-option-search/) is
-    another option search tool with better UI.
-- [home-manager](https://github.com/nix-community/home-manager): Some options are not
-  listed in the official documentation, or the documentation is not clear enough, you can
-  directly search and read the corresponding source code in this home-manager repo.
+  una lista de todas las opciones; se recomienda buscar palabras clave allí.
+  - [Home Manager Option Search](https://home-manager-options.extranix.com/) es otra
+    herramienta de búsqueda de opciones con una mejor UI.
+- [home-manager](https://github.com/nix-community/home-manager): algunas opciones no
+  aparecen en la documentación official, o la documentación no es lo suficientemente
+  clara; puedes buscar y leer directamente el código fuente correspondiente en este
+  repositorio de home-manager.
 
 ## Home Manager vs NixOS
 
-There are many software packages or configurations that can be set up using either NixOS
-Modules (`configuration.nix`) or Home Manager (`home.nix`), which brings about a choice
-dilemma: **What is the difference between placing software packages or configuration files
-in NixOS Modules versus Home Manager, and how should one make a decision?**
+Hay muchos paquetes de software o configuraciones que pueden configurarse usando tanto
+NixOS Modules (`configuration.nix`) como Home Manager (`home.nix`), lo que genera un
+dilemma de elección: **¿Cuál es la diferencia entre colocar paquetes de software o
+archivos de configuración en NixOS Modules frente a Home Manager, y cómo deberías
+decidir?**
 
-First, let's look at the differences: Software packages and configuration files installed
-via NixOS Modules are global to the entire system. Global configurations are usually
-stored in `/etc`, and system-wide installed software is accessible in any user
-environment.
+Primero, veamos las diferencias: los paquetes de software y archivos de configuración
+instalados mediante NixOS Modules son globales para todo el sistema. Las configuraciones
+globales normalmente se almacenan en `/etc`, y el software instalado para todo el sistema
+está disponible en cualquier entorno de usuario.
 
-On the other hand, configurations and software installed via Home Manager will be linked
-to the respective user's Home directory. The software installed is only available in the
-corresponding user environment, and it becomes unusable when switched to another user.
+Por otro lado, las configuraciones y el software instalados mediante Home Manager se
+enlazarán al directorio Home del usuario correspondiente. El software instalado solo está
+disponible en el entorno de ese usuario, y deja de estar disponible al cambiar a otro
+usuario.
 
-Based on these characteristics, the general recommended usage is:
+Con base en estas características, el uso general recomendado es:
 
-- NixOS Modules: Install system core components and other software packages or
-  configurations needed by all users.
-  - For instance, if you want a software package to continue working when you switch to
-    the root user, or if you want a configuration to apply system-wide, you should install
-    it using NixOS Modules.
-- Home Manager: Use Home Manager for all other configurations and software.
+- NixOS Modules: instala components centrales del sistema y otros paquetes de software o
+  configuraciones que necesiten todos los usuarios.
+  - Por ejemplo, si quieres que un paquete de software siga funcionando cuando cambies al
+    usuario root, o si quieres que una configuración se aplique a todo el sistema,
+    deberías instalarlo usando NixOS Modules.
+- Home Manager: usa Home Manager para todas las demás configuraciones y software.
 
-The benefits of this approach are:
+Los beneficios de este enfoque son:
 
-1. Software and background services installed at the system level often run with root
-   privileges. Avoiding unnecessary software installations at the system level can reduce
-   the security risks of the system.
-1. Many configurations in Home Manager are universal for NixOS, macOS, and other Linux
-   distributions. Choosing Home Manager to install software and configure systems can
-   improve the portability of configurations.
-1. If you need multi-user support, software and configurations installed via Home Manager
-   can better isolate different user environments, preventing configuration and software
-   version conflicts between users.
+1. El software y los servicios en segundo plano instalados a nivel del sistema a menudo se
+   ejecutan con privilegios de root. Evitar instalaciones innecesarias de software a nivel
+   del sistema puede reducir los riesgos de seguridad del sistema.
+1. Muchas configuraciones en Home Manager son universales para NixOS, macOS y otras
+   distribuciones Linux. Elegir Home Manager para instalar software y configurar sistemas
+   puede mejorar la portabilidad de las configuraciones.
+1. Si necesitas soporte multiusuario, el software y las configuraciones instalados
+   mediante Home Manager pueden aislar mejor los distintos entornos de usuario, evitando
+   conflicts de configuración y de versions de software entre usuarios.
 
-## How to use packages installed by Home Manager with privileged access?
+## ¿Cómo usar paquetes instalados por Home Manager con acceso privilegiado?
 
-The first thing that comes to mind is to switch to `root`, but then any packages installed
-by the current user through `home.nix` will be unavailable. let's take `kubectl` as an
-example(it's pre-installed via `home.nix`):
+Lo primero que viene a la mente es cambiar a `root`, pero entonces cualquier paquete
+instalado por el usuario actual mediante `home.nix` no estará disponible. Tomemos
+`kubectl` como ejemplo (está preinstalado mediante `home.nix`):
 
 ```sh
-# 1. kubectl is available
+# 1. kubectl está disponible
 › kubectl | head
 kubectl controls the Kubernetes cluster manager.
 
  Find more information at: https://kubernetes.io/docs/reference/kubectl/
 ......
 
-# 2. switch user to `root`
+# 2. cambiar al usuario `root`
 › sudo su
 
-# 3. kubectl is no longer available
+# 3. kubectl ya no está disponible
 > kubectl
 Error: nu::shell::external_command
 
@@ -313,8 +321,8 @@ Error: nu::shell::external_command
 /home/ryan/nix-config> exit
 ```
 
-The solution is to use `sudo` to run the command, which temporarily grants the current
-user the ability to run the command as a privileged user (`root`):
+La solución es usar `sudo` para ejecutar el commando, lo que concede temporalmente al
+usuario actual la capacidad de ejecutar el commando como un usuario privilegiado (`root`):
 
 ```sh
 › sudo kubectl

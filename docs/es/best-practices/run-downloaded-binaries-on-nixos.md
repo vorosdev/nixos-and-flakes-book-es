@@ -1,42 +1,43 @@
-# Running Downloaded Binaries on NixOS
+# Ejecutar binarios descargados en NixOS
 
-Since NixOS does not strictly adhere to the Filesystem Hierarchy Standard (FHS), binaries
-downloaded from the internet may not work directly on NixOS. However, there are various
-methods available to make them function properly.
+Como NixOS no sigue estrictamente el Filesystem Hierarchy Standard (FHS), los binarios
+descargados de internet pueden no funcionar directamente en NixOS. Sin embargo, hay
+various métodos disponibles para hacer que funcionen correctamente.
 
-For a comprehensive guide that presents ten different approaches to run downloaded
-binaries on NixOS, I recommend reading the article
+Para una guía completa con diez formas distintas de ejecutar binarios descargados en
+NixOS, te recomiendo leer el artículo
 [Different methods to run a non-nixos executable on Nixos](https://unix.stackexchange.com/questions/522822/different-methods-to-run-a-non-nixos-executable-on-nixos)
-and take a look at [nix-alien](https://github.com/thiagokokada/nix-alien). Or if you are
-familiar with Docker, running the binary in a Docker container is also a good choice.
+y echar un vistazo a [nix-alien](https://github.com/thiagokokada/nix-alien). O, si ya
+conoces Docker, ejecutar el binario dentro de un contenedor Docker también es una buena
+opción.
 
-Among these methods, I personally prefer creating an FHS environment to run the binary, as
-it proves to be both convenient and easy to use. To set up such an environment, you can
-add the following code to one of your Nix modules:
+Entre estos métodos, yo prefiero crear un entorno FHS para ejecutar el binario, porque me
+parece cómodo y fácil de usar. Para configurar un entorno así, puedes añadir el siguiente
+código a uno de tus módulos de Nix:
 
 ```nix
 { config, pkgs, lib, ... }:
 
 {
-  # ......omit many configurations
+  # ......omitir muchas configuraciones
 
   environment.systemPackages = with pkgs; [
-    # ......omit many packages
+    # ......omitir muchos paquetes
 
-    # Create an FHS environment using the command `fhs`, enabling the execution of non-NixOS packages in NixOS!
+    # Crea un entorno FHS usando el commando `fhs`, lo que permite ejecutar paquetes ajenos a NixOS en NixOS.
     (let base = pkgs.appimageTools.defaultFhsEnvArgs; in
       pkgs.buildFHSEnv (base // {
       name = "fhs";
       targetPkgs = pkgs:
-        # pkgs.buildFHSEnv provides only a minimal FHS environment,
-        # lacking many basic packages needed by most software.
-        # Therefore, we need to add them manually.
+        # pkgs.buildFHSEnv proporciona solo un entorno FHS mínimo,
+        # sin muchos paquetes básicos que la mayoría del software necesita.
+        # Por eso, debemos agregarlos manualmente.
         #
-        # pkgs.appimageTools provides basic packages required by most software.
+        # pkgs.appimageTools proporciona paquetes básicos requeridos por la mayoría del software.
         (base.targetPkgs pkgs) ++ (with pkgs; [
           pkg-config
           ncurses
-          # Feel free to add more packages here if needed.
+          # Si have falta, puedes agregar más paquetes aquí.
         ]
       );
       profile = "export FHS=1";
@@ -45,30 +46,31 @@ add the following code to one of your Nix modules:
     }))
   ];
 
-  # ......omit many configurations
+  # ......omitir muchas configuraciones
 }
 ```
 
-After applying the updated configuration, you can use the `fhs` command to enter the FHS
-environment, and then execute the binary you downloaded, for example:
+Después de aplicar la configuración actualizada, puedes usar el commando `fhs` para entrar
+al entorno FHS y luego ejecutar el binario descargado, por ejemplo:
 
 ```shell
-# Activating FHS drops me into a shell that resembles a "normal" Linux environment.
+# Al activar FHS entro en una shell que se parece a un entorno Linux "normal".
 $ fhs
-# Check what we have in /usr/bin.
+# Veamos qué hay en /usr/bin.
 (fhs) $ ls /usr/bin
-# Try running a non-NixOS binary downloaded from the Internet.
+# Probemos a ejecutar un binario ajeno a NixOS descargado de internet.
 (fhs) $ ./bin/code
 ```
 
-## References
+## Referencias
 
 - [Tips&Tricks for NixOS Desktop - NixOS
-  Discourse][Tips&Tricks for NixOS Desktop - NixOS Discourse]: This resource provides a
-  collection of useful tips and tricks for NixOS desktop users.
-- [nix-alien](https://github.com/thiagokokada/nix-alien): Run unpatched binaries on
+  Discourse][Tips&Tricks for NixOS Desktop - NixOS Discourse]: Este recurso ofrece una
+  colección de consejos y trucos útiles para usuarios de escritorio de NixOS.
+- [nix-alien](https://github.com/thiagokokada/nix-alien): Ejecuta binarios sin parchear en
   Nix/NixOS
-- [nix-ld](https://github.com/Mic92/nix-ld): Run unpatched dynamic binaries on NixOS.
+- [nix-ld](https://github.com/Mic92/nix-ld): Ejecuta binarios dinámicos sin parchear en
+  NixOS.
 - [NixOS: Packaging Closed Source Software (& Binary Distributed Ones) - Lan Tian @ Blog](https://lantian.pub/en/article/modify-computer/nixos-packaging.lantian/#examples-closed-source-software--binary-distributed-ones)
 
 [Tips&Tricks for NixOS Desktop - NixOS Discourse]:

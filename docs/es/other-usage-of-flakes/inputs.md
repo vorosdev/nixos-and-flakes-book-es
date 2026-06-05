@@ -1,47 +1,48 @@
-# Flake Inputs
+# Entradas del flake
 
-The `inputs` section in `flake.nix` is an attribute set used to specify the dependencies
-of the current flake. There are various types of inputs, as shown in the examples below:
+La sección `inputs` en `flake.nix` es un conjunto de atributos usado para especificar las
+dependencies del flake actual. Hay various tipos de entradas, como muestran los ejemplos
+de abajo:
 
-> See Official docs for details - [Flakes Inputs - Nix Manual].
+> Consulta la documentación official para más detalles - [Flakes Inputs - Nix Manual].
 
 ```nix
 {
   inputs = {
-    # GitHub repository as the data source, specifying the master branch.
-    # This is the most common input format.
+    # Repositorio de GitHub como fuente de datos, especificando la rama master.
+    # Este es el formato de entrada más común.
     nixpkgs.url = "github:Mic92/nixpkgs/master";
-    # Git URL, applicable to any Git repository using the https/ssh protocol.
+    # URL Git, applicable a cualquier repositorio Git que use el protocolo https/ssh.
     git-example.url = "git+https://git.somehost.tld/user/path?ref=branch";
-    # Git URL by tag, applicable to any Git repository using the https/ssh protocol.
+    # URL Git por etiqueta, applicable a cualquier repositorio Git que use el protocolo https/ssh.
     git-example-tag.url = "git+https://git.somehost.tld/user/path?tag=x.y.x";
-    # Github URL by pull request.
-    git-pr.url = "github:NixOS/nixpkgs?ref=pull/349351/head";
-    # Git URL with submodules, applicable to any Git repository using the https/ssh protocol.
+    # URL de GitHub por pull request.
+    git-pr.url = "github:NixOS/nixpkgs/pull/349351/head";
+    # URL Git con submódulos, applicable a cualquier repositorio Git que use el protocolo https/ssh.
     git-example-submodule.url = "git+https://git.somehost.tld/user/path?submodules=1";
-    # Archive File URL, needed in case your input use LFS.
-    # Regular git input doesn't support LFS before nix 2.27
+    # URL de archivo comprimido, necesaria si tu entrada usa LFS.
+    # La entrada Git normal no soporta LFS antes de nix 2.27
     git-example-lfs.url = "https://codeberg.org/solver-orgz/treedome/archive/master.tar.gz";
-    # Starting from nix 2.27, you can use the url like below to enable git lfs on flake input
+    # A partir de nix 2.27, puedes usar una URL como la siguiente para habilitar git LFS en una entrada del flake
     treedome.url = "git+https://codeberg.org/solver-orgz/treedome?ref=master&lfs=1";
-    # Similar to fetching a Git repository, but using the ssh protocol
-    # with key authentication. Also uses the shallow=1 parameter
-    # to avoid copying the .git directory.
+    # Similar a obtener un repositorio Git, pero usando el protocolo ssh
+    # con autenticación por clave. También usa el parámetro shallow=1
+    # para evitar copiar el directorio .git.
     ssh-git-example.url = "git+ssh://git@github.com/ryan4yin/nix-secrets.git?shallow=1";
-    # It's also possible to directly depend on a local Git repository.
-    git-directory-example.url = "git+file:/path/to/repo?shallow=1";
-    # Using the `dir` parameter to specify a subdirectory.
+    # También es possible depender directamente de un repositorio Git local.
+    git-directory-example.url = "git+file:///path/to/repo?shallow=1";
+    # Usando el parámetro `dir` para especificar un subdirectorio.
     nixpkgs.url = "github:foo/bar?dir=shu";
-    # Local folder (if using an absolute path, the 'path:' prefix can be omitted).
+    # Carpeta local (si usas una ruta absoluta, el prefijo 'path:' se puede omitir).
     directory-example.url = "path:/path/to/repo";
 
-    # If the data source is not a flake, set flake=false.
-    # `flake=false` is usually used to include additional source code,
-    #   configuration files, etc.
-    # In Nix code, you can directly reference files within
-    #   it using "${inputs.bar}/xxx/xxx" notation.
-    # For example, import "${inputs.bar}/xxx/xxx.nix" to import a specific nix file,
-    # or use "${inputs.bar}/xx/xx" as a path parameter for certain options.
+    # Si la fuente de datos no es un flake, establece flake=false.
+    # `flake=false` suele usarse para incluir código fuente adicional,
+    #   archivos de configuración, etc.
+    # En código Nix, puedes referenciar directamente archivos dentro
+    #   de él usando la notación "${inputs.bar}/xxx/xxx".
+    # Por ejemplo, importa "${inputs.bar}/xxx/xxx.nix" para importar un archivo nix específico,
+    # o usa "${inputs.bar}/xx/xx" como parámetro de ruta para ciertas opciones.
     bar = {
       url = "github:foo/bar/branch";
       flake = false;
@@ -49,14 +50,14 @@ of the current flake. There are various types of inputs, as shown in the example
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      # `follows` is the inheritance syntax within inputs.
-      # Here, it ensures that sops-nix's `inputs.nixpkgs` aligns with
-      # the current flake's inputs.nixpkgs,
-      # avoiding inconsistencies in the dependency's nixpkgs version.
+      # `follows` es la sintaxis de herencia dentro de inputs.
+      # Aquí asegura que `inputs.nixpkgs` de sops-nix coincida con
+      # `inputs.nixpkgs` del flake actual,
+      # evitando inconsistencies en la versión de nixpkgs de la dependencia.
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Lock the flake to a specific commit.
+    # Bloquea el flake a un commit específico.
     nix-doom-emacs = {
       url = "github:vlaci/nix-doom-emacs?rev=238b18d7b2c8239f676358634bfb32693d3706f3";
       flake = false;
@@ -67,7 +68,7 @@ of the current flake. There are various types of inputs, as shown in the example
 }
 ```
 
-## References
+## Referencias
 
 - [Flakes Inputs - Nix Manual]
 

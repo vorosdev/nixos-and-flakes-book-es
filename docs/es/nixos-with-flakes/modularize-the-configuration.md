@@ -1,7 +1,7 @@
-# Modularize Your NixOS Configuration
+# Modulariza tu configuración de NixOS
 
-At this point, the skeleton of the entire system is configured. The current configuration
-structure in `/etc/nixos` should be as follows:
+En este punto, el esqueleto de todo el sistema está configurado. La estructura de
+configuración actual en `/etc/nixos` debería set la siguiente:
 
 ```
 $ tree
@@ -12,54 +12,58 @@ $ tree
 └── configuration.nix
 ```
 
-The functions of these four files are:
+Las funciones de estos cuatro archivos son:
 
-- `flake.lock`: An automatically generated version-lock file that records all input
-  sources, hash values, and version numbers of the entire flake to ensure reproducibility.
-- `flake.nix`: The entry file that will be recognized and deployed when executing
-  `sudo nixos-rebuild switch`. See
-  [Flakes - NixOS Wiki](https://wiki.nixos.org/wiki/Flakes) for all options of flake.nix.
-- `configuration.nix`: Imported as a Nix module in flake.nix, all system-level
-  configuration is currently written here. See
+- `flake.lock`: un archivo de bloqueo de versions generado automáticamente que registra
+  todas las fuentes de inputs, valores hash y números de versión de todo el flake para
+  garantizar la reproducibilidad.
+- `flake.nix`: el archivo de entrada que se reconocerá y desplegará al ejecutar
+  `sudo nixos-rebuild switch`. Consulta
+  [Flakes - NixOS Wiki](https://wiki.nixos.org/wiki/Flakes) para ver todas las opciones de
+  flake.nix.
+- `configuration.nix`: importado como módulo de Nix en flake.nix; toda la configuración a
+  nivel de sistema se escribe actualmente aquí. Consulta
   [Configuration - NixOS Manual](https://nixos.org/manual/nixos/unstable/index.html#ch-configuration)
-  for all options of configuration.nix.
-- `home.nix`: Imported by Home-Manager as the configuration of the user `ryan` in
-  flake.nix, containing all of `ryan`'s configuration and managing `ryan`'s home folder.
-  See
+  para ver todas las opciones de configuration.nix.
+- `home.nix`: importado por Home Manager como la configuración del usuario `ryan` en
+  flake.nix; contiene toda la configuración de `ryan` y administra la carpeta personal de
+  `ryan`. Consulta
   [Appendix A. Configuration Options - Home-Manager](https://nix-community.github.io/home-manager/options.xhtml)
-  for all options of home.nix.
+  para ver todas las opciones de home.nix.
 
-By modifying these files, you can declaratively change the system and home directory
-status.
+Al modificar estos archivos, puedes cambiar declarativamente el estado del sistema y del
+directorio personal.
 
-However, as the configuration grows, relying solely on `configuration.nix` and `home.nix`
-can lead to bloated and difficult-to-maintain files. A better solution is to use the Nix
-module system to split the configuration into multiple Nix modules and write them in a
-classified manner.
+Sin embargo, a medida que la configuración crece, depender únicamente de
+`configuration.nix` y `home.nix` puede producir archivos inflados y difíciles de mantener.
+Una mejor solución es usar el sistema de módulos de Nix para dividir la configuración en
+various módulos de Nix y escribirlos de forma clasificada.
 
-The Nix language provides an
-[import function](https://nix.dev/tutorials/nix-language.html#import) with a special rule:
+El lenguaje Nix proporciona una
+[función import](https://nix.dev/tutorials/nix-language.html#import) con una regla
+especial:
 
-> If the parameter of `import` is a folder path, it will return the execution result of
-> the `default.nix` file in that folder.
+> Si el parámetro de `import` es una ruta de carpeta, devolverá el resultado de ejecutar
+> el archivo `default.nix` en esa carpeta.
 
-The Nixpkgs module system provides a similar parameter, `imports`, which accepts a list of
-`.nix` files and **merge** all the configuration defined in these files into the current
-Nix module.
+El sistema de módulos de Nixpkgs proporciona un parámetro similar, `imports`, que acepta
+una lista de archivos `.nix` y **fusiona** toda la configuración definida en estos
+archivos en el módulo de Nix actual.
 
-Note that `imports` will not simply overwrite duplicate configuration but handle it more
-reasonably. For example, if `program.packages = [...]` is defined in multiple modules,
-then `imports` will merge all `program.packages` defined in all Nix modules into one list.
-Attribute sets can also be merged correctly. The specific behavior can be explored by
-yourself.
+Ten en cuenta que `imports` no simplemente sobrescribe configuraciones duplicadas, sino
+que las maneja de forma más razonable. Por ejemplo, si `program.packages = [...]` se
+define en various módulos, entonces `imports` fusionará todos los `program.packages`
+definidos en todos los módulos de Nix en una sola lista. Los conjuntos de atributos
+también se pueden fusionar correctamente. Puedes explorar por tu cuenta el comportamiento
+específico.
 
-> I only found a description of `imports` in
+> Solo encontré una descripción de `imports` en el
 > [Nixpkgs-Unstable Official Manual - evalModules Parameters](https://nixos.org/manual/nixpkgs/unstable/#module-system-lib-evalModules-parameters):
-> `A list of modules. These are merged together to form the final configuration.` It's a
-> bit ambiguous...
+> `A list of modules. These are merged together to form the final configuration.` Es un
+> poco ambiguo...
 
-With the help of `imports`, we can split `home.nix` and `configuration.nix` into multiple
-Nix modules defined in different `.nix` files. Lets look at an example module
+Con la ayuda de `imports`, podemos dividir `home.nix` y `configuration.nix` en various
+módulos de Nix definidos en diferentes archivos `.nix`. Veamos un módulo de ejemplo
 `packages.nix`:
 
 ```nix
@@ -77,44 +81,46 @@ Nix modules defined in different `.nix` files. Lets look at an example module
 }
 ```
 
-This module loads two other modules in the imports section, namely `special-fonts-1.nix`
-and `special-fonts-2.nix`. Both files are modules themselves and look similar to this.
+Este módulo carga otros dos módulos en la sección imports, concretamente
+`special-fonts-1.nix` y `special-fonts-2.nix`. Ambos archivos son módulos en sí mismos y
+se ven similares a esto.
 
 ```nix
 { config, pkgs, ...}: {
-  # Configuration stuff ...
+  # Cosas de configuración ...
 }
 ```
 
-Both import statements above are equivalent in the parameters they receive:
+Las dos sentencias import anteriores son equivalentes en los parámetros que reciben:
 
-- Statement `(1)` imports the function in `special-fonts-1.nix` and calls it by passing
-  `{config = config; pkgs = pkgs}`. Basically using the return value of the call (another
-  partial configuration _attribute set_) inside the `imports` list.
+- La sentencia `(1)` importa la función en `special-fonts-1.nix` y la llama pasando
+  `{config = config; pkgs = pkgs}`. Básicamente usa el valor de retorno de la llamada
+  (otro _conjunto de atributos_ de configuración parcial) dentro de la lista `imports`.
 
-- Statement `(2)` defines a path to a module, whose function Nix will load _automatically_
-  when assembling the configuration `config`. It will pass all matching arguments from the
-  function in `packages.nix` to the loaded function in `special-fonts-2.nix` which results
-  in `import ./special-fonts-2.nix {config = config; pkgs = pkgs}`.
+- La sentencia `(2)` define una ruta a un módulo, cuya función Nix cargará
+  _automáticamente_ al ensamblar la configuración `config`. Pasará todos los arguments
+  coincidentes de la función en `packages.nix` a la función cargada en
+  `special-fonts-2.nix`, lo que resulta en
+  `import ./special-fonts-2.nix {config = config; pkgs = pkgs}`.
 
-Here is a nice starter example of modularizing the configuration, Highly recommended:
+Aquí hay un buen ejemplo inicial de modularización de la configuración, muy recomendado:
 
 - [Misterio77/nix-starter-configs](https://github.com/Misterio77/nix-starter-configs)
 
-A more complicated example,
-[ryan4yin/nix-config/i3-kickstarter](https://github.com/ryan4yin/nix-config/tree/i3-kickstarter)
-is the configuration of my previous NixOS system with the i3 window manager. Its structure
-is as follows:
+Un ejemplo más complicado,
+[ryan4yin/nix-config/i3-kickstarter](https://github.com/ryan4yin/nix-config/tree/i3-kickstarter),
+es la configuración de mi sistema NixOS anterior con el gestor de ventanas i3. Su
+estructura es la siguiente:
 
 ```shell
 ├── flake.lock
 ├── flake.nix
 ├── home
-│   ├── default.nix         # here we import all submodules by imports = [...]
-│   ├── fcitx5              # fcitx5 input method's configuration
+│   ├── default.nix         # aquí importamos todos los submódulos con imports = [...]
+│   ├── fcitx5              # configuración del método de entrada fcitx5
 │   │   ├── default.nix
 │   │   └── rime-data-flypy
-│   ├── i3                  # i3 window manager's configuration
+│   ├── i3                  # configuración del gestor de ventanas i3
 │   │   ├── config
 │   │   ├── default.nix
 │   │   ├── i3blocks.conf
@@ -123,12 +129,12 @@ is as follows:
 │   ├── programs
 │   │   ├── browsers.nix
 │   │   ├── common.nix
-│   │   ├── default.nix   # here we import all modules in programs folder by imports = [...]
+│   │   ├── default.nix   # aquí importamos todos los módulos de la carpeta programs con imports = [...]
 │   │   ├── git.nix
 │   │   ├── media.nix
 │   │   ├── vscode.nix
 │   │   └── xdg.nix
-│   ├── rofi              #  rofi launcher's configuration
+│   ├── rofi              # configuración del lanzador rofi
 │   │   ├── configs
 │   │   │   ├── arc_dark_colors.rasi
 │   │   │   ├── arc_dark_transparent_colors.rasi
@@ -137,7 +143,7 @@ is as follows:
 │   │   │   ├── rofidmenu.rasi
 │   │   │   └── rofikeyhint.rasi
 │   │   └── default.nix
-│   └── shell             # shell/terminal related configuration
+│   └── shell             # configuración relacionada con shell/terminal
 │       ├── common.nix
 │       ├── default.nix
 │       ├── nushell
@@ -147,43 +153,45 @@ is as follows:
 │       ├── starship.nix
 │       └── terminals.nix
 ├── hosts
-│   ├── msi-rtx4090      # My main machine's configuration
-│   │   ├── default.nix  # This is the old configuration.nix, but most of the content has been split out to modules.
-│   │   └── hardware-configuration.nix  # hardware & disk related configuration, autogenerated by nixos
-│   └── my-nixos       # my test machine's configuration
+│   ├── msi-rtx4090      # configuración de mi máquina principal
+│   │   ├── default.nix  # este es el antiguo configuration.nix, pero la mayor parte del contenido se dividió en módulos.
+│   │   └── hardware-configuration.nix  # configuración relacionada con hardware y disco, autogenerada por nixos
+│   └── my-nixos       # configuración de mi máquina de pruebas
 │       ├── default.nix
 │       └── hardware-configuration.nix
-├── modules          # some common NixOS modules that can be reused
+├── modules          # algunos módulos comunes de NixOS que se pueden reutilizar
 │   ├── i3.nix
 │   └── system.nix
-└── wallpaper.jpg    # wallpaper
+└── wallpaper.jpg    # fondo de pantalla
 ```
 
-There is no need to follow the above structure, you can organize your configuration in any
-way you like. The key is to use `imports` to import all the submodules into the main
-module.
+No es necesario seguir la estructura anterior; puedes organizar tu configuración de la
+forma que prefieras. La clave es usar `imports` para importar todos los submódulos en el
+módulo principal.
 
-## `lib.mkOverride`, `lib.mkDefault`, and `lib.mkForce`
+## `lib.mkOverride`, `lib.mkDefault` y `lib.mkForce`
 
-In Nix, some people use `lib.mkDefault` and `lib.mkForce` to define values. These
-functions are designed to set default values or force values of options.
+En Nix, algunas personas usan `lib.mkDefault` y `lib.mkForce` para definir valores. Estas
+funciones están diseñadas para establecer valores predeterminados o forzar valores de
+opciones.
 
-You can explore the source code of `lib.mkDefault` and `lib.mkForce` by running
-`nix repl -f '<nixpkgs>'` and then entering `:e lib.mkDefault`. To learn more about
-`nix repl`, type `:?` for the help information.
+Puedes explorar el código fuente de `lib.mkDefault` y `lib.mkForce` ejecutando
+`nix repl -f '<nixpkgs>'` y luego ingresando `:e lib.mkDefault`. Para aprender más sobre
+`nix repl`, escribe `:?` para ver la información de ayuda.
 
-Here's the source code:
+Aquí está el código fuente:
 
 ```nix
   # ......
 
-  mkOverride = priority: content:
-    { _type = "override";
-      inherit priority content;
-    };
+  mkOverride = priority: content: {
+    _type = "override";
+    inherit priority content;
+  };
 
   mkOptionDefault = mkOverride 1500; # priority of option defaults
   mkDefault = mkOverride 1000; # used in config sections of non-user modules to set a default
+  defaultOverridePriority = 100;
   mkImageMediaOverride = mkOverride 60; # image media profiles can be derived by inclusion into host config, hence needing to override host config, but do allow user to mkForce
   mkForce = mkOverride 50;
   mkVMOverride = mkOverride 10; # used by ‘nixos-rebuild build-vm’
@@ -191,22 +199,24 @@ Here's the source code:
   # ......
 ```
 
-In summary, `lib.mkDefault` is used to set default values of options with a priority of
-1000 internally, and `lib.mkForce` is used to force values of options with a priority of
-50 internally. If you set a value of an option directly, it will be set with a default
-priority of 1000, the same as `lib.mkDefault`.
+En resumen, `lib.mkDefault` se usa para establecer valores predeterminados de opciones con
+una prioridad interna de 1000, y `lib.mkForce` se usa para forzar valores de opciones con
+una prioridad interna de 50. Si estableces directamente el valor de una opción, se
+establecerá con una prioridad predeterminada de 100 (definida por
+`defaultoverridepriority`), que es más alta que `lib.mkDefault`, por lo que se
+sobrescribirá el valor predeterminado.
 
-The lower the `priority` value, the higher the actual priority. As a result, `lib.mkForce`
-has a higher priority than `lib.mkDefault`. If you define multiple values with the same
-priority, Nix will throw an error.
+Cuanto menor sea el valor de `priority`, mayor será la prioridad real. Como resultado,
+`lib.mkForce` tiene mayor prioridad que `lib.mkDefault`. Si defines various valores con la
+misma prioridad, Nix lanzará un error.
 
-Using these functions can be very helpful for modularizing the configuration. You can set
-default values in a low-level module (base module) and force values in a high-level
-module.
+Usar estas funciones puede set muy útil para modularizar la configuración. Puedes
+establecer valores predeterminados en un módulo de bajo nivel (módulo base) y forzar
+valores en un módulo de alto nivel.
 
-For example, in my configuration at
+Por ejemplo, en mi configuración en
 [ryan4yin/nix-config/blob/c515ea9/modules/nixos/core-server.nix](https://github.com/ryan4yin/nix-config/blob/c515ea9/modules/nixos/core-server.nix#L32),
-I define default values like this:
+defino valores predeterminados así:
 
 ```nix{6}
 { lib, pkgs, ... }:
@@ -220,9 +230,9 @@ I define default values like this:
 }
 ```
 
-Then, for my desktop machine, I override the value in
+Luego, para mi máquina de escritorio, sobrescribo el valor en
 [ryan4yin/nix-config/blob/c515ea9/modules/nixos/core-desktop.nix](https://github.com/ryan4yin/nix-config/blob/c515ea9/modules/nixos/core-desktop.nix#L18)
-like this:
+así:
 
 ```nix{10}
 { lib, pkgs, ... }:
@@ -240,25 +250,25 @@ like this:
 }
 ```
 
-## `lib.mkOrder`, `lib.mkBefore`, and `lib.mkAfter`
+## `lib.mkOrder`, `lib.mkBefore` y `lib.mkAfter`
 
-In addition to `lib.mkDefault` and `lib.mkForce`, there are also `lib.mkBefore` and
-`lib.mkAfter`, which are used to set the merge order of **list-type options**. These
-functions further contribute to the modularization of the configuration.
+Además de `lib.mkDefault` y `lib.mkForce`, también existen `lib.mkBefore` y `lib.mkAfter`,
+que se usan para establecer el orden de fusión de **opciones de tipo lista**. Estas
+funciones contribuyen aún más a la modularización de la configuración.
 
-> I haven't found the official documentation for list-type options, but I simply
-> understand that they are types whose merge results are related to the order of merging.
-> According to this understanding, both `list` and `string` types are list-type options,
-> and these functions can indeed be used on these two types in practice.
+> No he encontrado la documentación official para opciones de tipo lista, pero simplemente
+> entiendo que son tipos cuyos resultados de fusión están relacionados con el orden de
+> fusión. Según esta interpretación, tanto los tipos `list` como `string` son opciones de
+> tipo lista, y en la práctica estas funciones sí se pueden usar en esos dos tipos.
 
-As mentioned earlier, when you define multiple values with the same **override priority**,
-Nix will throw an error. However, by using `lib.mkOrder`, `lib.mkBefore`, or
-`lib.mkAfter`, you can define multiple values with the same override priority, and they
-will be merged in the order you specify.
+Como se mencionó antes, cuando defines various valores con la misma **prioridad de
+sobrescritura**, Nix lanzará un error. Sin embargo, al usar `lib.mkOrder`, `lib.mkBefore`
+o `lib.mkAfter`, puedes definir various valores con la misma prioridad de sobrescritura, y
+se fusionarán en el orden que especifiques.
 
-To examine the source code of `lib.mkBefore`, you can run `nix repl -f '<nixpkgs>'` and
-then enter `:e lib.mkBefore`. To learn more about `nix repl`, type `:?` for the help
-information:
+Para examinar el código fuente de `lib.mkBefore`, puedes ejecutar
+`nix repl -f '<nixpkgs>'` y luego ingresar `:e lib.mkBefore`. Para aprender más sobre
+`nix repl`, escribe `:?` para ver la información de ayuda:
 
 ```nix
   # ......
@@ -275,16 +285,15 @@ information:
   # ......
 ```
 
-Therefore, `lib.mkBefore` is a shorthand for `lib.mkOrder 500`, and `lib.mkAfter` is a
-shorthand for `lib.mkOrder 1500`.
+Por lo tanto, `lib.mkBefore` es una abreviatura de `lib.mkOrder 500`, y `lib.mkAfter` es
+una abreviatura de `lib.mkOrder 1500`.
 
-To test the usage of `lib.mkBefore` and `lib.mkAfter`, let's create a simple Flake
-project:
+Para probar el uso de `lib.mkBefore` y `lib.mkAfter`, creemos un proyecto Flake simple:
 
 ```nix{8-36}
 # flake.nix
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
   outputs = {nixpkgs, ...}: {
     nixosConfigurations = {
       "my-nixos" = nixpkgs.lib.nixosSystem {
@@ -325,13 +334,13 @@ project:
 }
 ```
 
-The flake above contains the usage of `lib.mkBefore` and `lib.mkAfter` on multiline
-strings, single-line strings, and lists. Let's test the results:
+El flake anterior contiene el uso de `lib.mkBefore` y `lib.mkAfter` en cadenas multilínea,
+cadenas de una sola línea y listas. Probemos los resultados:
 
 ```bash
 # Example 1: multiline string merging
 › echo $(nix eval .#nixosConfigurations.my-nixos.config.programs.bash.shellInit)
-trace: warning: system.stateVersion is not set, defaulting to 25.05. Read why this matters on https://nixos.org/manual/nixos/stable/options.html#opt-system.stateVersio
+trace: warning: system.stateVersion is not set, defaulting to 26.05. Read why this matters on https://nixos.org/manual/nixos/stable/options.html#opt-system.stateVersio
 n.
 "echo 'insert before default'
 
@@ -358,14 +367,14 @@ echo 'insert after default';"
 
 ```
 
-As you can see, `lib.mkBefore` and `lib.mkAfter` can define the order of merging of
-multiline strings, single-line strings, and lists. The order of merging is the same as the
-order of definition.
+Como puedes ver, `lib.mkBefore` y `lib.mkAfter` pueden definir el orden de fusión de
+cadenas multilínea, cadenas de una sola línea y listas. El orden de fusión es el mismo que
+el orden de definición.
 
-> For a deeper introduction to the module system, see
-> [Module System & Custom Options](../other-usage-of-flakes/module-system.md).
+> Para una introducción más profunda al sistema de módulos, consulta
+> [Sistema de módulos y opciones personalizadas](../other-usage-of-flakes/module-system.md).
 
-## References
+## Referencias
 
 - [Nix modules: Improving Nix's discoverability and usability](https://cfp.nixcon.org/nixcon2020/talk/K89WJY/)
-- [Module System - Nixpkgs](https://github.com/NixOS/nixpkgs/blob/nixos-25.05/doc/module-system/module-system.chapter.md)
+- [Module System - Nixpkgs](https://github.com/NixOS/nixpkgs/blob/nixos-26.05/doc/module-system/module-system.chapter.md)
