@@ -1,11 +1,11 @@
 # Agregar servidores de caché binaria
 
 Ya introdujimos los concepts de Nix Store y caché binaria. Aquí veremos cómo agregar
-various servidores de caché para acelerar las descargas de paquetes.
+varios servidores de caché para acelerar las descargas de paquetes.
 
 ## Por qué agregar servidores de caché {#why-add-cache-servers}
 
-Nix ofrece un servidor de caché official,
+Nix ofrece un servidor de caché oficial,
 [https://cache.nixos.org](https://cache.nixos.org), que almacena resultados de compilación
 para la mayoría de los paquetes de uso común. Sin embargo, puede no satisfacer todas las
 necesidades. En los siguientes casos, necesitamos agregar servidores de caché adicionales:
@@ -31,10 +31,9 @@ En Nix, puedes configurar servidores de caché usando las siguientes opciones:
    está activada por defecto. Nix solo usará cachés cuyas firmas puedan verificarse con
    alguna clave pública en `trusted-public-keys`. Por eso necesitas agregar la clave
    pública correspondiente a los `substituters` en `trusted-public-keys`.
-   1. Los datos del espejo de caché se sincronizan directamente desde el servidor
-      official. Por lo tanto, sus claves públicas son las mismas que las del servidor
-      official, y puedes usar la clave pública del servidor official sin configuración
-      adicional.
+   1. Los datos del espejo de caché se sincronizan directamente desde el servidor oficial.
+      Por lo tanto, sus claves públicas son las mismas que las del servidor oficial, y
+      puedes usar la clave pública del servidor oficial sin configuración adicional.
    2. Este mecanismo de verificación basado totalmente en confianza transfiere la
       responsabilidad de seguridad a los usuarios. Si un usuario quiere usar un servidor
       de caché de terceros para acelerar la compilación de una biblioteca concreta, debe
@@ -53,11 +52,11 @@ Puedes configurar `substituters` y `trusted-public-keys` de las siguientes maner
       cualquier módulo de NixOS para generar declarativamente `/etc/nix/nix.conf`.
 2. Configurarlo en el `flake.nix` de un proyecto flake usando `nixConfig.substituters`.
    Esta configuración solo afecta al flake actual.
-3. Establecerlo temporalmente mediante el parámetro `--option` del commando `nix`; esta
-   configuración solo se aplica al commando actual.
+3. Establecerlo temporalmente mediante el parámetro `--option` del comando `nix`; esta
+   configuración solo se aplica al comando actual.
 
 De estos tres métodos, excepto la configuración global del primero, los otros dos son
-temporales. Si se usan various métodos a la vez, las configuraciones posteriores
+temporales. Si se usan varios métodos a la vez, las configuraciones posteriores
 sobrescriben directamente a las anteriores.
 
 Sin embargo, hay riesgos de seguridad al establecer `substituters` temporalmente, como ya
@@ -90,7 +89,7 @@ NixOS:
   nix.settings = {
     # da a los usuarios de esta lista el derecho a especificar substituters adicionales vía:
     #    1. `nixConfig.substituters` en `flake.nix`
-    #    2. arguments de línea de commandos `--options substituters http://xxx`
+    #    2. argumentos de línea de comandos `--options substituters http://xxx`
     trusted-users = ["ryan"];
 
     substituters = [
@@ -104,7 +103,7 @@ NixOS:
     ];
 
     trusted-public-keys = [
-      # clave pública predeterminada de cache.nixos.org; viene integrada, no have falta agregarla aquí
+      # clave pública predeterminada de cache.nixos.org; viene integrada, no hace falta agregarla aquí
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
     ];
   };
@@ -174,7 +173,7 @@ en `flake.nix`:
 }
 ```
 
-Por último, el tercer método consiste en usar el siguiente commando para especificar de
+Por último, el tercer método consiste en usar el siguiente comando para especificar de
 forma temporal `substituters` y `trusted-public-keys` durante el despliegue:
 
 ```bash
@@ -207,7 +206,7 @@ Nix ofrece el prefijo
 [`extra-`](https://nixos.org/manual/nix/stable/command-ref/conf-file.html?highlight=extra#file-format)
 para lograr esta funcionalidad de **fusión**.
 
-Según la documentación official, si el valor del parámetro `xxx` es una lista, el valor de
+Según la documentación oficial, si el valor del parámetro `xxx` es una lista, el valor de
 `extra-xxx` se agrega al final del parámetro `xxx`:
 
 En otras palabras, puedes usarlo así:
@@ -265,7 +264,7 @@ En otras palabras, puedes usarlo así:
                 "https://cache.nixos.org"
               ];
               trusted-public-keys = [
-                # clave pública predeterminada de cache.nixos.org, viene integrada, no have falta agregarla aquí
+                # clave pública predeterminada de cache.nixos.org, viene integrada, no hace falta agregarla aquí
                 "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
               ];
             };
@@ -284,16 +283,16 @@ En otras palabras, puedes usarlo así:
 > [roaming laptop: network proxy configuration - NixOS/nixpkgs](https://github.com/NixOS/nixpkgs/issues/27535#issuecomment-1178444327)
 > Aunque antes se mencionó que un proxy transparente ejecutándose en tu router o máquina
 > local puede resolver completamente el problema de descargas lentas de paquetes en NixOS,
-> la configuración es bastante engorrosa y a menudo require hardware adicional.
+> la configuración es bastante engorrosa y a menudo requiere hardware adicional.
 
 Algunos usuarios pueden preferir acelerar directamente las descargas de paquetes usando un
 proxy HTTP/Socks5 ejecutándose en su máquina. Así se configura. Usar métodos como
 `export HTTPS_PROXY=http://127.0.0.1:7890` en la terminal no funcionará porque el trabajo
-real lo have un proceso en segundo plano llamado `nix-daemon`, no los commandos ejecutados
+real lo hace un proceso en segundo plano llamado `nix-daemon`, no los comandos ejecutados
 directamente en la terminal.
 
 Si solo necesitas usar un proxy temporalmente, puedes establecer las variables de entorno
-del proxy con los siguientes commandos:
+del proxy con los siguientes comandos:
 
 ```bash
 sudo mkdir -p /run/systemd/system/nix-daemon.service.d/
@@ -312,17 +311,17 @@ La configuración en `/run/systemd/system/nix-daemon.service.d/override.conf` se
 automáticamente cuando el sistema se reinicie, o puedes eliminarla manualmente y reiniciar
 el servicio nix-daemon para restaurar la configuración original.
 
-Si quieres establecer el proxy de forma permanente, se recomienda guardar los commandos
+Si quieres establecer el proxy de forma permanente, se recomienda guardar los comandos
 anteriores como un script de shell y ejecutarlo cada vez que arranque el sistema. Como
 alternativa, puedes usar un proxy transparente o TUN y otras soluciones de proxy global.
 
 > También hay personas en la comunidad que establecen permanentemente el proxy para
 > nix-daemon de forma declarativa usando `systemd.services.nix-daemon.environment`. Sin
-> embargo, si el proxy encuentra problems, será muy problemático. Nix-daemon no funcionará
-> correctamente y la mayoría de los commandos de Nix no se ejecutarán bien. Además, la
-> propia configuración de systemd está protegida como solo lectura, lo que dificulta
-> modificar o eliminar la configuración del proxy. Por eso no se recomienda usar este
-> método.
+> embargo, si el proxy encuentra problemas, será muy problemático. Nix-daemon no
+> funcionará correctamente y la mayoría de los comandos de Nix no se ejecutarán bien.
+> Además, la propia configuración de systemd está protegida como solo lectura, lo que
+> dificulta modificar o eliminar la configuración del proxy. Por eso no se recomienda usar
+> este método.
 
 > Al usar algunos proxies comerciales o públicos, podrías encontrar errores HTTP 403 al
 > descargar desde GitHub, como se describe en

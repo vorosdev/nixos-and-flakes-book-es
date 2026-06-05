@@ -5,7 +5,7 @@ gestionar la configuración a nivel de usuario en el directorio Home, necesitamo
 Home Manager.
 
 Según el
-[manual official de Home Manager](https://nix-community.github.io/home-manager/index.xhtml),
+[manual oficial de Home Manager](https://nix-community.github.io/home-manager/index.xhtml),
 para instalar Home Manager como un módulo de NixOS, primero necesitamos crear
 `/etc/nixos/home.nix`. Este es un ejemplo de su contenido:
 
@@ -41,9 +41,9 @@ para instalar Home Manager como un módulo de NixOS, primero necesitamos crear
     "Xft.dpi" = 172;
   };
 
-  # Paquetes que deberían instalarse en el perfil de usuario.
+  # Paquetes que deberían instalarse en el profile de usuario.
   home.packages = with pkgs; [
-    # aquí hay algunas herramientas de línea de commandos que uso con frecuencia
+    # aquí hay algunas herramientas de línea de comandos que uso con frecuencia
     # puedes agregar las tuyas o eliminar algunas de estas
 
     neofetch
@@ -57,22 +57,22 @@ para instalar Home Manager como un módulo de NixOS, primero necesitamos crear
 
     # utilidades
     ripgrep # busca recursivamente en directors un patrón regex
-    jq # un procesador JSON de línea de commandos ligero y flexible
+    jq # un procesador JSON de línea de comandos ligero y flexible
     yq-go # procesador yaml https://github.com/mikefarah/yq
     eza # un reemplazo moderno para ‘ls’
-    fzf # un buscador difuso de línea de commandos
+    fzf # un buscador difuso de línea de comandos
 
     # herramientas de red
     mtr # una herramienta de diagnóstico de red
     iperf3
     dnsutils  # `dig` + `nslookup`
-    ldns # reemplazo de `dig`; proporciona el commando `drill`
-    aria2 # una utilidad de descarga de línea de commandos ligera, multiprotocolo y multifuente
+    ldns # reemplazo de `dig`; proporciona el comando `drill`
+    aria2 # una utilidad de descarga de línea de comandos ligera, multiprotocolo y multifuente
     socat # reemplazo de openbsd-netcat
     nmap # una utilidad para descubrimiento de red y auditoría de seguridad
     ipcalc  # es una calculadora para direcciones IPv4/v6
 
-    # various
+    # varios
     cowsay
     file
     which
@@ -85,7 +85,7 @@ para instalar Home Manager como un módulo de NixOS, primero necesitamos crear
 
     # relacionado con nix
     #
-    # proporciona el commando `nom`, que funciona igual que `nix`
+    # proporciona el comando `nom`, que funciona igual que `nix`
     # con una salida de logs más detallada
     nix-output-monitor
 
@@ -104,7 +104,7 @@ para instalar Home Manager como un módulo de NixOS, primero necesitamos crear
 
     # herramientas del sistema
     sysstat
-    lm_sensors # para el commando `sensors`
+    lm_sensors # para el comando `sensors`
     ethtool
     pciutils # lspci
     usbutils # lsusb
@@ -173,8 +173,8 @@ para instalar Home Manager como un módulo de NixOS, primero necesitamos crear
 ```
 
 Después de agregar `/etc/nixos/home.nix`, necesitas importar este nuevo archivo de
-configuración en `/etc/nixos/flake.nix` para usarlo. Usa el siguiente commando para
-generar un ejemplo en la carpeta actual como referencia:
+configuración en `/etc/nixos/flake.nix` para usarlo. Usa el siguiente comando para generar
+un ejemplo en la carpeta actual como referencia:
 
 ```shell
 nix flake new example -t github:nix-community/home-manager#nixos
@@ -194,7 +194,7 @@ Después de ajustar los parámetros, el contenido de `/etc/nixos/flake.nix` qued
       # La palabra clave `follows` en inputs se usa para herencia.
       # Aquí, `inputs.nixpkgs` de home-manager se mantiene consistente con
       # el `inputs.nixpkgs` del flake actual,
-      # para evitar problems causados por diferentes versions de nixpkgs.
+      # para evitar problemas causados por diferentes versiones de nixpkgs.
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -216,7 +216,7 @@ Después de ajustar los parámetros, el contenido de `/etc/nixos/flake.nix` qued
             # TODO reemplaza ryan por tu propio nombre de usuario
             home-manager.users.ryan = import ./home.nix;
 
-            # Opcionalmente, usa home-manager.extraSpecialArgs para pasar arguments a home.nix
+            # Opcionalmente, usa home-manager.extraSpecialArgs para pasar argumentos a home.nix
           }
         ];
       };
@@ -245,9 +245,9 @@ documentos:
   - [Home Manager Option Search](https://home-manager-options.extranix.com/) es otra
     herramienta de búsqueda de opciones con una mejor UI.
 - [home-manager](https://github.com/nix-community/home-manager): algunas opciones no
-  aparecen en la documentación official, o la documentación no es lo suficientemente
-  clara; puedes buscar y leer directamente el código fuente correspondiente en este
-  repositorio de home-manager.
+  aparecen en la documentación oficial, o la documentación no es lo suficientemente clara;
+  puedes buscar y leer directamente el código fuente correspondiente en este repositorio
+  de home-manager.
 
 ## Home Manager vs NixOS
 
@@ -269,7 +269,7 @@ usuario.
 
 Con base en estas características, el uso general recomendado es:
 
-- NixOS Modules: instala components centrales del sistema y otros paquetes de software o
+- NixOS Modules: instala componentes centrales del sistema y otros paquetes de software o
   configuraciones que necesiten todos los usuarios.
   - Por ejemplo, si quieres que un paquete de software siga funcionando cuando cambies al
     usuario root, o si quieres que una configuración se aplique a todo el sistema,
@@ -286,7 +286,7 @@ Los beneficios de este enfoque son:
    puede mejorar la portabilidad de las configuraciones.
 1. Si necesitas soporte multiusuario, el software y las configuraciones instalados
    mediante Home Manager pueden aislar mejor los distintos entornos de usuario, evitando
-   conflicts de configuración y de versions de software entre usuarios.
+   conflictos de configuración y de versiones de software entre usuarios.
 
 ## ¿Cómo usar paquetes instalados por Home Manager con acceso privilegiado?
 
@@ -321,8 +321,8 @@ Error: nu::shell::external_command
 /home/ryan/nix-config> exit
 ```
 
-La solución es usar `sudo` para ejecutar el commando, lo que concede temporalmente al
-usuario actual la capacidad de ejecutar el commando como un usuario privilegiado (`root`):
+La solución es usar `sudo` para ejecutar el comando, lo que concede temporalmente al
+usuario actual la capacidad de ejecutar el comando como un usuario privilegiado (`root`):
 
 ```sh
 › sudo kubectl

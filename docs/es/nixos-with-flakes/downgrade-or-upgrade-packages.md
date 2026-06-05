@@ -1,10 +1,10 @@
 # Actualizar o revertir paquetes
 
 Al trabajar con Flakes, puedes encontrar situaciones en las que necesites bajar o
-actualizar la versión de ciertos paquetes para solucionar errores o problems de
-compatibilidad. En Flakes, las versions de los paquetes y los valores hash están
+actualizar la versión de ciertos paquetes para solucionar errores o problemas de
+compatibilidad. En Flakes, las versiones de los paquetes y los valores hash están
 vinculados directamente al commit de git del input de tu flake. Para modificar la versión
-del paquete, debes fijar el commit de git del input de flake.
+del paquete, debes fijar el commit de git en el input del flake.
 
 Este es un ejemplo de cómo puedes agregar múltiples inputs de nixpkgs, cada uno usando un
 commit o una rama de git diferente:
@@ -17,7 +17,7 @@ commit o una rama de git diferente:
     # Usar la rama nixos-unstable de forma predeterminada
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Rama estable más reciente de nixpkgs, usada para revertir versions
+    # Rama estable más reciente de nixpkgs, usada para revertir versiones
     # La versión más reciente actual es 26.05
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
 
@@ -134,7 +134,7 @@ pero tu situación puede requerirlo para correcciones de errores específicas.
 ## Aplicar la nueva configuración
 
 Al ajustar la configuración como se muestra arriba, puedes desplegarla usando
-`sudo nixos-rebuild switch`. Esto bajará tus versions de Firefox/Chrome/VSCode a las
+`sudo nixos-rebuild switch`. Esto bajará tus versiones de Firefox/Chrome/VSCode a las
 correspondientes a `nixpkgs-stable` o `nixpkgs-fd40cef8d`.
 
 > Según

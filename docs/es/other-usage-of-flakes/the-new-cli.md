@@ -1,14 +1,14 @@
 # Uso de la nueva CLI
 
 Una vez que hayas habilitado las características `nix-command` y `flakes`, puedes empezar
-a usar las nuevas herramientas de línea de commandos de Nix de nueva generación que ofrece
-[New Nix Commands][New Nix Commands]. En esta sección nos centraremos en dos commandos:
-`nix shell` y `nix run`. Otros commandos importantes como `nix build` se tratarán en
+a usar las nuevas herramientas de línea de comandos de Nix de nueva generación que ofrece
+[New Nix Commands][New Nix Commands]. En esta sección nos centraremos en dos comandos:
+`nix shell` y `nix run`. Otros comandos importantes como `nix build` se tratarán en
 detalle en [`nix develop` & `pkgs.mkShell`](/development/intro.md)
 
 ## `nix shell`
 
-El commando `nix shell` te permite entrar en un entorno con el paquete de Nix especificado
+El comando `nix shell` te permite entrar en un entorno con el paquete de Nix especificado
 y abre una shell interactiva dentro de ese entorno:
 
 ```shell
@@ -51,9 +51,9 @@ Hello, world!
 ```
 
 Como `nix run` ejecuta directamente el paquete de Nix, el paquete especificado como
-argumento debe generar un program ejecutable.
+argumento debe generar un programa ejecutable.
 
-Según la documentación de `nix run --help`, `nix run` ejecuta el commando
+Según la documentación de `nix run --help`, `nix run` ejecuta el comando
 `<out>/bin/<name>`, donde `<out>` es el directorio raíz de la derivación y `<name>` se
 selecciona en el siguiente orden:
 
@@ -62,35 +62,35 @@ selecciona en el siguiente orden:
 - El contenido del atributo `name` de la derivación sin el número de versión
 
 Por ejemplo, en el caso del paquete `hello` que probamos antes, `nix run` ejecuta en
-realidad el program `$out/bin/hello`.
+realidad el programa `$out/bin/hello`.
 
 Aquí tienes dos ejemplos más con explicaciones detalladas de los parámetros relevantes:
 
 ```bash
-# Explicación del commando:
+# Explicación del comando:
 #   `nixpkgs#ponysay` significa el paquete 'ponysay' en el flake 'nixpkgs'.
 #   `nixpkgs` es un id del registro de flakes, y Nix encontrará la dirección correspondiente del repositorio GitHub
 #   en <https://github.com/NixOS/flake-registry/blob/master/flake-registry.json>.
-# Por lo tanto, este commando crea un nuevo entorno, instala y ejecuta el paquete 'ponysay' proporcionado por el flake 'nixpkgs'.
+# Por lo tanto, este comando crea un nuevo entorno, instala y ejecuta el paquete 'ponysay' proporcionado por el flake 'nixpkgs'.
 #   Nota: ya se mencionó antes que un paquete de Nix es una de las salidas de un flake.
 echo "Hello Nix" | nix run "nixpkgs#ponysay"
 
-# Este commando tiene el mismo efecto que el anterior, pero usa la URI completa del flake en lugar del id del registro de flakes.
+# Este comando tiene el mismo efecto que el anterior, pero usa la URI completa del flake en lugar del id del registro de flakes.
 echo "Hello Nix" | nix run "github:NixOS/nixpkgs/nixos-unstable#ponysay"
 ```
 
 ## Casos de uso comunes de `nix run` y `nix shell`
 
-Estos commandos se usan comúnmente para ejecutar programs de forma temporal. Por ejemplo,
+Estos comandos se usan comúnmente para ejecutar programas de forma temporal. Por ejemplo,
 si quiero clonar mi repositorio de configuración con Git en un nuevo host NixOS que no
-tiene Git instalado, puedo usar el siguiente commando:
+tiene Git instalado, puedo usar el siguiente comando:
 
 ```bash
 nix run nixpkgs#git clone git@github.com:ryan4yin/nix-config.git
 ```
 
 También puedo usar `nix shell` para entrar en un entorno con Git y luego ejecutar el
-commando `git clone`:
+comando `git clone`:
 
 ```bash
 nix shell nixpkgs#git

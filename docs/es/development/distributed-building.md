@@ -1,29 +1,27 @@
 # Construcción distribuida
 
 La construcción distribuida puede acelerar significativamente el proceso de construcción
-al utilizar varias máquinas. Sin embargo, para usuarios comunes de NixOS, puede no set muy
-útil, ya que `cache.nixos.org` proporciona la gran mayoría de los caches para la
+al utilizar varias máquinas. Sin embargo, para usuarios comunes de NixOS, puede no ser muy
+útil, ya que `cache.nixos.org` proporciona la gran mayoría de las cachés para la
 arquitectura `x86_64`.
 
-La construcción distribuida es especialmente valiosa en escenarios donde no hay cache
+La construcción distribuida es especialmente valiosa en escenarios donde no hay caché
 disponible, como:
 
 1. Usuarios de arquitecturas `RISC-V` o `ARM64`, especialmente `RISC-V`, ya que hay muy
-   pocos caches para estas arquitecturas en el repositorio official. A menudo se require
+   pocas cachés para estas arquitecturas en el repositorio oficial. A menudo se requiere
    compilación local.
 2. Usuarios que personalizan intensamente sus sistemas. Los paquetes del repositorio de
-   cache official se construyen con configuraciones predeterminadas. Si modificas los
-   parámetros de construcción, el cache official ya no aplica y es necesaria la
-   compilación local. Por ejemplo, en escenarios embebidos, a menudo se require
-   personalizar el kernel subyacente, los controladores, etc., lo que lleva a necesitar
-   compilación local.
+   caché oficial se construyen con configuraciones predeterminadas. Si modificas los
+   parámetros de construcción, el caché oficial ya no aplica y es necesaria la compilación
+   local. Por ejemplo, en escenarios embebidos, a menudo se requiere personalizar el
+   kernel subyacente, los controladores, etc., lo que lleva a necesitar compilación local.
 
 ## Configurar la construcción distribuida
 
-Actualmente no existe documentación official para la construcción distribuida. Sin
-embargo, abajo proporciono una configuración de ejemplo para construcción distribuida (un
-módulo de NixOS), junto con algunos documentos de referencia recomendados al final de esta
-sección.
+Actualmente no existe documentación oficial para la construcción distribuida. Sin embargo,
+abajo proporciono una configuración de ejemplo para construcción distribuida (un módulo de
+NixOS), junto con algunos documentos de referencia recomendados al final de esta sección.
 
 ```nix
 { ... }: {
@@ -66,7 +64,7 @@ sección.
           # y tienen el mismo sshUser, sshKey, systems, etc.
           inherit sshUser sshKey systems supportedFeatures;
 
-          # El hostName debe set:
+          # El hostName debe ser:
           #   1. Un hostname que pueda resolves por DNS.
           #   2. La dirección IP del builder remoto.
           #   3. Un alias de host definido globalmente en /etc/ssh/ssh_config.
@@ -141,7 +139,7 @@ sección.
 
 ## Limitaciones
 
-Estas son algunas limitaciones y problems observados:
+Estas son algunas limitaciones y problemas observados:
 
 1. No puedes especificar qué hosts usar en tiempo de construcción. Solo puedes indicar una
    lista de hosts en el archivo de configuración, y Nix selecciona automáticamente los
@@ -149,7 +147,7 @@ Estas son algunas limitaciones y problems observados:
 2. Al elegir un host, Nix siempre prefiere el host remoto sobre el local, incluso si el
    local tiene mejor rendimiento. Esto puede provocar subutilización de la CPU del host
    local.
-3. La unidad mínima de construcción distribuida es una derivation. Al construir paquetes
+3. La unidad mínima de construcción distribuida es una derivación. Al construir paquetes
    grandes, otras máquinas pueden permanecer inactivas durante mucho tiempo esperando a
    que se construya el paquete grande. Esto puede provocar desperdicio de recursos.
 

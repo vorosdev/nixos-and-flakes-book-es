@@ -30,38 +30,38 @@ sistema**. Los datos dinámicos, junto con el contenido del directorio personal 
 usuario, no se ven afectados por NixOS al volver a una generación anterior.
 
 Aunque no podemos lograr una reproducibilidad completa del sistema, el directorio `/home`,
-al set un directorio important del usuario, contiene muchos archivos de configuración
+al ser un directorio importante del usuario, contiene muchos archivos de configuración
 necesarios: [Dotfiles](https://wiki.archlinux.org/title/Dotfiles). Un proyecto destacado
 de la comunidad llamado [home-manager](https://github.com/nix-community/home-manager) está
 diseñado para gestionar paquetes a nivel de usuario y archivos de configuración dentro del
 directorio personal.
 
-Gracias a características de Nix como set declarativo y reproducible, Nix no se limita a
-gestionar entornos de escritorio, sino que también se usa mucho para gestionar entornos de
-desarrollo, entornos de compilación, máquinas virtuales en la nube y la construcción de
-imágenes de contenedores. [NixOps](https://github.com/NixOS/nixops) (un proyecto official
-de Nix) y [colmena](https://github.com/zhaofengli/colmena) (un proyecto comunitario) son
-herramientas de operación basadas en Nix.
+Gracias a características de Nix como su carácter declarativo y reproducible, Nix no se
+limita a gestionar entornos de escritorio, sino que también se usa mucho para gestionar
+entornos de desarrollo, entornos de compilación, máquinas virtuales en la nube y la
+construcción de imágenes de contenedores. [NixOps](https://github.com/NixOS/nixops) (un
+proyecto oficial de Nix) y [colmena](https://github.com/zhaofengli/colmena) (un proyecto
+comunitario) son herramientas de operación basadas en Nix.
 
 ## ¿Por qué NixOS?
 
-Conocí el gestor de paquetes Nix have various años. Usa el lenguaje Nix para describir la
+Conocí el gestor de paquetes Nix hace varios años. Usa el lenguaje Nix para describir la
 configuración del sistema. NixOS, la distribución de Linux construida sobre él, permite
 volver el sistema a cualquier estado anterior (aunque solo se puede retroceder al estado
 declarado en los archivos de configuración de Nix). Aunque sonaba impresionante, me
 parecía complicado aprender un nuevo lenguaje y escribir código para instalar paquetes,
 así que en ese memento no seguí por ahí.
 
-Sin embargo, have poco me encontré con various problems de entorno mientras usaba
+Sin embargo, hace poco me encontré con varios problemas de entorno mientras usaba
 EndeavourOS, y resolverlos me consumió mucha energía, dejándome agotado. Después de
-pensarlo con calma, entendí que la falta de control de versions y de mecanismos de
-retroceso en EndeavourOS me impedía restaurar el sistema cuando surgían problems.
+pensarlo con calma, entendí que la falta de control de versiones y de mecanismos de
+retroceso en EndeavourOS me impedía restaurar el sistema cuando surgían problemas.
 
 Entonces decidí cambiarme a NixOS.
 
 Para mi sorpresa, NixOS ha superado mis expectativas. Lo más sorprendente es que ahora
 puedo restaurar todo mi entorno i3 y todos mis paquetes de uso común en un host nuevo con
-un solo commando: `sudo nixos-rebuild switch --flake .`. ¡Es realmente fantástico!
+un solo comando: `sudo nixos-rebuild switch --flake .`. ¡Es realmente fantástico!
 
 La capacidad de retroceso y la reproducibilidad de NixOS me han dado mucha confianza: ya
 no temo romper el sistema. Incluso me he animado a probar cosas nuevas en NixOS, como el
@@ -70,7 +70,7 @@ compositores tan nuevos, porque cualquier fallo del sistema habría implicado mu
 manual de resolución usando distintos arreglos temporales.
 
 A medida que me involucro más con NixOS y Nix, también veo que es muy adecuado para
-gestionar de forma sincronizada la configuración de various hosts. Actualmente mi
+gestionar de forma sincronizada la configuración de varios hosts. Actualmente mi
 [nix-config](https://github.com/ryan4yin/nix-config) personal gestiona de forma
 sincronizada la configuración de muchos hosts:
 
@@ -84,7 +84,7 @@ sincronizada la configuración de muchos hosts:
 
 El entorno de desarrollo de las tres computadoras de escritorio está gestionado por Home
 Manager, la configuración principal se compare por completo, y cualquier cambio hecho en
-un host puede sincronizarse sin problems con los demás a través de Git.
+un host puede sincronizarse sin problemas con los demás a través de Git.
 
 Nix prácticamente me protegió por completo de las diferencias entre sistema operativo y
 arquitectura en las tres máquinas, y la experiencia fue muy fluida.

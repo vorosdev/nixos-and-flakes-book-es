@@ -81,8 +81,8 @@ predeterminados:
 1. El parámetro `specialArgs` de la función `nixpkgs.lib.nixosSystem`
 2. Usar la opción `_module.args` en cualquier módulo para pasar parámetros
 
-La documentación official de estos dos parámetros está muy escondida y es vaga y difícil
-de entender. Si a los lectores les interesa, incluyo aquí los enlaces:
+La documentación oficial de estos dos parámetros está muy escondida y es vaga y difícil de
+entender. Si a los lectores les interesa, incluyo aquí los enlaces:
 
 1. `specialArgs`: hay menciones dispersas relacionadas con él en el NixOS Manual y el
    Nixpkgs Manual.
@@ -106,7 +106,7 @@ atributos a todos los submódulos. La diferencia entre ellos es:
    error de `infinite recursion`**. En este caso, debes usar `specialArgs` en su lugar.
 
 Personalmente prefiero `specialArgs` porque es más directo y fácil de usar, y el estilo de
-nomenclatura `_xxx` have que parezca algo interno que no es adecuado para archivos de
+nomenclatura `_xxx` hace que parezca algo interno que no es adecuado para archivos de
 configuración de usuario.
 
 Supón que quieres pasar una dependencia determinada a un submódulo para usarla. Puedes
@@ -121,8 +121,8 @@ usar el parámetro `specialArgs` para pasar `inputs` a todos los submódulos:
 
   outputs = inputs@{ self, nixpkgs, another-input, ... }: {
     nixosConfigurations.my-nixos = nixpkgs.lib.nixosSystem {
-      # Establece todos los parámetros de inputs como arguments especiales para todos los submódulos,
-      # para que puedas usar directamente todas las dependencies de inputs en los submódulos
+      # Establece todos los parámetros de inputs como argumentos especiales para todos los submódulos,
+      # para que puedas usar directamente todas las dependencias de inputs en los submódulos
       specialArgs = { inherit inputs; };
       modules = [
         ./configuration.nix
@@ -145,8 +145,8 @@ O puedes lograr el mismo efecto usando la opción `_module.args`:
       modules = [
         ./configuration.nix
         {
-          # Establece todos los parámetros de inputs como arguments especiales para todos los submódulos,
-          # para que puedas usar directamente todas las dependencies de inputs en los submódulos
+          # Establece todos los parámetros de inputs como argumentos especiales para todos los submódulos,
+          # para que puedas usar directamente todas las dependencias de inputs en los submódulos
           _module.args = { inherit inputs; };
         }
       ];
@@ -175,8 +175,8 @@ software del sistema desde otras fuentes de flake.
 ## Instalar software del sistema desde otras fuentes de flake {#install-system-packages-from-other-flakes}
 
 El requisito más común al administrator un sistema es instalar software, y ya vimos en la
-sección anterior cómo instalar paquetes desde el repositorio official nixpkgs usando
-`environment.systemPackages`. Todos estos paquetes provienen del repositorio official
+sección anterior cómo instalar paquetes desde el repositorio oficial nixpkgs usando
+`environment.systemPackages`. Todos estos paquetes provienen del repositorio oficial
 nixpkgs.
 
 Ahora aprenderemos cómo instalar paquetes de software desde otras fuentes de flake, lo
@@ -231,14 +231,14 @@ Luego, puedes referenciar esta fuente de datos de input de flake en `configurati
 ```
 
 Realiza los cambios necesarios y despliega con `sudo nixos-rebuild switch`. Esta vez el
-despliegue tomará mucho más tiempo porque Nix compilará todo el program Helix desde el
+despliegue tomará mucho más tiempo porque Nix compilará todo el programa Helix desde el
 código fuente.
 
 Después del despliegue, puedes probar y verificar directamente la instalación usando el
-commando `hx` en la terminal.
+comando `hx` en la terminal.
 
 Además, si solo quieres probar la versión más reciente de Helix y decidir después si
-instalarla en tu sistema, hay una forma más simple de hacerlo con un solo commando (pero,
+instalarla en tu sistema, hay una forma más simple de hacerlo con un solo comando (pero,
 como se mencionó antes, compilar desde el código fuente tomará mucho tiempo):
 
 ```bash
@@ -252,10 +252,10 @@ Entraremos en más detalle sobre el uso de `nix run` en la siguiente sección
 
 De hecho, esta es la funcionalidad principal de Flakes: un flake puede depender de otros
 flakes, lo que le permite utilizar las funcionalidades que proporcionan. Es similar a cómo
-incorporamos funcionalidades de otras bibliotecas cuando escribimos programs en
+incorporamos funcionalidades de otras bibliotecas cuando escribimos programas en
 TypeScript, Go, Rust y otros lenguajes de programación.
 
-El ejemplo anterior, que usa la versión más reciente del Flake official de Helix, ilustra
+El ejemplo anterior, que usa la versión más reciente del Flake oficial de Helix, ilustra
 esta funcionalidad. Más adelante se discutirán más casos de uso; aquí hay algunos ejemplos
 referenciados para mencionarlos en el futuro:
 
@@ -263,8 +263,8 @@ referenciados para mencionarlos en el futuro:
   Manager de la comunidad como dependencia, lo que permite utilizar directamente las
   funcionalidades proporcionadas por este Flake.
 - [Actualizar o revertir paquetes](./downgrade-or-upgrade-packages.md): aquí se introducen
-  diferentes versions de Nixpkgs como dependencies, lo que permite seleccionar con
-  flexibilidad paquetes de varias versions de Nixpkgs.
+  diferentes versiones de Nixpkgs como dependencias, lo que permite seleccionar con
+  flexibilidad paquetes de varias versiones de Nixpkgs.
 
 ## Más tutorials de Flakes
 
@@ -272,7 +272,7 @@ Hasta este punto, hemos aprendido cómo usar Flakes para configurar sistemas Nix
 tienes más preguntas sobre Flakes o quieres aprender con mayor profundidad, consulta
 directamente los siguientes documentos oficiales/semioficiales:
 
-- Documentación official de Nix Flakes:
+- Documentación oficial de Nix Flakes:
   - [Nix flakes - Nix Manual](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-flake)
   - [Flakes - nix.dev](https://nix.dev/concepts/flakes)
 - Una series de tutorials de Eelco Dolstra (el creador de Nix) sobre Flakes:

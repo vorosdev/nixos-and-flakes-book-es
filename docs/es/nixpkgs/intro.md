@@ -3,7 +3,7 @@
 `callPackage`, `override` y `overlays` son técnicas que se usan ocasionalmente al utilizar
 Nix para personalizar el método de construcción de los paquetes de Nix.
 
-Sabemos que muchos programs tienen una gran cantidad de parámetros de compilación que
+Sabemos que muchos programas tienen una gran cantidad de parámetros de compilación que
 necesitan configurarse, y distintos usuarios pueden querer valores distintos. Ahí es donde
 `override` y `overlays` resultan útiles. Te doy algunos ejemplos que he encontrado:
 

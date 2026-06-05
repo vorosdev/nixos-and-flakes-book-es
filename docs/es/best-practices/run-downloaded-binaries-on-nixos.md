@@ -1,8 +1,8 @@
 # Ejecutar binarios descargados en NixOS
 
 Como NixOS no sigue estrictamente el Filesystem Hierarchy Standard (FHS), los binarios
-descargados de internet pueden no funcionar directamente en NixOS. Sin embargo, hay
-various métodos disponibles para hacer que funcionen correctamente.
+descargados de internet pueden no funcionar directamente en NixOS. Sin embargo, hay varios
+métodos disponibles para hacer que funcionen correctamente.
 
 Para una guía completa con diez formas distintas de ejecutar binarios descargados en
 NixOS, te recomiendo leer el artículo
@@ -24,7 +24,7 @@ código a uno de tus módulos de Nix:
   environment.systemPackages = with pkgs; [
     # ......omitir muchos paquetes
 
-    # Crea un entorno FHS usando el commando `fhs`, lo que permite ejecutar paquetes ajenos a NixOS en NixOS.
+    # Crea un entorno FHS usando el comando `fhs`, lo que permite ejecutar paquetes ajenos a NixOS en NixOS.
     (let base = pkgs.appimageTools.defaultFhsEnvArgs; in
       pkgs.buildFHSEnv (base // {
       name = "fhs";
@@ -37,7 +37,7 @@ código a uno de tus módulos de Nix:
         (base.targetPkgs pkgs) ++ (with pkgs; [
           pkg-config
           ncurses
-          # Si have falta, puedes agregar más paquetes aquí.
+          # Si hace falta, puedes agregar más paquetes aquí.
         ]
       );
       profile = "export FHS=1";
@@ -50,7 +50,7 @@ código a uno de tus módulos de Nix:
 }
 ```
 
-Después de aplicar la configuración actualizada, puedes usar el commando `fhs` para entrar
+Después de aplicar la configuración actualizada, puedes usar el comando `fhs` para entrar
 al entorno FHS y luego ejecutar el binario descargado, por ejemplo:
 
 ```shell

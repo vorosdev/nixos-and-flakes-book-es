@@ -1,10 +1,10 @@
 # Flake Inputs
 
 La sección `inputs` en `flake.nix` es un conjunto de atributos usado para especificar las
-dependencies del flake actual. Hay various tipos de entradas, como muestran los ejemplos
-de abajo:
+dependencias del flake actual. Hay varios tipos de entradas, como muestran los ejemplos de
+abajo:
 
-> Consulta la documentación official para más detalles - [Flakes Inputs - Nix Manual].
+> Consulta la documentación oficial para más detalles - [Flakes Inputs - Nix Manual].
 
 ```nix
 {
@@ -29,7 +29,7 @@ de abajo:
     # con autenticación por clave. También usa el parámetro shallow=1
     # para evitar copiar el directorio .git.
     ssh-git-example.url = "git+ssh://git@github.com/ryan4yin/nix-secrets.git?shallow=1";
-    # También es possible depender directamente de un repositorio Git local.
+    # También es posible depender directamente de un repositorio Git local.
     git-directory-example.url = "git+file:///path/to/repo?shallow=1";
     # Usando el parámetro `dir` para especificar un subdirectorio.
     nixpkgs.url = "github:foo/bar?dir=shu";

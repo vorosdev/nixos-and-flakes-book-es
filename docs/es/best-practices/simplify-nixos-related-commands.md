@@ -1,6 +1,6 @@
-# Simplificar commandos relacionados con NixOS
+# Simplificar comandos relacionados con NixOS
 
-Para simplificar los commandos relacionados con NixOS, uso
+Para simplificar los comandos relacionados con NixOS, uso
 [just](https://github.com/casey/just), que resulta muy cómodo.
 
 También puedes usar herramientas similares como Makefile o
@@ -13,7 +13,7 @@ A continuación, un ejemplo de cómo se ve mi `Justfile`:
 > [ryan4yin/nix-config/Justfile](https://github.com/ryan4yin/nix-config/blob/main/Justfile)
 
 ```Makefile
-# just es un ejecutor de commandos; Justfile es muy parecido a Makefile, pero más simple.
+# just es un ejecutor de comandos; Justfile es muy parecido a Makefile, pero más simple.
 
 ############################################################################
 #
@@ -51,7 +51,7 @@ gc:
 
 ############################################################################
 #
-#  Idols, commandos relacionados con mi clúster de compilación distribuida remota
+#  Idols, comandos relacionados con mi clúster de compilación distribuida remota
 #
 ############################################################################
 
@@ -85,5 +85,5 @@ Guarda este `Justfile` en el directorio raíz de tu flake de Nix. Entonces puedo
 `just deploy` para desplegar la configuración en mi máquina local, y `just idols` para
 desplegar la configuración en todos mis servidores remotos.
 
-Este enfoque simplifica la ejecución de commandos de NixOS al ocultarlos detrás de nombres
+Este enfoque simplifica la ejecución de comandos de NixOS al ocultarlos detrás de nombres
 de objetivo en el `Justfile`, ofreciendo una experiencia más amigable y cómoda.

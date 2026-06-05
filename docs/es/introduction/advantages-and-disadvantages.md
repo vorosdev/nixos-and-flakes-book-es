@@ -9,35 +9,35 @@
     configuración (siempre que los estados deseados estén declarados en la configuración
     de Nix).
   - Nix Flakes mejora aún más la reproducibilidad al usar un archivo de bloqueo de
-    versions `flake.lock`, que registra las direcciones de origen de datos, valores de
-    hash y otra información relevant de todas las dependencies. Este diseño mejora mucho
+    versiones `flake.lock`, que registra las direcciones de origen de datos, valores de
+    hash y otra información relevante de todas las dependencias. Este diseño mejora mucho
     la reproducibilidad de Nix y garantiza resultados de compilación consistentes. Toma
     inspiración de diseños de gestión de paquetes en lenguajes como Cargo y npm.
 - **Gran capacidad para personalizar el sistema**
-  - Con solo unos pocos cambios de configuración, various components del sistema pueden
+  - Con solo unos pocos cambios de configuración, varios componentes del sistema pueden
     reemplazarse con facilidad. Nix encapsula todas las operaciones complejas internas en
     los paquetes de Nix, ofreciendo al usuario un conjunto breve de parámetros
     declarativos.
   - Los cambios son seguros y cambiar entre distintos entornos de escritorio, como GNOME,
     KDE, i3 y sway, es sencillo y con pocas trampas.
 - **Capacidad de retroceso**
-  - Es possible volver a cualquier estado anterior del sistema, y NixOS incluso incluye
-    por defecto todas las versions antiguas en las opciones de arranque, lo que facilita
+  - Es posible volver a cualquier estado anterior del sistema, y NixOS incluso incluye por
+    defecto todas las versiones antiguas en las opciones de arranque, lo que facilita
     revertir cambios. Por eso, Nix se considera uno de los enfoques de gestión de paquetes
     más estables.
-- **Sin conflicts de dependencies**
+- **Sin conflictos de dependencias**
   - Cada paquete de software en Nix tiene un hash único que se incorpora a su ruta de
-    instalación, lo que permite que varias versions coexistan.
+    instalación, lo que permite que varias versiones coexistan.
 - **La comunidad es activa, con una amplia variedad de proyectos de terceros**
-  - El repositorio official de paquetes, nixpkgs, tiene muchos colaboradores, y mucha
-    gente compare sus configuraciones de Nix. Explorar el ecosistema de NixOS es una
-    experiencia emocionante, casi como descubrir un nuevo continente.
+  - El repositorio oficial de paquetes, nixpkgs, tiene muchos colaboradores, y mucha gente
+    compare sus configuraciones de Nix. Explorar el ecosistema de NixOS es una experiencia
+    emocionante, casi como descubrir un nuevo continente.
 
 <figure>
   <img src="/nixos-bootloader.avif">
   <figcaption>
     <h4 align="center">
-      Todas las versions históricas aparecen en las opciones de arranque de NixOS. <br>
+      Todas las versiones históricas aparecen en las opciones de arranque de NixOS. <br>
       Imagen de
       <a href="https://discourse.nixos.org/t/how-to-make-uefis-grub2-menu-the-same-as-bioss-one/10074" target="_blank" rel="noopener noreferrer">
         NixOS Discourse - 10074
@@ -49,17 +49,17 @@
 ## Desventajas de NixOS
 
 - **Curva de aprendizaje alta**:
-  - Alcanzar una reproducibilidad completa y evitar problems por un uso incorrecto exige
+  - Alcanzar una reproducibilidad completa y evitar problemas por un uso incorrecto exige
     aprender todo el diseño de Nix y gestionar el sistema de forma declarativa, en lugar
-    de usar a ciegas commandos como `nix-env -i` (similar a `apt-get install`).
+    de usar a ciegas comandos como `nix-env -i` (similar a `apt-get install`).
 - **Documentación desordenada**:
   - Actualmente, Nix Flakes sigue siendo una función experimental, y hay poca
     documentación centrada en ella. La mayor parte de la documentación de la comunidad de
     Nix cubre sobre todo la clásica `/etc/nixos/configuration.nix`. Si quieres empezar a
     aprender directamente desde Nix Flakes (`flake.nix`), necesitas revisar mucha
-    documentación desactualizada y extraer la información relevant. Además, algunas
+    documentación desactualizada y extraer la información relevante. Además, algunas
     funciones centrales de Nix, como `imports` y el Nixpkgs Module System, carecen de una
-    documentación official detallada, por lo que toca recurrir al análisis del código
+    documentación oficial detallada, por lo que toca recurrir al análisis del código
     fuente.
 - **Mayor uso de espacio en disco**:
   - Para asegurar la posibilidad de volver al sistema en cualquier memento, Nix conserva
@@ -82,10 +82,10 @@
   - Este problema probablemente sea el mayor dolor de cabeza de NixOS en este memento.
 - **Implementación interna más compleja**:
   - La abstracción declarativa de Nix introduce más complejidad en el código interno que
-    un enfoque imperativo traditional.
-  - Esa complejidad aumenta la dificultad de implementación y have más difícil hacer
+    un enfoque imperativo tradicional.
+  - Esa complejidad aumenta la dificultad de implementación y hace más difícil hacer
     modificaciones personalizadas en los niveles bajos. Sin embargo, esta carga recae
-    sobre todo en quienes mantienen los paquetes de Nix, porque los usuarios normals
+    sobre todo en quienes mantienen los paquetes de Nix, porque los usuarios normales
     apenas interactúan con esas complejidades internas.
 
 ## Resumen

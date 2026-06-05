@@ -8,7 +8,7 @@ teclado, red, usuarios, sistema de archivos y opciones de arranque.
 
 Para modificar el estado del sistema de forma reproducible, algo muy recomendable,
 necesitamos editar manualmente el archivo `/etc/nixos/configuration.nix` y luego ejecutar
-`sudo nixos-rebuild switch` para aplicar la configuración modificada. Este commando genera
+`sudo nixos-rebuild switch` para aplicar la configuración modificada. Este comando genera
 un nuevo entorno de sistema basado en el archivo de configuración actualizado, establece
 ese nuevo entorno como predeterminado y conserva el entorno anterior en las opciones de
 arranque de grub/systemd-boot. Así siempre podemos volver al entorno anterior, incluso si
@@ -16,7 +16,7 @@ el nuevo no arranca.
 
 Aunque `/etc/nixos/configuration.nix` es el método clásico para configurar NixOS, depende
 de fuentes de datos configuradas por `nix-channel` y carece de un mecanismo de bloqueo de
-versions, por lo que es difícil garantizar la reproducibilidad del sistema. Un enfoque
+versiones, por lo que es difícil garantizar la reproducibilidad del sistema. Un enfoque
 mejor es usar Flakes, que aporta reproducibilidad y facilita la gestión de la
 configuración.
 
@@ -82,11 +82,11 @@ clave pública SSH para el usuario `ryan` y deshabilitar el inicio de sesión po
 contraseña.
 
 Para desplegar la configuración modificada, ejecuta `sudo nixos-rebuild switch`. Este
-commando aplicará los cambios, generará un nuevo entorno de sistema y lo establecerá como
+comando aplicará los cambios, generará un nuevo entorno de sistema y lo establecerá como
 predeterminado. Ahora ya puedes iniciar sesión en el sistema mediante SSH con las claves
 configuradas.
 
-> Siempre puedes añadir `--show-trace --print-build-logs --verbose` al commando
+> Siempre puedes añadir `--show-trace --print-build-logs --verbose` al comando
 > `nixos-rebuild` para obtener mensajes de error detallados si encuentras algún problema
 > durante el despliegue.
 

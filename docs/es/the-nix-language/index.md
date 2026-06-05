@@ -15,13 +15,13 @@ introducción rápida al lenguaje Nix:
    Este tutorial ofrece una visión completa de los fundamentos del lenguaje Nix y está
    recomendado para principiantes.
 1. [**A tour of Nix**](https://nixcloud.io/tour/?id=introduction/nix): Un tutorial
-   interaction en línea centrado en construcciones de lenguajes de programación y en cómo
-   Nix puede usarse de forma algorítmica para resolver problems.
+   interactivo en línea centrado en construcciones de lenguajes de programación y en cómo
+   Nix puede usarse de forma algorítmica para resolver problemas.
 1. [**Nix Language - Nix Reference Manual**](https://nixos.org/manual/nix/stable/language/):
-   La documentación official del lenguaje Nix.
+   La documentación oficial del lenguaje Nix.
    1. nix.dev y otros tutorials amigables son útiles solo para empezar, y **ninguno de
       ellos presenta por completo la sintaxis de Nix**. Si encuentras una sintaxis nueva
-      que no habías visto antes, consulta este documento official.
+      que no habías visto antes, consulta este documento oficial.
 1. <https://noogle.dev/> es un motor de búsqueda de la biblioteca de funciones de Nix que
    puede ayudarte a encontrar rápidamente las funciones que necesitas y su uso, lo cual
    resulta muy práctico.

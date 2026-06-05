@@ -14,7 +14,7 @@ empaquetado en Nix.
   - [nurl](https://github.com/nix-community/nurl): genera llamadas de Nix fetcher a partir
     de URLs de repositorios
   - [nix-init](https://github.com/nix-community/nix-init): genera paquetes de Nix a partir
-    de URLs con prefetch de hash, inferencia de dependencies, detección de licencias y más
+    de URLs con prefetch de hash, inferencia de dependencias, detección de licencias y más
 - Código fuente:
   - [pkgs/build-support/trivial-builders/default.nix - runCommand](https://github.com/NixOS/nixpkgs/blob/nixos-26.05/pkgs/build-support/trivial-builders/default.nix#L25-L54)
   - [pkgs/build-support/setup-hooks/make-wrapper.sh](https://github.com/NixOS/nixpkgs/blob/nixos-26.05/pkgs/build-support/setup-hooks/make-wrapper.sh)

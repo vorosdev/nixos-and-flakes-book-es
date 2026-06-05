@@ -7,7 +7,7 @@ vimos cómo instanciar múltiples instancias distintas de nixpkgs usando el mét
 muchas aplicaciones para esta técnica; algunas comunes son:
 
 1. Instanciar instancias de nixpkgs con distintos IDs de commit para instalar varias
-   versions de paquetes de software. Este enfoque se usó en la sección anterior
+   versiones de paquetes de software. Este enfoque se usó en la sección anterior
    [Actualizar o revertir paquetes](../nixos-with-flakes/downgrade-or-upgrade-packages.md).
 
 2. Si quieres usar overlays sin afectar la instancia predeterminada de nixpkgs, puedes
@@ -16,11 +16,11 @@ muchas aplicaciones para esta técnica; algunas comunes son:
      overlays modifica directamente la instancia global de nixpkgs. Si tus overlays
      cambian algunos paquetes de bajo nivel, podrían afectar a otros módulos. Una
      desventaja es que aumenta la compilación local (por la invalidez de la caché), y
-     también podrían surgir problems de funcionamiento en los paquetes afectados.
+     también podrían surgir problemas de funcionamiento en los paquetes afectados.
 
 3. En compilación multiplataforma, puedes instanciar múltiples instancias de nixpkgs para
    usar de forma selectiva la simulación QEMU para compilación y compilación cruzada en
-   distintos lugares, o para añadir various parámetros de compilación de GCC.
+   distintos lugares, o para añadir varios parámetros de compilación de GCC.
 
 En conclusión, instanciar múltiples instancias de nixpkgs es muy ventajoso.
 
@@ -33,7 +33,7 @@ común es la siguiente:
 {
   # un ejemplo simple
   pkgs-xxx = import nixpkgs {
-    # como dijimos antes, aquí se require `system` o `localSystem`.
+    # como dijimos antes, aquí se requiere `system` o `localSystem`.
     system = "x86_64-linux";
   };
 
@@ -60,7 +60,7 @@ común es la siguiente:
 
       # https://wiki.nixos.org/wiki/Build_flags
       # esta opción equivale a añadir `-march=rv64gc` a CFLAGS.
-      # CFLAGS se usarán como arguments de línea de commandos para gcc/clang.
+      # CFLAGS se usarán como argumentos de línea de comandos para gcc/clang.
       gcc.arch = "rv64gc";
       # equivalente a `-mabi=lp64d` en CFLAGS.
       gcc.abi = "lp64d";
@@ -99,7 +99,7 @@ Ya aprendimos en nuestro estudio de la sintaxis de Nix:
   # actual (build, en la terminología de GNU Autotools).
   localSystem ? { system = args.system or builtins.currentSystem; }
 
-# Esto solo have falta porque la lógica de línea de commandos `--arg` de nix no funciona
+# Esto solo hace falta porque la lógica de línea de comandos `--arg` de nix no funciona
 # con parámetros sin nombre permitidos por ...
 , system ? localSystem.system
 , crossSystem ? localSystem
@@ -131,12 +131,12 @@ import ./. (builtins.removeAttrs args [ "system" ] // {
 ```
 
 Por lo tanto, `import nixpkgs {...}` llama efectivamente a esta función, y el conjunto de
-atributos posterior se convierte en los arguments de esta función.
+atributos posterior se convierte en los argumentos de esta función.
 
 ## Consideraciones
 
 Al crear múltiples instancias de nixpkgs, hay algunos detalles que conviene tener en
-cuenta. Estos son algunos problems comunes:
+cuenta. Estos son algunos problemas comunes:
 
 1. Según el artículo
    [1000 instances of nixpkgs](https://discourse.nixos.org/t/1000-instances-of-nixpkgs/17347)

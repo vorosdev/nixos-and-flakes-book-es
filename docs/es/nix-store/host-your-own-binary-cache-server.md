@@ -6,28 +6,28 @@ La caché binaria de Nix es una implementación del Nix Store que almacena datos
 servidor remoto en lugar de localmente, lo que facilita compartir cachés binarias entre
 varias máquinas.
 
-El servidor official de caché binaria de Nix solo proporciona binarios construidos con
+El servidor oficial de caché binaria de Nix solo proporciona binarios construidos con
 parámetros estándar. Si has personalizado los parámetros de compilación o estás usando
 paquetes fuera de Nixpkgs, Nix no encontrará la caché binaria correspondiente, lo que
 provoca compilaciones locales.
 
-Depender únicamente de tu Nix Store local `/nix/store` puede set engorroso, ya que
+Depender únicamente de tu Nix Store local `/nix/store` puede ser engorroso, ya que
 tendrías que recompilar todos tus paquetes personalizados en cada máquina, lo cual puede
 llevar tiempo y consumir mucha memoria. Esta situación empeora en plataformas de menor
 rendimiento como Raspberry Pi.
 
 Este documento te mostrará cómo configurar tu propio servidor de caché binaria de Nix
 usando un servicio S3 (como MinIO) para compartir resultados de compilación entre máquinas
-y resolver los problems anteriores.
+y resolver los problemas anteriores.
 
 ## Requisitos previous
 
 1. Un host con NixOS
 1. Un servidor MinIO desplegado
    1. Si no lo tienes, puedes seguir la
-      [guía official de despliegue](https://min.io/docs/minio/linux/operations/installation.html)
+      [guía oficial de despliegue](https://min.io/docs/minio/linux/operations/installation.html)
       de MinIO.
-1. El servidor MinIO necesita un certificado digital TLS válido, que puede set público o
+1. El servidor MinIO necesita un certificado digital TLS válido, que puede ser público o
    privado. Este ejemplo usará `https://minio.homelab.local` con un certificado privado.
 1. Instalar `minio-client`
 
@@ -40,13 +40,13 @@ nix run nixpkgs#pwgen -- -c -n -y -s -B 32 1
 
 ## Configurar el cliente MinIO
 
-Instala el cliente de línea de commandos de MinIO `mc`.
+Instala el cliente de línea de comandos de MinIO `mc`.
 
 ```nix
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
-    minio-client # alternativas para los commandos ls, cp, mkdir, diff y rsync para sistemas de archivos y almacenamiento de objetos
+    minio-client # alternativas para los comandos ls, cp, mkdir, diff y rsync para sistemas de archivos y almacenamiento de objetos
   ];
 }
 ```
@@ -142,7 +142,7 @@ mc anonymous set download s3/nix-cache
 ```
 
 Por último, añade el archivo `nix-cache-info` al directorio raíz del bucket S3, ya que Nix
-require este archivo para registrar cierta información relacionada con la caché binaria:
+Requiere este archivo para registrar cierta información relacionada con la caché binaria:
 
 ```bash
 cat > nix-cache-info <<EOF

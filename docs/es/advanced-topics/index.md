@@ -7,7 +7,7 @@ ayudarte a ampliar tus conocimientos:
 ## Comunidad
 
 - [Nix Official - Community](https://nixos.org/community/): contiene información sobre la
-  comunidad de Nix, foros, chat en tiempo real, encuentros, RFCs, la arquitectura official
+  comunidad de Nix, foros, chat en tiempo real, encuentros, RFCs, la arquitectura oficial
   de equipos, etc.
 - [Nix Channel Status](https://status.nixos.org/): estado de compilación de cada canal de
   Nix.
@@ -25,12 +25,12 @@ ayudarte a ampliar tus conocimientos:
   tesis doctoral seminal de Eelco Dolstra sobre el gestor de paquetes Nix.
 - [Nix Reference Manual](https://nixos.org/manual/nix/stable/package-management/profiles.html):
   una guía completa del gestor de paquetes Nix, que cubre su diseño y uso desde la línea
-  de commandos.
+  de comandos.
 - [nixpkgs Manual](https://nixos.org/manual/nixpkgs/unstable/): manual de nixpkgs, que
   introduce sus parámetros y explica cómo usar, modificar y empaquetar paquetes de Nix.
 - [NixOS Manual](https://nixos.org/manual/nixos/unstable/): manual de usuario de NixOS,
-  con instrucciones de configuración para components a nivel de sistema como Wayland/X11 y
-  GPU.
+  con instrucciones de configuración para componentes a nivel de sistema como Wayland/X11
+  y GPU.
 - [nix-pills](https://nixos.org/guides/nix-pills): "Nix Pills" es una series de guías que
   explican en profundidad cómo construir paquetes de software con Nix. Ofrece
   explicaciones claras y comprensibles.

@@ -3,8 +3,8 @@
 El diseño inherente de Nix encaja muy bien con el despliegue remoto, y la comunidad de Nix
 ofrece varias herramientas pensadas para este propósito, como
 [NixOps](https://github.com/NixOS/nixops) y
-[colmena](https://github.com/zhaofengli/colmena). Además, la herramienta official que
-hemos usado ampliamente, `nixos-rebuild`, también tiene algunas capacidades de despliegue
+[colmena](https://github.com/zhaofengli/colmena). Además, la herramienta oficial que hemos
+usado ampliamente, `nixos-rebuild`, también tiene algunas capacidades de despliegue
 remoto.
 
 Además, en escenarios multiarquitectura el despliegue remoto puede aprovechar de forma
@@ -12,13 +12,13 @@ Además, en escenarios multiarquitectura el despliegue remoto puede aprovechar d
 sistema NixOS aarch64/riscv64 en un host x86_64 y luego desplegarlo remotamente en los
 hosts correspondientes vía SSH.
 
-Have poco me encontré con una situación en la que compilé localmente una imagen de sistema
-NixOS para una SBC RISCV64. Como resultado, ya tenía todas las cachés de compilación para
-construir ese sistema localmente. Sin embargo, debido a la falta de cachés binarias
-oficiales para la arquitectura RISCV64, ejecutar cualquier program no instalado
-directamente en la placa de desarrollo (por ejemplo, `nix run nixpkgs#cowsay hello`)
-disparaba compilaciones extensas. Ese proceso consumía horas, lo cual era totalmente
-inaceptable.
+Hace poco me encontré con una situación en la que compilé localmente una imagen del
+sistema NixOS para una SBC RISCV64. Como resultado, ya tenía todas las cachés de
+compilación para construir ese sistema localmente. Sin embargo, debido a la falta de
+cachés binarias oficiales para la arquitectura RISCV64, ejecutar cualquier programa no
+instalado directamente en la placa de desarrollo (por ejemplo,
+`nix run nixpkgs#cowsay hello`) disparaba compilaciones extensas. Ese proceso consumía
+horas, lo cual era totalmente inaceptable.
 
 Al adoptar el despliegue remoto, pude aprovechar por completo la potencia de mi CPU local
 de alto rendimiento y las amplias cachés de compilación. Este cambio mejoró mucho mi
@@ -37,7 +37,7 @@ Antes de empezar con el despliegue remoto, son necesarios algunos pasos preparat
    2. Añade `security.sudo.wheelNeedsPassword = false;` a la configuración del host remoto
       y despliega manualmente una vez con antelación para otorgar al usuario permisos de
       sudo sin contraseña.
-      1. **Esto permitirá que programs a nivel de usuario obtengan permisos de sudo en
+      1. **Esto permitirá que programas a nivel de usuario obtengan permisos de sudo en
          silencio, lo cual supone un riesgo de seguridad**. Por tanto, si eliges este
          método, es aconsejable crear un usuario dedicado para el despliegue remoto en
          lugar de usar tu usuario habitual.
@@ -49,7 +49,7 @@ Antes de empezar con el despliegue remoto, son necesarios algunos pasos preparat
    host remoto.
    1. Usa la opción `programs.ssh.knownHosts` para añadir la clave pública del host remoto
       al registro Known Hosts.
-4. Usa manualmente el commando `ssh root@<tu-host>` para verificar que puedes iniciar
+4. Usa manualmente el comando `ssh root@<tu-host>` para verificar que puedes iniciar
    sesión en el host remoto.
    1. Si encuentras algún problema, resuélvelo antes de continuar.
 
@@ -87,10 +87,10 @@ ssh-add ~/.ssh/your-private-key
 ## Despliegue mediante `colmena`
 
 `colmena` no usa directamente el familiar `nixosConfigurations.xxx` para el despliegue
-remoto. En su lugar, personaliza un outputs de flake llamado `colmena`. Aunque su
+remoto. En su lugar, personaliza los outputs del flake llamado `colmena`. Aunque su
 estructura es similar a `nixosConfigurations.xxx`, no es idéntica.
 
-En el `flake.nix` de tu sistema, añade un nuevo outputs llamado `colmena`. Un ejemplo
+En el `flake.nix` de tu sistema, añade un nuevo output llamado `colmena`. Un ejemplo
 simple se muestra a continuación:
 
 ```nix{11-34}
@@ -109,7 +109,7 @@ simple se muestra a continuación:
         nixpkgs = import nixpkgs { system = "x86_64-linux"; };
 
         # Este parámetro funciona de forma similar a `specialArgs` en `nixosConfigurations.xxx`,
-        # y se usa para pasar arguments personalizados a todos los submódulos.
+        # y se usa para pasar argumentos personalizados a todos los submódulos.
         specialArgs = {
           inherit nixpkgs;
         };
@@ -138,24 +138,24 @@ Ahora puedes desplegar tu configuración en el dispositivo:
 nix run nixpkgs#colmena apply
 ```
 
-Para un uso más avanzado, consulta la documentación official de colmena en
+Para un uso más avanzado, consulta la documentación oficial de colmena en
 <https://colmena.cli.rs/unstable/introduction.html>
 
 ## Despliegue mediante `nixos-rebuild`
 
 Usar `nixos-rebuild` para el despliegue remoto tiene la ventaja de parecerse mucho al
-despliegue en un host local. Solo require algunos parámetros adicionales para indicar la
+despliegue en un host local. Solo requiere algunos parámetros adicionales para indicar la
 IP del host remoto, el nombre de usuario y otros detalles.
 
 Por ejemplo, para desplegar la configuración definida en `nixosConfigurations.my-nixos` de
-tu flake en un host remoto, usa el siguiente commando:
+tu flake en un host remoto, usa el siguiente comando:
 
 ```bash
 nixos-rebuild switch --flake .#my-nixos \
   --target-host root@192.168.4.1 --build-host localhost --verbose
 ```
 
-El commando anterior construirá y desplegará la configuración de `my-nixos` en un servidor
+El comando anterior construirá y desplegará la configuración de `my-nixos` en un servidor
 con IP `192.168.4.1`. El proceso de construcción del sistema ocurrirá localmente.
 
 Si prefieres construir la configuración en el host remoto, reemplaza
@@ -164,7 +164,7 @@ Si prefieres construir la configuración en el host remoto, reemplaza
 Para no usar IPs repetidamente, puedes definir alias de host en `~/.ssh/config` o en
 `/etc/ssh/ssh_config` de tu máquina local. Por ejemplo:
 
-> Es possible generar toda la configuración SSH mediante Nix, y esa tarea queda para ti.
+> Es posible generar toda la configuración SSH mediante Nix, y esa tarea queda para ti.
 
 ```bash
 › cat ~/.ssh/config

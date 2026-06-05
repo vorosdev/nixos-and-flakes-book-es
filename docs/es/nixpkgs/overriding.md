@@ -20,7 +20,7 @@ enfoques que puedes seguir:
    [`fcitx5-rime.nix`](https://github.com/NixOS/nixpkgs/blob/e4246ae1e7f78b7087dce9c9da10d28d3725025f/pkgs/tools/inputmethods/fcitx5/fcitx5-rime.nix).
    Asegúrate de seleccionar la rama adecuada, como `nixos-unstable`, si estás usando esa
    rama.
-2. Usa el commando `nix repl -f '<nixpkgs>'` para abrir un REPL de Nix y luego escribe
+2. Usa el comando `nix repl -f '<nixpkgs>'` para abrir un REPL de Nix y luego escribe
    `:e pkgs.fcitx5-rime`. Esto abre el código fuente del paquete en tu editor
    predeterminado, donde puedes ver todos sus parámetros. Para aprender el uso básico de
    `nix repl`, puedes escribir `:?` para ver la ayuda.

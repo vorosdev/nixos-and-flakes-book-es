@@ -7,13 +7,13 @@ archivo.
 ## 1. Inputs de Flake
 
 Primero, veamos el atributo `inputs`. Es un conjunto de atributos que define todas las
-dependencies de este flake. Estas dependencies se pasarán como arguments a la función
+dependencias de este flake. Estas dependencias se pasarán como argumentos a la función
 `outputs` después de obtenerse:
 
 ```nix{2-5,7}
 {
   inputs = {
-    # Fuente official de paquetes de NixOS; aquí se usa la rama nixos-26.05
+    # Fuente oficial de paquetes de NixOS; aquí se usa la rama nixos-26.05
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
   };
 
@@ -23,21 +23,21 @@ dependencies de este flake. Estas dependencies se pasarán como arguments a la f
 }
 ```
 
-Las dependencies en `inputs` tienen muchos tipos y definiciones. Puede set otro flake, un
+Las dependencias en `inputs` tienen muchos tipos y definiciones. Puede ser otro flake, un
 repositorio Git normal o una ruta local. La sección
 [Otros usos de Flakes - Inputs de Flake](../other-usage-of-flakes/inputs.md) describe en
-detalle los tipos comunes de dependencies y sus definiciones.
+detalle los tipos comunes de dependencias y sus definiciones.
 
 Aquí solo definimos una dependencia llamada `nixpkgs`, que es la forma más común de hacer
 referencia en un flake, es decir, `github:owner/name/reference`. Aquí, `reference` puede
-set el nombre de una rama, un commit-id o una etiqueta.
+ser el nombre de una rama, un commit-id o una etiqueta.
 
 Después de definir `nixpkgs` en `inputs`, puedes usarlo en los parámetros de la función
-`outputs` posterior, que es exactamente lo que have nuestro ejemplo.
+`outputs` posterior, que es exactamente lo que hace nuestro ejemplo.
 
-## 2. Outputs de Flake
+## 2. Outputs del Flake
 
-Ahora veamos `outputs`. Es una función que toma las dependencies de `inputs` como sus
+Ahora veamos `outputs`. Es una función que toma las dependencias de `inputs` como sus
 parámetros, y su valor de retorno es un conjunto de atributos que representa los
 resultados de compilación del flake:
 
@@ -46,7 +46,7 @@ resultados de compilación del flake:
   description = "A simple NixOS flake";
 
   inputs = {
-    # Fuente official de paquetes de NixOS; aquí se usa la rama nixos-26.05
+    # Fuente oficial de paquetes de NixOS; aquí se usa la rama nixos-26.05
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
   };
 
@@ -66,14 +66,14 @@ Los Flakes pueden tener diversos propósitos y diferentes tipos de outputs. La s
 detallada. Aquí solo usamos el tipo de output `nixosConfigurations`, que se usa para
 configurar sistemas NixOS.
 
-Cuando ejecutamos el commando `sudo nixos-rebuild switch`, este busca el atributo
+Cuando ejecutamos el comando `sudo nixos-rebuild switch`, este busca el atributo
 `nixosConfigurations.my-nixos` (donde `my-nixos` será el hostname de tu sistema actual) en
 el conjunto de atributos devuelto por la función `outputs` de `/etc/nixos/flake.nix` y usa
 la definición allí para configurar tu sistema NixOS.
 
 En realidad, también podemos personalizar la ubicación del flake y el nombre de la
 configuración de NixOS en lugar de usar los valores predeterminados. Esto se puede hacer
-agregando el parámetro `--flake` al commando `nixos-rebuild`. Aquí tienes un ejemplo:
+agregando el parámetro `--flake` al comando `nixos-rebuild`. Aquí tienes un ejemplo:
 
 ```nix
 sudo nixos-rebuild switch --flake /path/to/your/flake#your-hostname
@@ -121,18 +121,18 @@ Aquí no usamos el parámetro `self`, pero más adelante, en algunos ejemplos m�
 **Un Flake puede depender de otros Flakes para utilizar las funcionalidades que ofrecen.**
 
 De forma predeterminada, un flake busca un archivo `flake.nix` en el directorio raíz de
-cada una de sus dependencies (es decir, cada elemento en `inputs`) y evalúa de forma
+cada una de sus dependencias (es decir, cada elemento en `inputs`) y evalúa de forma
 perezosa sus funciones `outputs`. Luego pasa el conjunto de atributos devuelto por estas
-funciones como arguments a su propia función `outputs`, lo que nos permite usar las
+funciones como argumentos a su propia función `outputs`, lo que nos permite usar las
 funcionalidades proporcionadas por los otros flakes dentro de nuestro flake actual.
 
 Más precisamente, la evaluación de la función `outputs` de cada dependencia es perezosa.
 Esto significa que la función `outputs` de un flake solo se evalúa cuando realmente se
 usa, lo que evita cálculos innecesarios y mejora la eficiencia.
 
-La descripción anterior puede set un poco confusa, así que veamos el proceso con el
+La descripción anterior puede ser un poco confusa, así que veamos el proceso con el
 ejemplo de `flake.nix` usado en esta sección. Nuestro `flake.nix` declara la dependencia
-`inputs.nixpkgs`, por lo que [nixpkgs/flake.nix] se evaluará cuando ejecutemos el commando
+`inputs.nixpkgs`, por lo que [nixpkgs/flake.nix] se evaluará cuando ejecutemos el comando
 `sudo nixos-rebuild switch`.
 
 Desde el código fuente del repositorio Nixpkgs, podemos ver que su definición de outputs
@@ -142,7 +142,7 @@ del atributo `lib` para configurar nuestro sistema NixOS:
 ```nix{8-13}
 {
   inputs = {
-    # Fuente official de paquetes de NixOS; aquí se usa la rama nixos-26.05
+    # Fuente oficial de paquetes de NixOS; aquí se usa la rama nixos-26.05
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
   };
 
@@ -169,7 +169,7 @@ función y contiene todos los parámetros de configuración; aquí solo proporci
   usarlo.
 
 Comprender estos concepts básicos es suficiente para principiantes. Explorar en detalle la
-función `nixpkgs.lib.nixosSystem` require entender el sistema de módulos de Nixpkgs. Los
+función `nixpkgs.lib.nixosSystem` requiere entender el sistema de módulos de Nixpkgs. Los
 lectores que hayan completado la sección
 [Modularizar la configuración de NixOS](./modularize-the-configuration.md) pueden volver a
 [nixpkgs/flake.nix] para encontrar la definición de `nixpkgs.lib.nixosSystem`, rastrear su

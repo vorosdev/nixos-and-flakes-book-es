@@ -1,7 +1,7 @@
 # Actualizar el sistema
 
-Con Flakes, actualizar el sistema es sencillo. Simplemente ejecuta los siguientes
-commandos en `/etc/nixos` o en cualquier otra ubicación donde mantengas la configuración:
+Con Flakes, actualizar el sistema es sencillo. Simplemente ejecuta los siguientes comandos
+en `/etc/nixos` o en cualquier otra ubicación donde mantengas la configuración:
 
 > **NOTA**: El directorio `/etc/nixos` pertenece a `root` y solo `root` puede escribir en
 > él. Por lo tanto, si tu flake se encuentra en este directorio, necesitarás usar `sudo`

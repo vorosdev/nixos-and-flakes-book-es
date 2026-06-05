@@ -1,12 +1,12 @@
 # Sistema de módulos y opciones personalizadas
 
-En nuestras configuraciones anteriores de NixOS, establecimos various valores para
+En nuestras configuraciones anteriores de NixOS, establecimos varios valores para
 `options` con el fin de configurar NixOS o Home Manager. Estas `options` en realidad se
 definen en dos lugares:
 
 - NixOS:
   [nixpkgs/nixos/modules](https://github.com/NixOS/nixpkgs/tree/nixos-26.05/nixos/modules),
-  donde se definen todas las opciones de NixOS visible en
+  donde se definen todas las opciones de NixOS visibles en
   <https://search.nixos.org/options>.
 - Home Manager:
   [home-manager/modules](https://github.com/nix-community/home-manager/blob/release-26.05/modules),
@@ -19,8 +19,8 @@ definen en dos lugares:
 
 La base de los mencionados módulos de NixOS y Home Manager es un sistema de módulos
 universal implementado en Nixpkgs, que se encuentra en [lib/modules.nix][lib/modules.nix].
-La documentación official de este sistema de módulos se ofrece a continuación (incluso
-para usuarios experimentados de NixOS, entenderlo puede set una tarea complicada):
+La documentación oficial de este sistema de módulos se ofrece a continuación (incluso para
+usuarios experimentados de NixOS, entenderlo puede ser una tarea complicada):
 
 - [Sistema de módulos - Nixpkgs]
 
@@ -37,12 +37,12 @@ en la implementación del sistema de módulos de Nixpkgs.
 
 ## ¿Cuál es el propósito del sistema de módulos?
 
-Como usuarios normals, usar las distintas opciones implementadas por NixOS y Home Manager
+Como usuarios normales, usar las distintas opciones implementadas por NixOS y Home Manager
 basadas en el sistema de módulos basta para cubrir la mayoría de nuestras necesidades.
 Entonces, ¿qué beneficios nos aporta profundizar en el sistema de módulos?
 
 En la discusión anterior sobre configuración modular, la idea central era dividir la
-configuración en various módulos y luego importar estos módulos usando
+configuración en varios módulos y luego importar estos módulos usando
 `imports = [ ... ];`. Este es el uso más básico del sistema de módulos. Sin embargo, usar
 solo `imports = [ ... ];` nos permite importar configuraciones definidas en el módulo tal
 como están, sin ninguna personalización, lo que limita la flexibilidad. En configuraciones
@@ -63,7 +63,7 @@ repetición de configuración:
 - El host D, una máquina de escritorio, necesita configurar un proxy HTTP para acelerar
   las descargas de Docker.
 
-Si usáramos únicamente `imports`, podríamos tener que dividir la configuración en various
+Si usáramos únicamente `imports`, podríamos tener que dividir la configuración en varios
 módulos como este y luego importar módulos distintos para cada host:
 
 ```bash
@@ -86,7 +86,7 @@ Antes de adentrarnos en el estudio del sistema de módulos, insisto una vez más
 siguiente contenido no es necesario aprenderlo ni usarlo. Muchos usuarios de NixOS no han
 personalizado ninguna `options` y se conforman con usar simplemente `imports` para cubrir
 sus necesidades. Si eres principiante, considera aprender esta parte cuando encuentres
-problems que `imports` no pueda resolver. Eso está completamente bien.
+problemas que `imports` no pueda resolver. Eso está completamente bien.
 
 ## Estructura básica y uso
 
@@ -134,7 +134,7 @@ let
   cfg = config.programs.foo;
 in {
   options.programs.foo = {
-    enable = mkEnableOption "the foo program";
+    enable = mkEnableOption "the foo programa";
 
     package = mkOption {
       type = types.package;
@@ -172,7 +172,7 @@ El módulo definido arriba introduce tres `options`:
 
 - `programs.foo.enable`: Se usa para controlar si este módulo se habilita.
 - `programs.foo.package`: Permite personalizar el paquete `foo`, por ejemplo usando
-  distintas versions, configurando diferentes parámetros de compilación, etc.
+  distintas versiones, configurando diferentes parámetros de compilación, etc.
 - `programs.foo.extraConfig`: Se usa para personalizar el archivo de configuración de
   `foo`.
 
@@ -258,7 +258,7 @@ Comencemos con un ejemplo sencillo:
 
 En los ejemplos 1, 2 y 3 de la configuración anterior, el valor de `config.warnings`
 depende del valor de `config.foo`, pero sus métodos de implementación son diferentes.
-Guarda la configuración anterior como `flake.nix` y luego usa el commando
+Guarda la configuración anterior como `flake.nix` y luego usa el comando
 `nix eval .#nixosConfigurations.test.config.warnings` para probar por separado los
 ejemplos 1, 2 y 3. Verás que los ejemplos 1 y 3 funcionan correctamente, mientras que el
 ejemplo 2 produce un error: `error: infinite recursion encountered`.
@@ -266,23 +266,23 @@ ejemplo 2 produce un error: `error: infinite recursion encountered`.
 Expliquemos cada caso:
 
 1. Flujo de evaluación del ejemplo 1: `config.warnings` => `config.foo` => `config`
-   1. Primero, Nix intenta calculator el valor de `config.warnings`, pero descubre que
+   1. Primero, Nix intenta calcular el valor de `config.warnings`, pero descubre que
       depende de `config.foo`.
-   2. Después, Nix intenta calculator el valor de `config.foo`, que depende de su `config`
+   2. Después, Nix intenta calcular el valor de `config.foo`, que depende de su `config`
       externo.
-   3. Nix intenta calculator el valor de `config`, y como el contenido que realmente no
-      usa `config.foo` se evalúa perezosamente por Nix, en este punto no hay una
-      dependencia recursiva sobre `config.warnings`.
+   3. Nix intenta calcular el valor de `config`, y como el contenido que realmente no usa
+      `config.foo` se evalúa perezosamente por Nix, en este punto no hay una dependencia
+      recursiva sobre `config.warnings`.
    4. La evaluación de `config.foo` se completa, luego se asigna `config.warnings`, y el
       cálculo termina.
 
 2. Ejemplo 2: `config` => `config.foo` => `config`
-   1. Al principio, Nix intenta calculator el valor de `config`, pero descubre que depende
+   1. Al principio, Nix intenta calcular el valor de `config`, pero descubre que depende
       de `config.foo`.
-   2. Después, Nix intenta calculator el valor de `config.foo`, que depende de su `config`
+   2. Después, Nix intenta calcular el valor de `config.foo`, que depende de su `config`
       externo.
-   3. Nix intenta calculator el valor de `config`, y esto vuelve al paso 1, lo que conduce
-      a una recursión infinita y, finalmente, a un error.
+   3. Nix intenta calcular el valor de `config`, y esto vuelve al paso 1, lo que conduce a
+      una recursión infinita y, finalmente, a un error.
 
 3. Ejemplo 3: La única diferencia respecto al ejemplo 2 es el uso de `lib.mkIf` para
    resolver el problema de la recursión infinita.
@@ -307,7 +307,7 @@ Aunque la asignación es la característica más usada del sistema de módulos, 
 personalizar algunas `options`, también debes profundizar en la declaración de opciones y
 la verificación de tipos. Esta parte me parece relativamente directa; es mucho más simple
 que la asignación, y puedes entender lo básico consultando directamente la documentación
-official. No entraré en detalles aquí.
+oficial. No entraré en detalles aquí.
 
 - [Declaraciones de opciones - NixOS]
 - [Tipos de opciones - NixOS]
@@ -317,7 +317,7 @@ official. No entraré en detalles aquí.
 Ya hemos introducido cómo usar `specialArgs` y `_module.args` para pasar parámetros
 adicionales a otras funciones de módulos en
 [Gestionar tu NixOS con Flakes](../nixos-with-flakes/nixos-with-flakes-enabled.md#pass-non-default-parameters-to-submodules).
-No have falta extenderse más aquí.
+No hace falta extenderse más aquí.
 
 ## Cómo importar módulos de forma selectiva {#selectively-import-modules}
 
@@ -331,7 +331,7 @@ correcta de hacerlo.
 
 ### Uso incorrecto #1 - Usar `imports` en `config = { ... };` {#wrong-usage-1}
 
-La primera idea podría set usar directamente `imports` dentro de `config = { ... };`, así:
+La primera idea podría ser usar directamente `imports` dentro de `config = { ... };`, así:
 
 ```nix
 # ./flake.nix
@@ -391,8 +391,8 @@ es menos amigable para quienes empiezan.
 ### Uso correcto #2 - Usar `lib.optionals` en `imports = [];` {#correct-usage-2}
 
 La principal ventaja de este método es que es mucho más simple que los métodos
-introducidos anteriormente, ya que no require modificar el contenido del módulo; basta con
-usar `lib.optionals` en `imports` para decidir si se importa un módulo o no.
+introducidos anteriormente, ya que no requiere modificar el contenido del módulo; basta
+con usar `lib.optionals` en `imports` para decidir si se importa un módulo o no.
 
 > Detalles sobre cómo funciona `lib.optionals`: <https://noogle.dev/f/lib/optionals>
 
@@ -438,7 +438,7 @@ normal:
 [ "foo" ]
 ```
 
-Hay una cosa important a tener en cuenta aquí: **no puedes usar parámetros pasados por
+Hay una cosa importante a tener en cuenta aquí: **no puedes usar parámetros pasados por
 `_module.args` en `imports =[ ... ];`**. Ya lo explicamos en detalle en la sección
 anterior
 [Pasar parámetros no predeterminados a submódulos](../nixos-with-flakes/nixos-flake-and-module-system#pass-non-default-parameters-to-submodules).

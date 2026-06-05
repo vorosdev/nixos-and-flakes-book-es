@@ -71,7 +71,7 @@ Home Manager o como módulo de NixOS, ya que las definiciones son las mismas:
 En el ejemplo anterior definimos tres overlays.
 
 1. Overlay 1 modifica la derivación `google-chrome` agregando un argumento de línea de
-   commandos para un servidor proxy.
+   comandos para un servidor proxy.
 2. Overlay 2 modifica la derivación `steam` agregando paquetes extra y variables de
    entorno.
 3. Overlay 3 está definido en un archivo separado `./overlays/overlay3/default.nix`.
@@ -107,7 +107,7 @@ Esto es solo un ejemplo. Escribe tus propios overlays según tus necesidades.
 La opción `nixpkgs.overlays = [...];` mencionada arriba modifica directamente la instancia
 global de nixpkgs `pkgs`. Si tus overlays cambian algunos paquetes de bajo nivel, podrían
 afectar a otros módulos. Una desventaja es que aumenta la compilación local (por la
-invalidez de la caché), y también podrían surgir problems de funcionamiento en los
+invalidez de la caché), y también podrían surgir problemas de funcionamiento en los
 paquetes afectados.
 
 Si quieres usar overlays solo en un lugar específico sin afectar la instancia

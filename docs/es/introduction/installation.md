@@ -10,10 +10,10 @@ Este libro se centra principalmente en el uso de NixOS y Flakes. Por eso, omitir
 contenido que solo corresponde a Nix (como la instalación en macOS, Linux o WSL).
 
 El proceso de instalación de NixOS es sencillo, pero no entraremos en los detalles aquí.
-Para más información, visita el sitio official de descargas en
+Para más información, visita el sitio oficial de descargas en
 <https://nixos.org/download.html>.
 
 > Si usas macOS,
 > [ryan4yin/nix-darwin-kickstarter](https://github.com/ryan4yin/nix-darwin-kickstarter)
-> puede set un buen punto de partida. Puedes aprender a usar Nix con este libro y tomar
+> puede ser un buen punto de partida. Puedes aprender a usar Nix con este libro y tomar
 > nix-darwin-kickstarter como base para construir tu propia configuración de Nix.

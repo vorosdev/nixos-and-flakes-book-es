@@ -1,23 +1,24 @@
 # Compilación multiplataforma
 
 En cualquier plataforma Linux, hay dos formas de hacer compilación multiplataforma. Por
-ejemplo, para compilar un program `aarch64-linux` en un host `x86_64-linux`, puedes usar
+ejemplo, para compilar un programa `aarch64-linux` en un host `x86_64-linux`, puedes usar
 los siguientes métodos:
 
-1. Usar la toolchain de cross-compilation para compilar el program `aarch64`.
-   - La desventaja es que no puedes usar el binary cache de NixOS y necesitas compilar
-     todo por tu cuenta (cross-compilation también tiene un cache, pero prácticamente no
+1. Usar la cadena de herramientas de compilación cruzada para compilar el programa
+   `aarch64`.
+   - La desventaja es que no puedes usar la caché binaria de NixOS y necesitas compilar
+     todo por tu cuenta (cross-compilation también tiene una caché, pero prácticamente no
      hay nada en él).
    - Las ventajas son que no necesitas emular el conjunto de instrucciones y el
      rendimiento es alto.
-2. Usar QEMU para emular la arquitectura `aarch64` y luego compilar el program en el
+2. Usar QEMU para emular la arquitectura `aarch64` y luego compilar el programa en el
    emulador.
    - La desventaja es que el conjunto de instrucciones se emula y el rendimiento es bajo.
-   - La ventaja es que puedes usar el binary cache de NixOS y no necesitas compilar todo
+   - La ventaja es que puedes usar la caché binaria de NixOS y no necesitas compilar todo
      por tu cuenta.
 
 Si usas el método uno, no necesitas habilitar `binfmt_misc`, pero debes ejecutar la
-compilación a través de la toolchain de cross-compilation.
+compilación a través de la cadena de herramientas de compilación cruzada.
 
 Si usas el método dos, debes habilitar `binfmt_misc` para la arquitectura `aarch64` en la
 configuración de NixOS de la máquina que construye.
@@ -70,8 +71,9 @@ pkgsCross.mipsel-linux-gnu
 pkgsCross.mmix
 ```
 
-Si quieres establecer `pkgs` como una toolchain de cross-compilation de forma global en un
-flake, solo necesitas agregar un módulo en `flake.nix`, como se muestra abajo:
+Si quieres establecer `pkgs` como una cadena de herramientas de compilación cruzada de
+forma global en un flake, solo necesitas agregar un módulo en `flake.nix`, como se muestra
+abajo:
 
 ```nix{12-17}
 {
@@ -100,14 +102,14 @@ flake, solo necesitas agregar un módulo en `flake.nix`, como se muestra abajo:
 }
 ```
 
-La opción `nixpkgs.crossSystem` se usa para establecer `pkgs` como una toolchain de
-cross-compilation, de modo que todo lo que se construya será de arquitectura
-`riscv64-linux`.
+La opción `nixpkgs.crossSystem` se usa para establecer `pkgs` como una cadena de
+herramientas de compilación cruzada, de modo que todo lo que se construya será de
+arquitectura `riscv64-linux`.
 
 ## Compilar mediante un sistema emulado
 
-El segundo método es compilar a través del sistema emulado. Este método no require una
-toolchain de cross-compilation.
+El segundo método es compilar a través del sistema emulado. Este método no requiere una
+cadena de herramientas de compilación cruzada.
 
 Para usar este método, primero la máquina de construcción necesita habilitar el módulo
 `binfmt_misc` en la configuración. Si tu máquina de construcción es NixOS, agrega la
@@ -162,10 +164,10 @@ La sección anterior solo ofreció una introducción sobre cómo usar el sistema
 Nix, pero si quieres entender los detalles internos, aquí tienes una breve introducción.
 
 `binfmt_misc` es una característica del kernel de Linux cuyo nombre significa Kernel
-Support for miscellaneous Binary Formats. Permite que Linux ejecute programs para casi
-cualquier arquitectura de CPU, incluidas X86_64, ARM64, RISCV64 y más.
+Compatibilidad con formatos binarios diversos. Permite que Linux ejecute programas para
+casi cualquier arquitectura de CPU, incluidas X86_64, ARM64, RISCV64 y más.
 
-Para que `binfmt_misc` ejecute programs en distintos formatos, se requieren dos cosas: un
+Para que `binfmt_misc` ejecute programas en distintos formatos, se requieren dos cosas: un
 método específico de identificación del formato binario y la ubicación del intérprete
 correspondiente. Aunque `binfmt_misc` suena potente, su implementación es
 sorprendentemente fácil de entender. Funciona de forma similar a cómo el intérprete de
@@ -173,18 +175,18 @@ Bash determina qué intérprete usar al leer la primera línea de un archivo de 
 ejemplo, `#!/usr/bin/env python3`). `binfmt_misc` define un conjunto de reglas, como leer
 el número mágico en una ubicación específica del archivo binario o determinar el formato
 del archivo ejecutable según su extensión (por ejemplo, .exe, .py). Luego invoca el
-intérprete correspondiente para ejecutar el program. El formato ejecutable predeterminado
+intérprete correspondiente para ejecutar el programa. El formato ejecutable predeterminado
 en Linux es ELF, pero `binfmt_misc` amplía las posibilidades de ejecución al permitir que
 una gran variedad de archivos binarios se ejecuten usando sus intérpretes respectivos.
 
-Para registrar un formato de program binario, debes escribir una línea con el formato
+Para registrar un formato de programa binario, debes escribir una línea con el formato
 `:name:type:offset:magic:mask:interpreter:flags` en el archivo
 `/proc/sys/fs/binfmt_misc/register`. La explicación detallada del formato está fuera del
 alcance de esta discusión.
 
-Como escribir manualmente la información de registro de `binfmt_misc` puede set tedioso,
+Como escribir manualmente la información de registro de `binfmt_misc` puede ser tedioso,
 la comunidad ofrece un contenedor para ayudar con el registro automático. Este contenedor
-se llama `binfmt` y al ejecutarlo instalará various emuladores `binfmt_misc`. Aquí tienes
+se llama `binfmt` y al ejecutarlo instalará varios emuladores `binfmt_misc`. Aquí tienes
 un ejemplo:
 
 ```shell
@@ -196,24 +198,24 @@ docker run --privileged --rm tonistiigi/binfmt --install arm64,riscv64,arm
 ```
 
 El módulo `binfmt_misc` se introdujo en Linux versión 2.6.12-rc2 y desde entonces ha
-sufrido various cambios menores de funcionalidad. En Linux 4.8 se añadió la bandera "F"
-(fix binary), que permite invocar correctamente el intérprete en namespaces de montaje y
+sufrido varios cambios menores de funcionalidad. En Linux 4.8 se añadió la bandera "F"
+(binario fijo), que permite invocar correctamente el intérprete en namespaces de montaje y
 entornos chroot. Para funcionar bien en contenedores donde se necesitan construir varias
-arquitecturas, la bandera "F" es necesaria. Por lo tanto, la versión del kernel debe set
+arquitecturas, la bandera "F" es necesaria. Por lo tanto, la versión del kernel debe ser
 4.8 o superior.
 
 En resumen, `binfmt_misc` ofrece transparencia frente a llamar explícitamente a un
-intérprete para ejecutar programs de arquitecturas no nativas. Con `binfmt_misc`, los
-usuarios ya no tienen que preocuparse por qué intérprete usar al ejecutar un program.
-Permite ejecutar directamente programs de cualquier arquitectura. La bandera "F"
-configurable es un beneficio adicional, ya que carga el program intérprete en memoria
+intérprete para ejecutar programas de arquitecturas no nativas. Con `binfmt_misc`, los
+usuarios ya no tienen que preocuparse por qué intérprete usar al ejecutar un programa.
+Permite ejecutar directamente programas de cualquier arquitectura. La bandera "F"
+configurable es un beneficio adicional, ya que carga el programa intérprete en memoria
 durante la instalación y no se ve afectada por cambios posteriores en el entorno.
 
-## Toolchain de construcción personalizada
+## Cadena de herramientas de construcción personalizada
 
-A veces podemos necesitar usar una toolchain personalizada para construir, como usar
-nuestro propio gcc o nuestra propia libc musl, etc. Esta modificación puede lograrse con
-overlays.
+A veces podemos necesitar usar una cadena de herramientas personalizada para construir,
+como usar nuestro propio gcc o nuestra propia libc musl, etc. Esta modificación puede
+lograrse con overlays.
 
 Por ejemplo, probemos usar una versión diferente de gcc y verificarlo con `nix repl`:
 
@@ -271,8 +273,8 @@ Entonces, ¿cómo usar este método en Flakes? El ejemplo de `flake.nix` es el s
 
 `nixpkgs.overlays` se usa para modificar la instancia de `pkgs` de forma global, y la
 instancia modificada afectará a todo el flake. Es probable que cause una gran cantidad de
-cache misses y, por tanto, requiera construir localmente una gran cantidad de paquetes de
-Nix.
+fallos de caché y, por tanto, requiera construir localmente una gran cantidad de paquetes
+de Nix.
 
 Para evitar este problema, una mejor forma es crear una nueva instancia de `pkgs` y usarla
 solo al construir los paquetes que queremos modificar. El ejemplo de `flake.nix` es el
@@ -320,8 +322,8 @@ siguiente:
 }
 ```
 
-Con el método anterior, podemos personalizar fácilmente la toolchain de construcción de
-algunos paquetes sin afectar la construcción de otros paquetes.
+Con el método anterior, podemos personalizar fácilmente la cadena de herramientas de
+construcción de algunos paquetes sin afectar la construcción de otros paquetes.
 
 ## Referencias
 

@@ -1,4 +1,4 @@
-# Flake Outputs
+# Salidas de Flake
 
 En `flake.nix`, la sección `outputs` define las distintas salidas que un flake puede
 producir durante su proceso de compilación. Un flake puede tener varias salidas al mismo
@@ -6,21 +6,21 @@ tiempo, entre las cuales se incluyen, pero no se limitan a, las siguientes:
 
 - Paquetes de Nix: se llaman `apps.<system>.<name>`, `packages.<system>.<name>` o
   `legacyPackages.<system>.<name>`. Puedes construir un paquete específico usando el
-  commando `nix build .#<name>`.
+  comando `nix build .#<name>`.
 - Funciones auxiliares de Nix: se llaman `lib.<name>` y sirven como bibliotecas para que
   otros flakes las usen.
 - Entornos de desarrollo de Nix: se llaman `devShells` y proporcionan entornos de
-  desarrollo aislados. Se accede a ellos con el commando `nix develop`.
+  desarrollo aislados. Se accede a ellos con el comando `nix develop`.
 - Configuraciones de NixOS: se llaman `nixosConfiguration` y representan configuraciones
-  específicas de sistemas NixOS. Puedes activar una configuración con el commando
+  específicas de sistemas NixOS. Puedes activar una configuración con el comando
   `nixos-rebuild switch --flake .#<name>`.
 - Plantillas de Nix: se llaman `templates` y pueden usarse como punto de partida para
-  crear proyectos nuevos. Puedes generar un proyecto con el commando
+  crear proyectos nuevos. Puedes generar un proyecto con el comando
   `nix flake init --template <reference>`.
-- Otras salidas definidas por el usuario: estas salidas pueden set definidas por el
+- Otras salidas definidas por el usuario: estas salidas pueden ser definidas por el
   usuario y usadas por otras herramientas relacionadas con Nix.
 
-Consulta la documentación official para más detalles - [Flakes Check - Nix Manual].
+Consulta la documentación oficial para más detalles - [Flakes Check - Nix Manual].
 
 Aquí hay un fragmento de ejemplo de la Wiki de NixOS que demuestra la estructura de la
 sección `outputs`:

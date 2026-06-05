@@ -2,7 +2,7 @@
 
 ## Mostrar mensajes de error detallados
 
-Siempre puedes intentar agregar `--show-trace --print-build-logs --verbose` al commando
+Siempre puedes intentar agregar `--show-trace --print-build-logs --verbose` al comando
 `nixos-rebuild` para obtener el mensaje de error detallado si encuentras algún error
 durante el despliegue. Por ejemplo:
 
@@ -16,16 +16,16 @@ sudo nixos-rebuild switch --flake .#myhost --show-trace -L -v
 
 ## Gestionar la configuración con Git
 
-La configuración de NixOS, al set un conjunto de archivos de texto, es adecuada para el
-control de versions con Git. Esto permite revertir fácilmente a una versión anterior en
-caso de problems.
+La configuración de NixOS, al ser un conjunto de archivos de texto, es adecuada para el
+control de versiones con Git. Esto permite revertir fácilmente a una versión anterior en
+caso de problemas.
 
-> NOTA: Al usar Git, Nix ignore todos los archivos que no tienen seguimiento en Git. Si
+> NOTA: Al usar Git, Nix ignora todos los archivos que no tienen seguimiento en Git. Si
 > encuentras un error en Nix que indica que no se encuentra un archivo en particular,
 > puede deberse a que todavía no le has hecho `git add`.
 
-De forma predeterminada, NixOS coloca la configuración en `/etc/nixos`, lo que require
-permisos de root para modificarla y resulta inconvenience para el uso diario. Por suerte,
+De forma predeterminada, NixOS coloca la configuración en `/etc/nixos`, lo que requiere
+permisos de root para modificarla y resulta inconveniente para el uso diario. Por suerte,
 Flakes puede ayudar a resolver este problema al permitirte colocar tu flake donde
 prefieras.
 
@@ -41,8 +41,8 @@ sudo nixos-rebuild switch
 ```
 
 De esta manera, puedes usar Git para gestionar la configuración en `~/nixos-config`. La
-configuración se puede modificar con permisos normals de usuario y no require propiedad de
-root.
+configuración se puede modificar con permisos normales de usuario y no requiere propiedad
+de root.
 
 Otro enfoque es eliminar `/etc/nixos` directamente y especificar la ruta del archivo de
 configuración cada vez que la despliegues:
@@ -76,38 +76,38 @@ histórica anterior.
 ## Ver y eliminar datos históricos
 
 Como se mencionó antes, cada despliegue de NixOS crea una nueva versión, y todas las
-versions se agregan a las opciones de arranque del sistema. Además de reiniciar la
-computadora, puedes consultar todas las versions históricas disponibles con el siguiente
-commando:
+versiones se agregan a las opciones de arranque del sistema. Además de reiniciar la
+computadora, puedes consultar todas las versiones históricas disponibles con el siguiente
+comando:
 
 ```shell
 nix profile history --profile /nix/var/nix/profiles/system
 ```
 
-Para limpiar versions históricas y liberar espacio de almacenamiento, usa el siguiente
-commando:
+Para limpiar versiones históricas y liberar espacio de almacenamiento, usa el siguiente
+comando:
 
 ```shell
-# Eliminar todas las versions históricas de más de 7 días
+# Eliminar todas las versiones históricas de más de 7 días
 sudo nix profile wipe-history --older-than 7d --profile /nix/var/nix/profiles/system
 
-# Limpiar el historical no recolectará como basura los paquetes sin usar; debes ejecutar el commando gc manualmente como root:
+# Limpiar el historial no recolectará como basura los paquetes sin usar; debes ejecutar el comando gc manualmente como root:
 sudo nix-collect-garbage --delete-old
 
-# Debido al siguiente problema, debes ejecutar el commando gc por usuario para eliminar los datos históricos de Home Manager:
+# Debido al siguiente problema, debes ejecutar el comando gc por usuario para eliminar los datos históricos de Home Manager:
 # https://github.com/NixOS/nix/issues/8508
 nix-collect-garbage --delete-old
 ```
 
 ## ¿Por qué están instalados algunos paquetes?
 
-Para averiguar por qué está instalado un paquete, puedes usar el siguiente commando:
+Para averiguar por qué está instalado un paquete, puedes usar el siguiente comando:
 
 1. Ingresa a una shell con `nix-tree` y `rg` disponibles:
    `nix shell nixpkgs#nix-tree nixpkgs#ripgrep`
 1. ` nix-store --gc --print-roots | rg -v '/proc/' | rg -Po '(?<= -> ).*' | xargs -o nix-tree`
 1. `/<package-name>` para encontrar el paquete que deseas revisar.
-1. `w` para mostrar qué paquetes dependen de ese paquete y la cadena de dependencies
+1. `w` para mostrar qué paquetes dependen de ese paquete y la cadena de dependencias
    completa.
 
 ## Reducir el uso de disco

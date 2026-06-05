@@ -2,7 +2,7 @@
 
 ## Mostrar mensajes de error detallados
 
-Siempre puedes intentar añadir `--show-trace --print-build-logs --verbose` al commando
+Siempre puedes intentar añadir `--show-trace --print-build-logs --verbose` al comando
 `nixos-rebuild` para obtener el mensaje de error detallado si encuentras algún problema
 durante el despliegue. por ejemplo:
 
@@ -56,7 +56,7 @@ The following commands are available:
 
 Hay un par de expresiones que uso con frecuencia: `:lf <ref>` y `:e <expr>`.
 
-El commando `:e <expr>` es muy intuitivo, así que no entraré en detalles. En su lugar,
+El comando `:e <expr>` es muy intuitivo, así que no entraré en detalles. En su lugar,
 centremonos en `:lf <ref>`:
 
 ```nix

@@ -1,7 +1,7 @@
 # Modulariza tu configuración de NixOS
 
 En este punto, el esqueleto de todo el sistema está configurado. La estructura de
-configuración actual en `/etc/nixos` debería set la siguiente:
+configuración actual en `/etc/nixos` debería ser la siguiente:
 
 ```
 $ tree
@@ -14,7 +14,7 @@ $ tree
 
 Las funciones de estos cuatro archivos son:
 
-- `flake.lock`: un archivo de bloqueo de versions generado automáticamente que registra
+- `flake.lock`: un archivo de bloqueo de versiones generado automáticamente que registra
   todas las fuentes de inputs, valores hash y números de versión de todo el flake para
   garantizar la reproducibilidad.
 - `flake.nix`: el archivo de entrada que se reconocerá y desplegará al ejecutar
@@ -37,7 +37,7 @@ directorio personal.
 Sin embargo, a medida que la configuración crece, depender únicamente de
 `configuration.nix` y `home.nix` puede producir archivos inflados y difíciles de mantener.
 Una mejor solución es usar el sistema de módulos de Nix para dividir la configuración en
-various módulos de Nix y escribirlos de forma clasificada.
+varios módulos de Nix y escribirlos de forma clasificada.
 
 El lenguaje Nix proporciona una
 [función import](https://nix.dev/tutorials/nix-language.html#import) con una regla
@@ -52,7 +52,7 @@ archivos en el módulo de Nix actual.
 
 Ten en cuenta que `imports` no simplemente sobrescribe configuraciones duplicadas, sino
 que las maneja de forma más razonable. Por ejemplo, si `program.packages = [...]` se
-define en various módulos, entonces `imports` fusionará todos los `program.packages`
+define en varios módulos, entonces `imports` fusionará todos los `program.packages`
 definidos en todos los módulos de Nix en una sola lista. Los conjuntos de atributos
 también se pueden fusionar correctamente. Puedes explorar por tu cuenta el comportamiento
 específico.
@@ -62,7 +62,7 @@ específico.
 > `A list of modules. These are merged together to form the final configuration.` Es un
 > poco ambiguo...
 
-Con la ayuda de `imports`, podemos dividir `home.nix` y `configuration.nix` en various
+Con la ayuda de `imports`, podemos dividir `home.nix` y `configuration.nix` en varios
 módulos de Nix definidos en diferentes archivos `.nix`. Veamos un módulo de ejemplo
 `packages.nix`:
 
@@ -98,7 +98,7 @@ Las dos sentencias import anteriores son equivalentes en los parámetros que rec
   (otro _conjunto de atributos_ de configuración parcial) dentro de la lista `imports`.
 
 - La sentencia `(2)` define una ruta a un módulo, cuya función Nix cargará
-  _automáticamente_ al ensamblar la configuración `config`. Pasará todos los arguments
+  _automáticamente_ al ensamblar la configuración `config`. Pasará todos los argumentos
   coincidentes de la función en `packages.nix` a la función cargada en
   `special-fonts-2.nix`, lo que resulta en
   `import ./special-fonts-2.nix {config = config; pkgs = pkgs}`.
@@ -126,10 +126,10 @@ estructura es la siguiente:
 │   │   ├── i3blocks.conf
 │   │   ├── keybindings
 │   │   └── scripts
-│   ├── programs
+│   ├── programas
 │   │   ├── browsers.nix
 │   │   ├── common.nix
-│   │   ├── default.nix   # aquí importamos todos los módulos de la carpeta programs con imports = [...]
+│   │   ├── default.nix   # aquí importamos todos los módulos de la carpeta programas con imports = [...]
 │   │   ├── git.nix
 │   │   ├── media.nix
 │   │   ├── vscode.nix
@@ -207,10 +207,10 @@ establecerá con una prioridad predeterminada de 100 (definida por
 sobrescribirá el valor predeterminado.
 
 Cuanto menor sea el valor de `priority`, mayor será la prioridad real. Como resultado,
-`lib.mkForce` tiene mayor prioridad que `lib.mkDefault`. Si defines various valores con la
+`lib.mkForce` tiene mayor prioridad que `lib.mkDefault`. Si defines varios valores con la
 misma prioridad, Nix lanzará un error.
 
-Usar estas funciones puede set muy útil para modularizar la configuración. Puedes
+Usar estas funciones puede ser muy útil para modularizar la configuración. Puedes
 establecer valores predeterminados en un módulo de bajo nivel (módulo base) y forzar
 valores en un módulo de alto nivel.
 
@@ -256,14 +256,14 @@ Además de `lib.mkDefault` y `lib.mkForce`, también existen `lib.mkBefore` y `l
 que se usan para establecer el orden de fusión de **opciones de tipo lista**. Estas
 funciones contribuyen aún más a la modularización de la configuración.
 
-> No he encontrado la documentación official para opciones de tipo lista, pero simplemente
+> No he encontrado la documentación oficial para opciones de tipo lista, pero simplemente
 > entiendo que son tipos cuyos resultados de fusión están relacionados con el orden de
 > fusión. Según esta interpretación, tanto los tipos `list` como `string` son opciones de
 > tipo lista, y en la práctica estas funciones sí se pueden usar en esos dos tipos.
 
-Como se mencionó antes, cuando defines various valores con la misma **prioridad de
+Como se mencionó antes, cuando defines varios valores con la misma **prioridad de
 sobrescritura**, Nix lanzará un error. Sin embargo, al usar `lib.mkOrder`, `lib.mkBefore`
-o `lib.mkAfter`, puedes definir various valores con la misma prioridad de sobrescritura, y
+o `lib.mkAfter`, puedes definir varios valores con la misma prioridad de sobrescritura, y
 se fusionarán en el orden que especifiques.
 
 Para examinar el código fuente de `lib.mkBefore`, puedes ejecutar

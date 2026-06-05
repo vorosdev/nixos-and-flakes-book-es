@@ -2,7 +2,7 @@
 
 En comparación con el método de configuración predeterminado que usa actualmente NixOS,
 Flakes ofrece mejor reproducibilidad. Su definición clara de estructura de paquetes admite
-de forma natural dependencies en otros repositorios de Git, lo que facilita compartir
+de forma natural dependencias en otros repositorios de Git, lo que facilita compartir
 código. Por eso, este libro sugiere usar Flakes para gestionar la configuración del
 sistema.
 
@@ -13,7 +13,7 @@ Esta sección explica cómo usar Flakes para gestionar la configuración del sis
 
 Actualmente, Flakes sigue siendo una función experimental y no está habilitada por
 defecto. Necesitamos modificar manualmente el archivo `/etc/nixos/configuration.nix` para
-habilitar la función Flakes y la nueva herramienta de línea de commandos de nix:
+habilitar la función Flakes y la nueva herramienta de línea de comandos de nix:
 
 ```nix{12,16}
 { config, pkgs, ... }:
@@ -26,10 +26,10 @@ habilitar la función Flakes y la nueva herramienta de línea de commandos de ni
 
   # ......
 
-  # Habilitar la función Flakes y la nueva herramienta de línea de commandos de nix
+  # Habilitar la función Flakes y la nueva herramienta de línea de comandos de nix
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   environment.systemPackages = with pkgs; [
-    # Flakes clona sus dependencies mediante el commando git,
+    # Flakes clona sus dependencias mediante el comando git,
     # así que git debe instalarse primero
     git
     vim
@@ -45,14 +45,14 @@ habilitar la función Flakes y la nueva herramienta de línea de commandos de ni
 Después de hacer estos cambios, ejecuta `sudo nixos-rebuild switch` para aplicar las
 modificaciones. Luego ya puedes usar Flakes para gestionar la configuración de tu sistema.
 
-La nueva herramienta de línea de commandos de nix también ofrece funciones útiles. Por
-ejemplo, ahora puedes usar el commando `nix repl` para abrir un entorno interaction de
-nix. Si te interesa, puedes usarlo para repasar y probar toda la sintaxis de Nix que ya
+La nueva herramienta de línea de comandos de nix también ofrece funciones útiles. Por
+ejemplo, ahora puedes usar el comando `nix repl` para abrir un entorno interactivo de nix.
+Si te interesa, puedes usarlo para repasar y probar toda la sintaxis de Nix que ya
 aprendiste.
 
 ## Cambiar la configuración del sistema a `flake.nix` {#switch-to-flake-nix}
 
-Después de habilitar Flakes, el commando `sudo nixos-rebuild switch` priorizará la lectura
+Después de habilitar Flakes, el comando `sudo nixos-rebuild switch` priorizará la lectura
 del archivo `/etc/nixos/flake.nix` y, si no lo encuentra, intentará usar
 `/etc/nixos/configuration.nix`.
 
@@ -73,14 +73,14 @@ cat flake.nix
 
 Tomando esta plantilla como referencia, crea el archivo `/etc/nixos/flake.nix` y escribe
 el contenido de configuración. A partir de ahí, todas las modificaciones posteriores del
-sistema pasarán a set gestionadas por Nix Flakes. Aquí tienes un ejemplo del contenido:
+sistema pasarán a ser gestionadas por Nix Flakes. Aquí tienes un ejemplo del contenido:
 
 ```nix{15}
 {
   description = "A simple NixOS flake";
 
   inputs = {
-    # Fuente official de paquetes de NixOS, usando aquí la rama nixos-26.05
+    # Fuente oficial de paquetes de NixOS, usando aquí la rama nixos-26.05
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
   };
 
@@ -115,9 +115,9 @@ Actualmente, nuestro flake incluye estos archivos:
 
 - `/etc/nixos/flake.nix`: El punto de entrada del flake, que se reconoce y despliega
   cuando se ejecuta `sudo nixos-rebuild switch`.
-- `/etc/nixos/flake.lock`: El archivo de bloqueo de versions generado automáticamente, que
-  registra las fuentes de datos, valores hash y números de versión de todas las entradas
-  de todo el flake, asegurando la reproducibilidad del sistema.
+- `/etc/nixos/flake.lock`: El archivo de bloqueo de versiones generado automáticamente,
+  que registra las fuentes de datos, valores hash y números de versión de todas las
+  entradas de todo el flake, asegurando la reproducibilidad del sistema.
 - `/etc/nixos/configuration.nix`: Este es nuestro archivo de configuración anterior, que
   se importa como módulo en `flake.nix`. Actualmente, todas las configuraciones del
   sistema se escriben en este archivo.

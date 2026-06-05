@@ -12,7 +12,7 @@ inmutabilidad, incluidos los resultados de compilación de los paquetes, los met
 los paquetes y todos los insumos de compilación de los paquetes.
 
 El gestor de paquetes Nix usa el lenguaje functional de Nix para describir los paquetes de
-software y sus dependencies. Cada paquete se trata como la salida de una función pura, y
+software y sus dependencias. Cada paquete se trata como la salida de una función pura, y
 los resultados de compilación se almacenan en el Nix Store.
 
 Los datos en el Nix Store tienen un formato de ruta fijo:
@@ -25,8 +25,8 @@ store directory         digest                  name
 
 Como se ve, las rutas en el Nix Store comienzan con un valor hash (digest), seguido por el
 nombre y la versión del paquete. Este valor hash se calcula a partir de toda la
-información de entrada del paquete (parámetros de compilación, dependencies, versions de
-dependencies, etc.), y cualquier cambio en los parámetros o dependencies produce un cambio
+información de entrada del paquete (parámetros de compilación, dependencias, versiones de
+dependencias, etc.), y cualquier cambio en los parámetros o dependencias produce un cambio
 en el hash, garantizando así la unicidad de cada ruta. Además, como el Nix Store es un
 sistema de archivos de solo lectura, asegura la inmutabilidad de los paquetes: una vez
 compilado un paquete, no cambiará.
@@ -42,7 +42,7 @@ La configuración declarativa de NixOS calcula qué paquetes deben instalarse y 
 simbólicamente las rutas de almacenamiento de esos paquetes en el Nix Store a
 `/run/current-system`; después, al modificar variables de entorno como `PATH` para que
 apunten a la carpeta correspondiente dentro de `/run/current-system`, se logra la
-instalación de los paquetes. Cada vez que se have un despliegue, NixOS calcula la nueva
+instalación de los paquetes. Cada vez que se realiza un despliegue, NixOS calcula la nueva
 configuración del sistema, limpia los enlaces simbólicos antiguos y crea los nuevos para
 asegurar que el entorno del sistema coincida con la configuración declarativa.
 
@@ -74,8 +74,8 @@ lrwxrwxrwx 15 root root 76 1970年 1月 1日 /run/current-system/sw/bin/bash -> 
 lrwxrwxrwx 2 root root 72 1970年 1月 1日 /etc/profiles/per-user/ryan/bin/cowsay -> /nix/store/w2czyf82gxz4vy9kzsdhr88112bmc0c1-home-manager-path/bin/cowsay
 ```
 
-El commando `nix develop`, por otro lado, añade directamente las rutas de almacenamiento
-de los paquetes a variables de entorno como `PATH` y `LD_LIBRARY_PATH`, permitiendo que el
+El comando `nix develop`, por otro lado, añade directamente las rutas de almacenamiento de
+los paquetes a variables de entorno como `PATH` y `LD_LIBRARY_PATH`, permitiendo que el
 nuevo entorno de shell use directamente esos paquetes o bibliotecas.
 
 Por ejemplo, en el repositorio fuente de este libro,
@@ -106,16 +106,16 @@ y recupera espacio.
 
 Según
 [Capítulo 11. El recolector de basura - nix pills](https://nixos.org/guides/nix-pills/garbage-collector),
-el commando `nix-store --gc` realiza la recolección de basura recorriendo recursivamente
+el comando `nix-store --gc` realiza la recolección de basura recorriendo recursivamente
 todos los enlaces simbólicos en el directorio `/nix/var/nix/gcroots/` para encontrar los
-paquetes referenciados y eliminar los que ya no lo están. El commando
+paquetes referenciados y eliminar los que ya no lo están. El comando
 `nix-collect-garbage --delete-old` va un paso más allá: primero borra todos los
 [perfiles](https://nixos.org/manual/nix/stable/command-ref/files/profiles) antiguos y
 luego ejecuta `nix-store --gc` para limpiar los paquetes que ya no están referenciados.
 
-Es important notar que los resultados de compilación de commandos como `nix build` y
+Es importante notar que los resultados de compilación de comandos como `nix build` y
 `nix develop` no se agregan automáticamente a `/nix/var/nix/gcroots/`, así que esos
-resultados pueden set eliminados por el mecanismo de recolección de basura. Puedes usar
+resultados pueden ser eliminados por el mecanismo de recolección de basura. Puedes usar
 `nix-instantiate` con `keep-outputs = true` y otros medios para evitarlo, pero yo prefiero
 montar mi propio servidor de caché binaria y configurar un tiempo de caché más largo (por
 ejemplo, un año), y luego enviar los datos al servidor de caché. Así puedes compartir los
@@ -131,16 +131,16 @@ ruta de salida, y Nix puede reutilizar los resultados de compilación de otras m
 vez de recompilar el paquete, acelerando así la instalación.
 
 La caché binaria de Nix está diseñada sobre esta base; es una implementación del Nix Store
-que guarda los datos en un servidor remoto en lugar de localmente. Cuando have falta, el
+que guarda los datos en un servidor remoto en lugar de localmente. Cuando hace falta, el
 gestor de paquetes Nix descarga los resultados correspondientes desde el servidor remoto a
 `/nix/store` local, evitando el costoso proceso de compilación local.
 
-Nix ofrece un servidor official de caché binaria en <https://cache.nixos.org>, que
-almacena resultados de compilación para la mayoría de los paquetes de nixpkgs en
-arquitecturas de CPU comunes. Cuando ejecutas un commando de compilación de Nix en tu
-máquina local, Nix primero intenta encontrar la caché binaria correspondiente en el
-servidor. Si la encuentra, la descarga directamente, omitiendo la compilación local y
-acelerando mucho el proceso.
+Nix ofrece un servidor oficial de caché binaria en <https://cache.nixos.org>, que almacena
+resultados de compilación para la mayoría de los paquetes de nixpkgs en arquitecturas de
+CPU comunes. Cuando ejecutas un comando de compilación de Nix en tu máquina local, Nix
+primero intenta encontrar la caché binaria correspondiente en el servidor. Si la
+encuentra, la descarga directamente, omitiendo la compilación local y acelerando mucho el
+proceso.
 
 ## Modelo de confianza de la caché binaria de Nix
 
@@ -161,7 +161,7 @@ contenido malicioso.
 Para resolver esto, el gestor de paquetes Nix usa un mecanismo de firma con clave
 pública/privada para verificar el origen y la integridad de la caché binaria. Esto deja la
 responsabilidad de la seguridad en el usuario. Si deseas usar un servidor de caché no
-official para acelerar el proceso de compilación, debes añadir la clave pública de ese
+oficial para acelerar el proceso de compilación, debes añadir la clave pública de ese
 servidor a `trusted-public-keys` y asumir los riesgos de seguridad asociados: el servidor
 podría proporcionar datos en caché que incluyan contenido malicioso.
 
@@ -169,11 +169,11 @@ podría proporcionar datos en caché que incluyan contenido malicioso.
 
 [RFC062 - content-addressed store paths](https://github.com/NixOS/rfcs/blob/master/rfcs/0062-content-addressed-paths.md)
 es un intento de la comunidad por mejorar la consistencia de los resultados de
-compilación. Propone una nueva forma de calculator las rutas de almacenamiento basándose
-en los resultados de compilación (outputs) en lugar de en la información de entrada
-(inputs). Este diseño asegura consistencia en los resultados: si los resultados cambian,
-las rutas de almacenamiento también cambian, evitando así la incertidumbre del contenido
-de salida inherente al modelo basado en entradas.
+compilación. Propone una nueva forma de calcular las rutas de almacenamiento basándose en
+los resultados de compilación (outputs) en lugar de en la información de entrada (inputs).
+Este diseño asegura consistencia en los resultados: si los resultados cambian, las rutas
+de almacenamiento también cambian, evitando así la incertidumbre del contenido de salida
+inherente al modelo basado en entradas.
 
 Sin embargo, este enfoque sigue en una etapa experimental y no se ha adoptado ampliamente.
 

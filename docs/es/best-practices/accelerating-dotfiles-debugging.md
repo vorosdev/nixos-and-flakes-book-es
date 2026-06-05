@@ -3,7 +3,7 @@
 Después de gestionar nuestros dotfiles con Home Manager, un problema que puede aparecer es
 que cada vez que modificamos nuestros dotfiles tenemos que ejecutar
 `sudo nixos-rebuild switch` (o `home-manager switch` si usas Home Manager de forma
-independiente) para que los cambios surtan efecto. Sin embargo, ejecutar este commando
+independiente) para que los cambios surtan efecto. Sin embargo, ejecutar este comando
 recalcula el estado completo del sistema cada vez, lo cual es doloroso a pesar de los
 muchos mecanismos de caché que Nix ya tiene para acelerar este cálculo.
 

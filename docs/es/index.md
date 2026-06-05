@@ -6,7 +6,7 @@ titleTemplate: "Página de inicio"
 
 hero:
   name: "NixOS & Flakes Book"
-  text: "Un libro no official para principiantes"
+  text: "Un libro no oficial para principiantes"
   tagline:
     ¿Quieres conocer NixOS y Flakes en detalle? ¿Buscas un tutorial amigable para
     principiantes? Entonces llegaste al lugar correcto.

@@ -6,19 +6,19 @@ NixOS es una distribución de Linux muy particular, construida sobre el gestor d
 Nix, con una filosofía de diseño que la diferencia de distribuciones tradicionales como
 Ubuntu, CentOS, Arch Linux y otras.
 
-Una de las principles ventajas de NixOS frente a otras distribuciones es su
+Una de las principales ventajas de NixOS frente a otras distribuciones es su
 reproducibilidad y su configuración declarativa, lo que permite replicar entornos de
 sistema consistentes en varias máquinas.
 
 Aunque NixOS es potente, esa fortaleza también implica una mayor complejidad del sistema.
-Esto lo have más difícil para quienes comienzan. Un problema important es que el
+Esto lo hace más difícil para quienes comienzan. Un problema importante es que el
 conocimiento acumulado en otras distribuciones de Linux no se transfiere fácilmente a
-NixOS. Otro es que la documentación official y la de la comunidad suele estar dispensary y
-desactualizada. Estos problems han afectado a muchos principiantes de NixOS.
+NixOS. Otro es que la documentación oficial y la de la comunidad suele estar dispersa y
+desactualizada. Estos problemas han afectado a muchos principiantes de NixOS.
 
-Estos problems también se ven con la función experimental del gestor de paquetes Nix
+Estos problemas también se ven con la función experimental del gestor de paquetes Nix
 llamada Flakes. Inspirado en gestores de paquetes como npm y Cargo, Flakes usa `flake.nix`
-para registrar todas las dependencies externas y `flake.lock` para fijar sus versions.
+para registrar todas las dependencias externas y `flake.lock` para fijar sus versiones.
 Esto mejora de forma significativa la reproducibilidad y la componibilidad del gestor de
 paquetes Nix y de las configuraciones de NixOS.
 
@@ -26,10 +26,10 @@ Las ventajas de Flakes lo han vuelto muy popular dentro de la comunidad: según 
 oficiales, más de la mitad de los nuevos repositorios de Nix creados en GitHub ya usan
 Flakes.
 
-Sin embargo, para mantener la estabilidad, la documentación official cubre muy poco
+Sin embargo, para mantener la estabilidad, la documentación oficial cubre muy poco
 contenido relacionado con Flakes. Esto ha dejado a muchos usuarios de Nix/NixOS
 confundidos. Ven que todo el mundo usa Flakes y también quieren aprenderlo, pero no
-encuentran por dónde empezar; a menudo tienen que reunir información dispensary, buscar en
+encuentran por dónde empezar; a menudo tienen que reunir información dispersa, buscar en
 el código fuente de Nixpkgs o pedir ayuda a usuarios con más experiencia.
 
 ## El origen de este libro
@@ -38,14 +38,14 @@ Este libro nació de mis notas dispersas cuando empecé con NixOS.
 
 En abril de ese año (2023), cuando empecé con NixOS, me enamoré de su filosofía de diseño.
 A recomendación de un amigo, conocí la función experimental Flakes de Nix. Después de
-comparar Flakes con el método traditional de configuración de NixOS, me di cuenta de que
+comparar Flakes con el método tradicional de configuración de NixOS, me di cuenta de que
 solo un NixOS con Flakes habilitado cumplía con mis expectativas. Por eso, ignoré por
-completo el enfoque traditional de configuración de Nix y aprendí directamente a
+completo el enfoque tradicional de configuración de Nix y aprendí directamente a
 configurar mi sistema NixOS con Flakes desde los primeros pasos.
 
 Durante todo mi proceso de aprendizaje, encontré muy pocos recursos de Flakes pensados
 para principiantes. La gran mayoría de la documentación se centraba en el enfoque
-traditional de configuración de Nix, lo que me obligó a extraer la información que
+tradicional de configuración de Nix, lo que me obligó a extraer la información que
 necesitaba de distintas fuentes, como la Wiki de NixOS, Zero to Nix, el manual de Nixpkgs
 y el código fuente de Nixpkgs, descartando todo lo que no estuviera relacionado con
 Flakes. Ese camino de aprendizaje fue bastante enredado y doloroso. Para evitar tropiezos
@@ -82,7 +82,7 @@ podría haberse quedado en mi blog personal y no habría llegado a su forma actu
 
 ## Características de este libro
 
-1. Enfocado en NixOS y Flakes, dejando de lado el enfoque traditional de configuración de
+1. Enfocado en NixOS y Flakes, dejando de lado el enfoque tradicional de configuración de
    Nix.
 2. Amigable para principiantes, con explicaciones desde la perspectiva de quienes llegan a
    NixOS con algo de experiencia en Linux y programación.

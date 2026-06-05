@@ -64,21 +64,21 @@ nix-repl> import ./hello.nix pkgs
 En el ejemplo anterior sin `pkgs.callPackage`, pasamos `pkgs` directamente como parámetro
 a `hello.nix`. Sin embargo, este enfoque tiene algunas desventajas:
 
-1. Todas las demás dependencies de la derivación `hello` quedan fuertemente acopladas con
+1. Todas las demás dependencias de la derivación `hello` quedan fuertemente acopladas con
    `pkgs`.
-   1. Si necesitamos dependencies personalizadas, tenemos que modificar `pkgs` o el
-      contenido de `hello.nix`, lo cual puede set engorroso.
+   1. Si necesitamos dependencias personalizadas, tenemos que modificar `pkgs` o el
+      contenido de `hello.nix`, lo cual puede ser engorroso.
 2. Cuando `hello.nix` se vuelve complejo, es difícil determinar de qué derivaciones de
-   `pkgs` depende, lo que complica analizar las dependencies entre derivaciones.
+   `pkgs` depende, lo que complica analizar las dependencias entre derivaciones.
 
 `pkgs.callPackage`, como herramienta para parametrizar la construcción de derivaciones,
-resuelve estos problems. Veamos su código fuente y sus comentarios en
+resuelve estos problemas. Veamos su código fuente y sus comentarios en
 [nixpkgs/lib/customisation.nix#L101-L121](https://github.com/NixOS/nixpkgs/blob/fe138d3/lib/customisation.nix#L101-L121):
 
 ```nix
   /* Llama a la función del paquete en el archivo `fn` con los
-    arguments requeridos de forma automática. La función se invoca con
-    los arguments `args`, pero cualquier argumento faltante se obtiene
+    argumentos requeridos de forma automática. La función se invoca con
+    los argumentos `args`, pero cualquier argumento faltante se obtiene
     de `autoArgs`. Esta función está pensada para parametrizarse
     parcialmente, por ejemplo:
 
@@ -89,7 +89,7 @@ resuelve estos problems. Veamos su código fuente y sus comentarios en
       };
 
     Si la función `libbar` espera un argumento llamado `libfoo`, se le
-    pasa automáticamente. Las sobrescrituras o los arguments faltantes
+    pasa automáticamente. Las sobrescrituras o los argumentos faltantes
     pueden proporcionarse en `args`, por ejemplo:
 
       libbar = callPackage ./bar.nix {
@@ -102,7 +102,7 @@ resuelve estos problems. Veamos su código fuente y sus comentarios en
       f = if lib.isFunction fn then fn else import fn;
       fargs = lib.functionArgs f;
 
-      # Todos los arguments que se pasarán a la función
+      # Todos los argumentos que se pasarán a la función
       # Esto incluye los automáticos y los pasados explícitamente
       allArgs = builtins.intersectAttrs fargs autoArgs // args;
 
@@ -117,7 +117,7 @@ En esencia, `pkgs.callPackage` se usa como `pkgs.callPackage fn args`, donde el 
    1. Después de este paso, tienes una función, normalmente con parámetros como `lib`,
       `stdenv`, `fetchurl` y posiblemente algunos parámetros personalizados.
 2. Luego, `pkgs.callPackage fn args` fusiona `args` con el conjunto de atributos `pkgs`.
-   Si hay conflicts, los parámetros de `args` sobrescriben los de `pkgs`.
+   Si hay conflictos, los parámetros de `args` sobrescriben los de `pkgs`.
 3. Después, `pkgs.callPackage fn args` extrae los parámetros de la función `fn` del
    conjunto de atributos fusionado y los usa para ejecutar la función.
 4. El resultado de la ejecución de la función es una derivación, es decir, un paquete de
@@ -185,14 +185,14 @@ placas de desarrollo.
 
 Las ventajas de `pkgs.callPackage` son:
 
-1. Las definiciones de derivaciones quedan parametrizadas, y todas sus dependencies son
-   los parámetros de la función en su definición. Esto facilita analizar dependencies
+1. Las definiciones de derivaciones quedan parametrizadas, y todas sus dependencias son
+   los parámetros de la función en su definición. Esto facilita analizar dependencias
    entre derivaciones.
-2. Todas las dependencies y otros parámetros personalizados de la derivación pueden
+2. Todas las dependencias y otros parámetros personalizados de la derivación pueden
    reemplazarse fácilmente usando el segundo parámetro de `pkgs.callPackage`, lo que
    mejora mucho la reutilización.
 3. Aunque consigue las dos funcionalidades anteriores, no aumenta la complejidad del
-   código, porque todas las dependencies en `pkgs` pueden inyectarse automáticamente.
+   código, porque todas las dependencias en `pkgs` pueden inyectarse automáticamente.
 
 Por eso siempre se recomienda usar `pkgs.callPackage` para definir derivaciones.
 
@@ -200,4 +200,4 @@ Por eso siempre se recomienda usar `pkgs.callPackage` para definir derivaciones.
 
 - [Capítulo 13. Patrón de diseño Callpackage - Nix Pills](https://nixos.org/guides/nix-pills/callpackage-design-pattern.html)
 - [callPackage, una herramienta para los perezosos - The Summer of Nix](https://summer.nixos.org/blog/callpackage-a-tool-for-the-lazy/)
-- [Documentar qué have callPackage y sus precondiciones - Nixpkgs Issues](https://github.com/NixOS/nixpkgs/issues/36354)
+- [Documentar qué hace callPackage y sus precondiciones - Nixpkgs Issues](https://github.com/NixOS/nixpkgs/issues/36354)

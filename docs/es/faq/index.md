@@ -9,13 +9,13 @@ de hardware actual, lo que dificulta reproducirlos en otras máquinas.
 
 Por otro lado, la configuración de NixOS es una pieza de "conocimiento" que puede
 construir un sistema operativo idéntico desde cero. Es **explicable** y puede construirse
-automáticamente con unos pocos commandos simples. La configuración de NixOS sirve como
+automáticamente con unos pocos comandos simples. La configuración de NixOS sirve como
 documentación de todos los cambios hechos a tu sistema operativo y también se usa para
 construir automáticamente el propio sistema.
 
-El archivo de configuración de NixOS es como el **código fuente** de un program. Mientras
-el código fuente esté intacto, es fácil modificar, revisar o reconstruir un program
-idéntico. En cambio, los snapshots del sistema son como programs binarios compilados a
+El archivo de configuración de NixOS es como el **código fuente** de un programa. Mientras
+el código fuente esté intacto, es fácil modificar, revisar o reconstruir un programa
+idéntico. En cambio, los snapshots del sistema son como programas binarios compilados a
 partir del código fuente, por lo que modificarlos o revisarlos es mucho más difícil.
 Además, los snapshots son grandes, así que compartirlos o migrarlos tiene un costo mayor
 que compartir código fuente.
@@ -32,21 +32,21 @@ otros medios de respaldo.
 
 Nix no solo se usa para gestionar entornos de escritorio, también se emplea ampliamente
 para la gestión por lotes de servidores en la nube.
-[NixOps](https://github.com/NixOS/nixops), herramienta official de la comunidad NixOS, y
+[NixOps](https://github.com/NixOS/nixops), herramienta oficial de la comunidad NixOS, y
 [colmena](https://github.com/zhaofengli/colmena), desarrollada por la comunidad, son
 herramientas diseñadas específicamente para este caso de uso.
 
 Comparado con herramientas tradicionales ampliamente usadas como Ansible, Nix tiene las
-siguientes ventajas principles:
+siguientes ventajas principales:
 
-1. Uno de los mayores problems de Ansible es que cada despliegue se basa en cambios
+1. Uno de los mayores problemas de Ansible es que cada despliegue se basa en cambios
    incrementales sobre el estado actual del sistema. El estado actual del sistema, al
    igual que los snapshots mencionados antes, no es interpretable y es difícil de
    reproducir. NixOS declara el estado objetivo del sistema mediante sus archivos de
    configuración, de modo que el resultado del despliegue es independiente del estado
-   actual del sistema, y los despliegues repetidos no causan problems.
-2. Nix Flakes usa un archivo de bloqueo de versions `flake.lock` para fijar el hash,
-   número de versión, fuente de datos y otra información de todas las dependencies, lo que
+   actual del sistema, y los despliegues repetidos no causan problemas.
+2. Nix Flakes usa un archivo de bloqueo de versiones `flake.lock` para fijar el hash,
+   número de versión, fuente de datos y otra información de todas las dependencias, lo que
    mejora mucho la reproducibilidad del sistema. Las herramientas tradicionales como
    Ansible no tienen esta característica, así que no son muy reproducibles.
    1. Esta es una razón por la que Docker es tan popular: proporciona, a una fracción del
@@ -54,10 +54,10 @@ siguientes ventajas principles:
       herramientas Ops tradicionales como Ansible no proporcionan.
 3. Nix ofrece un alto grado de facilidad para personalizar el sistema al ocultar los
    detalles de implementación subyacentes bajo una capa de abstracción declarativa, de
-   modo que los usuarios solo deben preocuparse por sus requisitos principles.
+   modo que los usuarios solo deben preocuparse por sus requisitos principales.
    Herramientas como Ansible tienen abstracciones mucho más débiles.
    1. Si alguna vez has usado una herramienta de configuración declarativa como
-      terraform/kubernetes, esto debería set fácil de entender. Cuanto más complejos son
+      terraform/kubernetes, esto debería ser fácil de entender. Cuanto más complejos son
       los requisitos, mayor es el beneficio de la configuración declarativa.
 
 ## ¿Cuáles son las ventajas de Nix frente a la tecnología de contenedores Docker?
@@ -81,18 +81,18 @@ en la máquina host. Esto ofrece varias ventajas frente a Dev Containers:
 1. Nix no usa namespaces para aislar el sistema de archivos y la red, lo que permite una
    interacción sencilla con el sistema de archivos de la máquina host (incluido `/dev`
    para dispositivos externos) y el entorno de red desde el entorno de desarrollo creado
-   por Nix. En cambio, los contenedores requieren various mapeos para permitir la
+   por Nix. En cambio, los contenedores requieren varios mapeos para permitir la
    comunicación entre el contenedor y el sistema de archivos del host, lo que a veces
-   genera problems de permisos de archivos.
+   genera problemas de permisos de archivos.
 2. Debido a la ausencia de aislamiento fuerte, los entornos de desarrollo de Nix no tienen
-   problems para soportar aplicaciones GUI. Ejecutar programs gráficos dentro de este
+   problemas para soportar aplicaciones GUI. Ejecutar programas gráficos dentro de este
    entorno es tan fluido como ejecutarlos en el entorno del sistema.
 
-En otras palabras, Nix proporciona una experiencia de desarrollo lo más cercana possible a
+En otras palabras, Nix proporciona una experiencia de desarrollo lo más cercana posible a
 la máquina host, sin aislamiento fuerte. Los desarrolladores pueden usar herramientas de
 desarrollo y depuración familiares en este entorno, y su experiencia previa puede migrarse
 sin fricción. En cambio, si se usan Dev Containers, los desarrolladores pueden encontrar
-various problems relacionados con comunicación del sistema de archivos, entorno de red,
+varios problemas relacionados con comunicación del sistema de archivos, entorno de red,
 permisos de usuario y la imposibilidad de usar herramientas de depuración GUI debido al
 aislamiento fuerte.
 
@@ -107,7 +107,7 @@ ofrece ventajas claras.
 ## error: collision between `...` and `...`
 
 Este error ocurre cuando instalaste dos paquetes que dependen de la misma biblioteca, pero
-con versions distintas, en el mismo profile (módulo de Home Manager o módulo de NixOS).
+con versiones distintas, en el mismo perfil (módulo de Home Manager o módulo de NixOS).
 
 Por ejemplo, si tienes la siguiente configuración:
 
@@ -147,7 +147,7 @@ Estas son algunas soluciones:
 
 1. Divide los dos paquetes en dos **profiles** distintos. Por ejemplo, puedes instalar
    `lldb` mediante `environment.systemPackages` y `python311` mediante `home.packages`.
-2. Las distintas versions de Python3 se tratan como paquetes distintos, así que puedes
+2. Las distintas versiones de Python3 se tratan como paquetes distintos, así que puedes
    cambiar tu versión personalizada de Python3 a `python310` para evitar el conflicto.
 3. Usa `override` para sobrescribir la versión de la biblioteca usada por el paquete y
    hacerla consistente con la versión usada por el otro paquete.
