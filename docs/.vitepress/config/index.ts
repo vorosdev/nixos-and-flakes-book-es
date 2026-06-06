@@ -27,6 +27,10 @@ export default defineConfig({
       label: "日本語",
       link: "https://nixos-and-flakes-ja.hayao0819.com/",
     },
+    es: {
+      label: "Español",
+      link: "https://nixos-and-flakes.voros.xyz/",
+    },
   },
 
   // For forks in other languages, here is an example of how to add a new locale:

@@ -17,6 +17,7 @@ https://nixos-and-flakes.thiscute.world/
 
 - **Versão em Português**: https://nixos-and-flakes.ieda.me/
 - **日本語版**: https://nixos-and-flakes-ja.hayao0819.com/
+- **Versión en Español**: https://nixos-and-flakes.voros.xyz/
 
 > If you're using macOS,
 > [ryan4yin/nix-darwin-kickstarter](https://github.com/ryan4yin/nix-darwin-kickstarter)
